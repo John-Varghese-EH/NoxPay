@@ -1,0 +1,8 @@
+imap_tools
+httpx
+supabase
+python-dotenv
+dnspython
+authres
+pydantic
+pydantic-settings

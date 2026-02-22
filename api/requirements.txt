@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+supabase
+pydantic
+pydantic-settings
+bcrypt
+passlib[bcrypt]
+python-dotenv
+qrcode[pil]
