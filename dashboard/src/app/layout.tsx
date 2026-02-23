@@ -29,7 +29,7 @@ const navItems = [
   { name: 'Transactions', icon: 'transactions', href: '/dashboard/transactions' },
   { name: 'Analytics', icon: 'analytics', href: '/dashboard/analytics' },
   { name: 'API Keys', icon: 'apikeys', href: '/api-keys' },
-  { name: 'Webhooks', icon: 'webhooks', href: '/webhooks' },
+  { name: 'Webhooks', icon: 'webhooks', href: '/dashboard/webhooks' },
   { name: 'Settings', icon: 'settings', href: '/settings' },
 ]
 

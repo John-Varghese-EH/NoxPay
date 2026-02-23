@@ -42,7 +42,7 @@ const response = await fetch('${origin}/api/v1/intents/create-payment', {
 });
 const data = await response.json();
 // Redirect user to the payment link
-window.location.href = data.payment_url;`,
+window.location.href = data.checkout_url;`,
 
         iframe: `<!-- Iframe Integration -->
 <iframe 

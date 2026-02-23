@@ -68,10 +68,15 @@ def match_and_settle(tx: ParsedTransaction) -> bool:
         if matched_intent_id:
             supabase.table("payment_intents").update({"status": "success"}).eq("id", matched_intent_id).execute()
             
-            # 5. TODO: Trigger Webhook delivery
-            # from worker.webhook import deliver_webhook
-            # deliver_webhook(client_id_for_webhook, matched_intent_id)
-            pass
+            # 5. Trigger Webhook delivery
+            from worker.webhook import deliver_webhook
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+                loop.create_task(deliver_webhook(client_id_for_webhook, matched_intent_id))
+            except RuntimeError:
+                # If no running loop is found (which shouldn't happen if called from async process_email)
+                asyncio.run(deliver_webhook(client_id_for_webhook, matched_intent_id))
             
         return True
 

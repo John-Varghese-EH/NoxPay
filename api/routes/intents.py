@@ -51,6 +51,7 @@ class IntentResponse(BaseModel):
     status: str
     payment_uri: Optional[str] = None
     qr_code_base64: Optional[str] = None
+    checkout_url: Optional[str] = None
     expires_at: datetime
 
 @router.post("/create-payment", response_model=IntentResponse, dependencies=[Depends(rate_limit)])
@@ -115,6 +116,10 @@ async def create_intent(intent_req: CreateIntentRequest, request: Request, clien
         uri = client.get("crypto_wallet")
         qr_base64 = generate_qr_base64(f"tron:{uri}?amount={intent_req.amount}") # generic tron deep link string for qr
     
+    # Construct Hosted Checkout URL based on current host Origin since the dashboard and API share a domain in Vercel
+    base_domain = str(request.base_url).rstrip('/')
+    checkout_url = f"{base_domain}/checkout?intent={created_intent['id']}"
+
     return {
         "id": created_intent["id"],
         "order_id": created_intent["order_id"],
@@ -123,6 +128,7 @@ async def create_intent(intent_req: CreateIntentRequest, request: Request, clien
         "status": created_intent["status"],
         "payment_uri": uri,
         "qr_code_base64": qr_base64,
+        "checkout_url": checkout_url,
         "expires_at": created_intent["expires_at"]
     }
 

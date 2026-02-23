@@ -19,6 +19,9 @@ CREATE TABLE clients (
     bank_account JSONB DEFAULT '{}',    -- Config for bank account settlements
     notification_emails TEXT[] DEFAULT '{}', -- Emails to notify for various events
     payment_methods JSONB DEFAULT '{"upi": true, "usdt": false, "bank_transfer": false}', -- Enabled payment methods
+    theme_color TEXT DEFAULT '#7c3aed', -- Primary brand color for hosted checkout
+    logo_url TEXT,                      -- Brand logo URL for hosted checkout 
+    return_url TEXT,                    -- URL to redirect user after payment attempt
     is_active BOOLEAN DEFAULT true,
     rate_limit INT DEFAULT 100,
     created_at TIMESTAMPTZ DEFAULT NOW(),
