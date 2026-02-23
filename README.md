@@ -4,7 +4,7 @@
 
   <img src="/dashboard/src/app/icon.svg" alt="NoxPay Logo" width="140" />
 
-  ### **Sovereign SaaS UPI & Crypto Payment Gateway** — By J0X
+  ### **Sovereign SaaS UPI & Crypto Payment Gateway** - By J0X
 
   [![License](https://img.shields.io/badge/license-yellow.svg)](LICENSE)
   [![Status](https://img.shields.io/badge/status-Active%20Development-brightgreen.svg)]()
@@ -29,6 +29,13 @@ Use the included setup script to provision the background worker on your Ubuntu/
 chmod +x hidencloud_setup.sh
 ./hidencloud_setup.sh
 ```
+
+---
+> [!NOTE]
+> **🚧 Work in Progress:**  
+> This project is actively being developed! Help make it better and faster-contributions, feedback, and ideas are warmly welcome.
+> *Star the repo and join the project!*
+---
 
 ## Screenshot
 
@@ -160,5 +167,9 @@ $env:PYTHONPATH="."; .\venv\Scripts\pytest api worker -v
 cd dashboard && npm run build
 ```
 
-### Author
-[John-Varghese-EH](https://github.com/John-Varghese-EH)
+---
+ Crafted with ❤️ by **[John Varghese](https://github.com/John-Varghese-EH)**  
+> 
+  [![Buy me a Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/CyberTrinity)
+  [![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/CyberTrinity)
+  [![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sponsors/John-Varghese-EH)
