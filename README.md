@@ -1,8 +1,16 @@
 # NoxPay
 
-**Sovereign SaaS UPI & Crypto Payment Gateway** — By J0X
+<div align="center">
 
-![NoxPay Logo](./dashboard/public/icon.svg)
+  <img src="/dashboard/src/app/icon.svg" alt="NoxPay Logo" width="140" />
+
+  ### **Sovereign SaaS UPI & Crypto Payment Gateway** — By J0X
+
+  [![License](https://img.shields.io/badge/license-yellow.svg)](LICENSE)
+  [![Status](https://img.shields.io/badge/status-Active%20Development-brightgreen.svg)]()
+  [![Stars](https://img.shields.io/github/stars/John-Varghese-EH/NoxPay?style=social)](https://github.com/John-Varghese-EH/NoxPay)
+
+</div>
 
 ## One-Click Deploy
 
@@ -21,6 +29,10 @@ Use the included setup script to provision the background worker on your Ubuntu/
 chmod +x hidencloud_setup.sh
 ./hidencloud_setup.sh
 ```
+
+## Screenshot
+
+Loading Soon!!!
 
 ## Architecture
 
