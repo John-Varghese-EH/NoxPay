@@ -41,6 +41,7 @@ export default async function RootLayout({
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const isLoggedIn = !!user
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isPublicPage = true // Layout renders for all routes
 
   return (
@@ -80,9 +81,12 @@ export default async function RootLayout({
               <main className="flex-1 w-full flex flex-col">
                 {children}
               </main>
-              <footer className="w-full border-t border-slate-800/60 py-4">
-                <div className="max-w-6xl mx-auto px-6 text-center text-xs text-slate-600 font-mono">
-                  NoxPay — By J0X
+              <footer className="w-full border-t border-slate-800/60 py-6 mt-auto">
+                <div className="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center gap-2">
+                  <div className="text-xs font-mono text-slate-500">NoxPay - By J0X</div>
+                  <div className="text-[10px] text-slate-600 max-w-md">
+                    Disclaimer: J0X (John Varghese) is not responsible for any issues, payment failures, transaction errors, or financial losses incurred while using this software.
+                  </div>
                 </div>
               </footer>
             </div>
@@ -99,9 +103,12 @@ export default async function RootLayout({
             <main className="flex-1 w-full flex flex-col">
               {children}
             </main>
-            <footer className="w-full border-t border-slate-800/60 py-6 mt-12">
-              <div className="max-w-6xl mx-auto px-6 text-center text-sm text-slate-500 font-mono">
-                NoxPay — By J0X
+            <footer className="w-full border-t border-slate-800/60 py-8 mt-12 bg-[#0a0a0f]">
+              <div className="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center gap-3">
+                <div className="text-sm font-mono text-slate-400">NoxPay — By J0X</div>
+                <div className="text-xs text-slate-600 max-w-lg leading-relaxed">
+                  Disclaimer: J0X (John Varghese) is not responsible for any issues, payment failures, transaction errors, or financial losses incurred while using this software. Use at your own risk.
+                </div>
               </div>
             </footer>
           </div>

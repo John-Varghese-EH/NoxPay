@@ -1,0 +1,23 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "dashboard/package.json",
+            "use": "@vercel/next"
+        },
+        {
+            "src": "api/main.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "api/main.py"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "dashboard/$1"
+        }
+    ]
+}

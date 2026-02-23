@@ -58,17 +58,28 @@ async def create_intent(intent_req: CreateIntentRequest, request: Request, clien
     """
     Creates a new payment intent and returns a UPI deep-link URI with QR code.
     """
-    if intent_req.currency != "UPI":
-        raise HTTPException(status_code=400, detail="Only UPI currency is currently supported for intent creation")
+    if intent_req.currency not in ["UPI", "USDT"]:
+        raise HTTPException(status_code=400, detail="Only UPI and USDT currencies are supported")
     
     if not supabase:
         raise HTTPException(status_code=500, detail="Database not configured")
         
     client_id = client.get("id")
     client_name = client.get("name")
+    payment_methods = client.get("payment_methods") or {"upi": True, "usdt": False, "bank_transfer": False}
     
+    # Currency validations
+    if intent_req.currency == "UPI" and not payment_methods.get("upi"):
+        raise HTTPException(status_code=403, detail="UPI payments are disabled for this merchant")
+        
+    if intent_req.currency == "USDT":
+        if not payment_methods.get("usdt"):
+            raise HTTPException(status_code=403, detail="USDT payments are disabled for this merchant")
+        if not client.get("crypto_wallet"):
+            raise HTTPException(status_code=400, detail="Merchant has not configured a crypto receiving wallet")
+
     # Use client's configured VPA or the one provided in the request
-    vpa = intent_req.upi_vpa or client.get("upi_vpa") or "noxpay@sbi"
+    vpa = intent_req.upi_vpa or client.get("upi_vpa") or "noxpay@sbi" 
     
     expires_at = datetime.utcnow() + timedelta(minutes=15)
     
@@ -90,14 +101,19 @@ async def create_intent(intent_req: CreateIntentRequest, request: Request, clien
         
     created_intent = res.data[0]
     
-    # Generate UPI URI
-    uri = generate_upi_uri(
-        pa=vpa,
-        pn=client_name,
-        am=float(intent_req.amount),
-        tr=intent_req.order_id
-    )
-    qr_base64 = generate_qr_base64(uri)
+    # Generate URI/QR based on currency
+    if intent_req.currency == "UPI":
+        uri = generate_upi_uri(
+            pa=vpa,
+            pn=client_name,
+            am=float(intent_req.amount),
+            tr=intent_req.order_id
+        )
+        qr_base64 = generate_qr_base64(uri)
+    else:
+        # USDT flow
+        uri = client.get("crypto_wallet")
+        qr_base64 = generate_qr_base64(f"tron:{uri}?amount={intent_req.amount}") # generic tron deep link string for qr
     
     return {
         "id": created_intent["id"],

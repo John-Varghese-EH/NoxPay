@@ -8,12 +8,17 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ==========================================
 CREATE TABLE clients (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,              -- Links to auth.users (the merchant owner)
     name TEXT NOT NULL,
     client_id UUID UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
     secret_hash TEXT NOT NULL,
     webhook_secret TEXT,                -- Dedicated HMAC signing key (plaintext, NOT bcrypt)
     webhook_url TEXT,
     upi_vpa TEXT,                       -- Default UPI VPA for this merchant
+    crypto_wallet TEXT,                 -- Default Crypto Wallet (e.g. USDT TRC20)
+    bank_account JSONB DEFAULT '{}',    -- Config for bank account settlements
+    notification_emails TEXT[] DEFAULT '{}', -- Emails to notify for various events
+    payment_methods JSONB DEFAULT '{"upi": true, "usdt": false, "bank_transfer": false}', -- Enabled payment methods
     is_active BOOLEAN DEFAULT true,
     rate_limit INT DEFAULT 100,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -31,6 +36,8 @@ CREATE TABLE payment_intents (
     order_id TEXT UNIQUE NOT NULL,
     upi_vpa TEXT,
     status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'success', 'expired', 'failed')),
+    is_flagged BOOLEAN DEFAULT false,
+    flag_reason TEXT,
     expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -116,29 +123,35 @@ ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 -- Dashboard users see only their own client data
 CREATE POLICY "Users can view own client profile"
     ON clients FOR SELECT
-    USING (id = auth.uid());
+    USING (user_id = auth.uid() OR id = auth.uid()); -- Fallback for legacy data
+
+CREATE POLICY "Users can insert own client profile"
+    ON clients FOR INSERT
+    WITH CHECK (user_id = auth.uid() OR id = auth.uid());
 
 CREATE POLICY "Users can update own client profile"
     ON clients FOR UPDATE
-    USING (id = auth.uid());
+    USING (user_id = auth.uid() OR id = auth.uid());
 
 CREATE POLICY "Users can view own intents"
     ON payment_intents FOR SELECT
-    USING (client_id = auth.uid());
+    USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid() OR id = auth.uid()));
 
 CREATE POLICY "Users can view own transactions"
     ON verified_transactions FOR SELECT
     USING (payment_intent_id IN (
-        SELECT id FROM payment_intents WHERE client_id = auth.uid()
+        SELECT id FROM payment_intents WHERE client_id IN (SELECT id FROM clients WHERE user_id = auth.uid() OR id = auth.uid())
     ));
 
 CREATE POLICY "Users can view own webhook logs"
     ON webhook_logs FOR SELECT
-    USING (client_id = auth.uid());
+    USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid() OR id = auth.uid()));
 
 -- ==========================================
 -- Migration SQL (run if upgrading existing DB)
 -- ==========================================
+-- ALTER TABLE clients ADD COLUMN IF NOT EXISTS user_id UUID;
+-- UPDATE clients SET user_id = id WHERE user_id IS NULL; -- For existing records
 -- ALTER TABLE clients ADD COLUMN IF NOT EXISTS webhook_secret TEXT;
 -- ALTER TABLE clients ADD COLUMN IF NOT EXISTS upi_vpa TEXT;
 -- ALTER TABLE clients ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();

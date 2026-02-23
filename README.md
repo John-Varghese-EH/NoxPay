@@ -9,7 +9,10 @@
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJohn-Varghese-EH%2FNoxPay)
 
 ### 1. Dashboard & API (Vercel)
-Click the **Deploy** button above to provision the Next.js Dashboard and FastAPI backend to Vercel instantly. You will be prompted to provide your Supabase credentials.
+**Note: You only need ONE Vercel project for NoxPay.** 
+Because this repository contains a `vercel.json` file, Vercel will automatically route requests under `/api/*` to the Python FastAPI backend, and all other routes directly to the Next.js Dashboard. No separate backend deployment is needed!
+
+Click the **Deploy** button above to provision the full platform to Vercel instantly. You will be prompted to provide your Supabase credentials.
 
 ### 2. Worker (HidenCloud or VM)
 Use the included setup script to provision the background worker on your Ubuntu/Debian persistent server:
