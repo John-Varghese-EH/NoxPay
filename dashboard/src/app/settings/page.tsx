@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import CheckoutPreview from './CheckoutPreview'
 
 export default async function SettingsPage() {
     const supabase = createClient()
@@ -145,6 +146,28 @@ export default async function SettingsPage() {
                 <p className="text-slate-400 mt-2">Manage your NoxPay account, bank details, and integration preferences.</p>
             </div>
 
+            {/* Hosted Checkout Branding - Moved to top for impact */}
+            <div className="glass-card p-6 border-t-2 border-t-pink-500/50 mb-8">
+                <h2 className="text-lg font-semibold text-white mb-6">Hosted Checkout Branding</h2>
+                <form action={saveCheckoutBranding}>
+                    <CheckoutPreview
+                        initialColor={client?.theme_color || '#7c3aed'}
+                        initialLogo={client?.logo_url || ''}
+                        initialName={client?.name || 'Your Brand'}
+                    />
+
+                    <div className="mt-8 pt-6 border-t border-slate-800">
+                        <label className="text-sm font-medium text-slate-400 block mb-2">Return URL (Optional)</label>
+                        <input type="url" name="return_url" defaultValue={client?.return_url || ''} placeholder="https://yourbrand.com/success" className="w-full max-w-xl bg-slate-950 border border-slate-800 rounded-md px-4 py-2 text-sm text-slate-200 focus:ring-violet-500 focus:border-violet-500" />
+                        <p className="text-xs text-slate-500 mt-1">Users will be redirected here after payment is complete.</p>
+
+                        <button type="submit" className="bg-pink-600/20 text-pink-400 border border-pink-500/30 hover:bg-pink-600/30 rounded-md px-6 py-2.5 font-medium transition-colors text-sm mt-4">
+                            Save Branding
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                 {/* Profile Settings */}
@@ -178,35 +201,7 @@ export default async function SettingsPage() {
                     </div>
                 </div>
 
-                {/* Checkout Branding */}
-                <div className="glass-card p-6 border-t-2 border-t-pink-500/50">
-                    <h2 className="text-lg font-semibold text-white mb-4">Hosted Checkout UI</h2>
-                    <form action={saveCheckoutBranding} className="flex flex-col gap-4">
-                        <div>
-                            <label className="text-sm font-medium text-slate-400 block mb-2">Theme Color (Hex)</label>
-                            <div className="flex gap-3">
-                                <input type="color" name="theme_color_picker" defaultValue={client?.theme_color || '#7c3aed'} className="w-10 h-10 rounded border-none bg-transparent cursor-pointer" onChange={(e) => {
-                                    const input = e.target.nextElementSibling as HTMLInputElement;
-                                    if (input) input.value = e.target.value;
-                                }} />
-                                <input type="text" name="theme_color" defaultValue={client?.theme_color || '#7c3aed'} placeholder="#7c3aed" className="flex-1 bg-slate-950 border border-slate-800 rounded-md px-4 py-2 text-sm text-slate-200 focus:ring-violet-500 focus:border-violet-500 font-mono" />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium text-slate-400 block mb-2">Brand Logo URL</label>
-                            <input type="url" name="logo_url" defaultValue={client?.logo_url || ''} placeholder="https://yourbrand.com/logo.png" className="w-full bg-slate-950 border border-slate-800 rounded-md px-4 py-2 text-sm text-slate-200 focus:ring-violet-500 focus:border-violet-500" />
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium text-slate-400 block mb-2">Return URL (Optional)</label>
-                            <input type="url" name="return_url" defaultValue={client?.return_url || ''} placeholder="https://yourbrand.com/success" className="w-full bg-slate-950 border border-slate-800 rounded-md px-4 py-2 text-sm text-slate-200 focus:ring-violet-500 focus:border-violet-500" />
-                            <p className="text-xs text-slate-500 mt-1">Users will be redirected here after payment</p>
-                        </div>
-
-                        <button type="submit" className="bg-pink-600/20 text-pink-400 border border-pink-500/30 hover:bg-pink-600/30 rounded-md px-4 py-2 font-medium transition-colors text-sm w-full mt-2">
-                            Save Branding
-                        </button>
-                    </form>
-                </div>
+                {/* Profile Settings */}
 
                 {/* Multiple Payment Methods Configuration */}
                 <div className="glass-card p-6 border-t-2 border-t-sky-500/50">

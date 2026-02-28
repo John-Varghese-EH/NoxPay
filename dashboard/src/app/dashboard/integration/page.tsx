@@ -46,11 +46,11 @@ window.location.href = data.checkout_url;`,
 
         iframe: `<!-- Iframe Integration -->
 <iframe 
-    src="${origin}/checkout?intent=INTENT_ID"
-    width="100%" 
+    src="${origin}/widget?intent=INTENT_ID"
+    width="400" 
     height="600" 
     frameborder="0" 
-    style="border-radius: 12px; border: 1px solid #1e293b;"
+    style="border-radius: 16px; border: 1px solid #1e293b; box-shadow: 0 4px 24px rgba(0,0,0,0.4); max-width: 100%;"
     allow="clipboard-write"
 ></iframe>`,
 

@@ -1,5 +1,8 @@
 import { createClient } from '@/utils/supabase/server'
-import { ExternalLink, ShieldCheck, Clock, CheckCircle2, XCircle } from 'lucide-react'
+import { ExternalLink, ShieldCheck, CheckCircle2, XCircle } from 'lucide-react'
+import RealtimeListener from './RealtimeListener'
+import CopyButton from '@/components/ui/CopyButton'
+import ExpiryTimer from './ExpiryTimer'
 
 // Render a dynamic, branded checkout page
 export default async function CheckoutPage({ searchParams }: { searchParams: { intent?: string } }) {
@@ -65,6 +68,8 @@ export default async function CheckoutPage({ searchParams }: { searchParams: { i
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center p-4" style={{ backgroundColor: `${themeColor}10` }}>
+            <RealtimeListener intentId={intent.id} currentStatus={intent.status} />
+
             {isSuccess && clientBrand?.return_url && (
                 <meta httpEquiv="refresh" content={`3;url=${clientBrand.return_url}`} />
             )}
@@ -106,12 +111,26 @@ export default async function CheckoutPage({ searchParams }: { searchParams: { i
                     {/* Status Display */}
                     {!isSuccess && !isExpired && (
                         <div className="bg-slate-900 rounded-xl p-5 border border-slate-800 flex flex-col items-center text-center">
-                            <p className="text-sm text-slate-300 mb-4">
+
+                            {paymentUri && (
+                                <div className="mb-4 bg-white p-2 rounded-xl">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=1&data=${encodeURIComponent(paymentUri)}`}
+                                        alt="Payment QR Code"
+                                        className="w-48 h-48 object-contain"
+                                    />
+                                </div>
+                            )}
+
+                            <p className="text-sm text-slate-300 mb-4 w-full">
                                 {intent.currency === 'UPI'
-                                    ? `Pay to UPI ID: `
-                                    : `Send TRC20 USDT to: `}
-                                <br />
-                                <span className="font-mono font-medium text-white break-all select-all mt-1 block bg-slate-950 py-2 px-3 rounded-lg border border-slate-800">{intent.currency === 'UPI' ? intent.upi_vpa : paymentUri}</span>
+                                    ? `Pay to UPI ID:`
+                                    : `Send TRC20 USDT to:`}
+                                <span className="font-mono font-medium text-white break-all mt-1 flex items-center justify-between gap-2 bg-slate-950 py-2 px-3 rounded-lg border border-slate-800 text-left">
+                                    <span className="truncate">{intent.currency === 'UPI' ? intent.upi_vpa : paymentUri}</span>
+                                    <CopyButton textToCopy={intent.currency === 'UPI' ? intent.upi_vpa : paymentUri} className="shrink-0 text-slate-400 hover:text-white" />
+                                </span>
                             </p>
 
                             {intent.currency === 'UPI' && (
@@ -124,9 +143,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: { i
                                 </a>
                             )}
 
-                            <div className="flex items-center gap-2 text-xs text-slate-500 mt-5 font-medium">
-                                <Clock className="w-3.5 h-3.5" /> Awaiting confirmation...
-                            </div>
+                            <ExpiryTimer expiresAt={intent.expires_at} />
                         </div>
                     )}
 
