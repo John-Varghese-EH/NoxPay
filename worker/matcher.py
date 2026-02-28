@@ -3,7 +3,7 @@ from typing import Optional
 from supabase import create_client, Client
 from worker.config import get_settings
 from worker.parser import ParsedTransaction
-
+from typing import Optional, Dict, Any
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
@@ -82,4 +82,78 @@ def match_and_settle(tx: ParsedTransaction) -> bool:
 
     except Exception as e:
         logger.error(f"Error in match_and_settle for UTR {tx.utr}: {e}")
+        return False
+
+def match_and_settle_crypto(amount: float, tx_hash: str, from_addr: str, memo: Optional[str] = None) -> bool:
+    """
+    1. Check for Idempotency using tx_hash
+    2. Try to find matching pending intent (via memo order_id or exact amount)
+    3. Insert into verified_transactions
+    4. Update intent to success
+    5. Trigger Webhook
+    """
+    if not supabase:
+        logger.error("Supabase client not initialized.")
+        return False
+        
+    try:
+        # 1. Idempotency Check
+        existing = supabase.table("verified_transactions").select("id").eq("tx_hash", tx_hash).execute()
+        if existing.data:
+            logger.info(f"Crypto Tx {tx_hash} already processed. Skipping.")
+            return True
+            
+        # 2. Try to find matching pending intent.
+        intent_query = supabase.table("payment_intents").select("*").eq("status", "pending")
+        
+        # If order_id was passed via memo, use it
+        if memo:
+            # Assuming memo is the order_id
+            intent_query = intent_query.eq("order_id", memo)
+        else:
+            # Fallback to amount matching (must be exact)
+            intent_query = intent_query.eq("amount", amount).eq("currency", "USDT") # assuming USDT
+            
+        intents = intent_query.execute()
+        
+        matched_intent_id = None
+        client_id_for_webhook = None
+        
+        if intents.data and len(intents.data) == 1:
+            matched_intent = intents.data[0]
+            matched_intent_id = matched_intent['id']
+            client_id_for_webhook = matched_intent['client_id']
+            logger.info(f"Matched Tx {tx_hash} to Intent {matched_intent['order_id']}")
+        elif intents.data and len(intents.data) > 1:
+            logger.warning(f"Multiple pending intents found for amount {amount}. Manual intervention needed.")
+        else:
+            logger.warning(f"No pending intent matched for Tx {tx_hash}, Amount {amount}, Memo {memo}")
+
+        # 3. Insert transaction
+        tx_data = {
+            "tx_hash": tx_hash,
+            "amount": float(amount),
+            "bank_source": "CRYPTO",
+            "payment_intent_id": matched_intent_id,
+            "metadata": {"sender_address": from_addr, "memo": memo}
+        }
+        res_insert = supabase.table("verified_transactions").insert(tx_data).execute()
+        
+        # 4. Update Intent Status
+        if matched_intent_id:
+            supabase.table("payment_intents").update({"status": "success"}).eq("id", matched_intent_id).execute()
+            
+            # 5. Trigger Webhook delivery
+            from worker.webhook import deliver_webhook
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+                loop.create_task(deliver_webhook(client_id_for_webhook, matched_intent_id))
+            except RuntimeError:
+                asyncio.run(deliver_webhook(client_id_for_webhook, matched_intent_id))
+            
+        return True
+
+    except Exception as e:
+        logger.error(f"Error in match_and_settle_crypto for Tx {tx_hash}: {e}")
         return False

@@ -92,7 +92,8 @@ async def main():
     logger.info("Starting VoidPay Worker 🚀")
     
     # Initialize blockchain poller
-    poller = BlockchainPoller()
+    from worker.crypto_observer import CryptoObserver
+    poller = CryptoObserver()
     
     # Run IMAP watcher and Blockchain poller concurrently
     await asyncio.gather(

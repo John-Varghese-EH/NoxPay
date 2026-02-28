@@ -17,6 +17,12 @@ class Settings(BaseSettings):
     tron_rpc_url: str = "https://api.trongrid.io"
     eth_rpc_url: str = "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"
     
+    # Crypto Observer Settings
+    solana_rpc_url: str = "https://mainnet.helius-rpc.com/?api-key=YOUR_HELIUS_KEY"
+    solana_watch_address: str = ""
+    polygon_rpc_url: str = "https://polygon-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_KEY"
+    polygon_watch_address: str = ""
+    
     # Worker Settings
     poll_interval: int = 5
     
