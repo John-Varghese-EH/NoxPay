@@ -7,10 +7,29 @@ import CopyButton from '@/components/ui/CopyButton'
 import ExpiryTimer from './ExpiryTimer'
 import LanguageToggle from './LanguageToggle'
 import { translations, Language } from './CheckoutTranslations'
+import Image from 'next/image'
+
+interface Intent {
+    id: string
+    status: string
+    currency: string
+    amount: number | string
+    expires_at: string
+    order_id: string
+    upi_vpa?: string
+}
+
+interface ClientBrand {
+    theme_color?: string
+    name?: string
+    logo_url?: string
+    crypto_wallet?: string
+    return_url?: string
+}
 
 interface CheckoutClientProps {
-    intent: any
-    clientBrand: any
+    intent: Intent
+    clientBrand: ClientBrand
 }
 
 export default function CheckoutClient({ intent, clientBrand }: CheckoutClientProps) {
@@ -24,7 +43,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
 
     let paymentUri = ''
     if (intent.currency === 'UPI') {
-        paymentUri = `upi://pay?pa=${intent.upi_vpa}&pn=${encodeURIComponent(clientBrand?.name || 'Merchant')}&am=${Math.max(intent.amount, 1)}&tr=${intent.order_id}`
+        paymentUri = `upi://pay?pa=${intent.upi_vpa}&pn=${encodeURIComponent(clientBrand?.name || 'Merchant')}&am=${Math.max(Number(intent.amount), 1)}&tr=${intent.order_id}`
     } else if (intent.currency === 'USDT') {
         paymentUri = clientBrand?.crypto_wallet || ''
     }
@@ -45,7 +64,13 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                     <div className="p-6 text-center border-b border-slate-800" style={{ backgroundColor: `${themeColor}15` }}>
                         {clientBrand?.logo_url ? (
                             <div className="w-16 h-16 mx-auto mb-3 rounded-xl overflow-hidden bg-white/5 p-1 flex items-center justify-center">
-                                <img src={clientBrand.logo_url} alt={clientBrand.name} className="max-w-full max-h-full object-contain" />
+                                <Image
+                                    src={clientBrand.logo_url || ''}
+                                    alt={clientBrand.name || 'Merchant logo'}
+                                    width={64}
+                                    height={64}
+                                    className="max-w-full max-h-full object-contain"
+                                />
                             </div>
                         ) : (
                             <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center border border-slate-700">
@@ -77,9 +102,11 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                             <div className="bg-slate-900 rounded-xl p-5 border border-slate-800 flex flex-col items-center text-center">
                                 {paymentUri && (
                                     <div className="mb-4 bg-white p-2 rounded-xl">
-                                        <img
+                                        <Image
                                             src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=1&data=${encodeURIComponent(paymentUri)}`}
                                             alt="Payment QR Code"
+                                            width={192}
+                                            height={192}
                                             className="w-48 h-48 object-contain"
                                         />
                                     </div>
@@ -89,7 +116,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                                     {intent.currency === 'UPI' ? t.payTo : t.sendUsdt}
                                     <span className="font-mono font-medium text-white break-all mt-1 flex items-center justify-between gap-2 bg-slate-950 py-2 px-3 rounded-lg border border-slate-800 text-left">
                                         <span className="truncate">{intent.currency === 'UPI' ? intent.upi_vpa : paymentUri}</span>
-                                        <CopyButton textToCopy={intent.currency === 'UPI' ? intent.upi_vpa : paymentUri} className="shrink-0 text-slate-400 hover:text-white" />
+                                        <CopyButton textToCopy={(intent.currency === 'UPI' ? intent.upi_vpa : paymentUri) || ''} className="shrink-0 text-slate-400 hover:text-white" />
                                     </span>
                                 </p>
 
