@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkwebsite=globalThis.webpackChunkwebsite||[]).push([[83],{9147(e){e.exports=JSON.parse('{"authors":[{"name":"John Varghese","title":"Lead Developer of NoxPay","url":"https://github.com/John-Varghese-EH","imageURL":"https://github.com/John-Varghese-EH.png","key":"john","page":null,"count":1}]}')}}]);

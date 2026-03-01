@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkwebsite=globalThis.webpackChunkwebsite||[]).push([[472],{5513(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome to NoxPay - The Sovereign Payment Gateway","permalink":"/NoxPay/blog/welcome-to-noxpay","unlisted":false,"date":"2026-03-01T00:00:00.000Z"}]}')}}]);

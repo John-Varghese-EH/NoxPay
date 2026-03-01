@@ -74,11 +74,11 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'NoxPay',
-      logo: {
-        alt: 'NoxPay Logo',
-        src: 'img/logo.svg',
-      },
+      title: '🌌 NoxPay',
+      // logo: {
+      //   alt: 'NoxPay Logo',
+      //   src: 'img/logo.svg',
+      // },
       items: [
         {
           type: 'docSidebar',
@@ -141,7 +141,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} NoxPay. Built by John Varghese with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} NoxPay. All Rights Reserved.`,
     },
     prism: {
       theme: prismThemes.github,
