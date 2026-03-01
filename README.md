@@ -1,23 +1,25 @@
 # 🌌 NoxPay
-
-**Sovereign SaaS UPI & Crypto Payment Gateway**
-
 [![Documentation](https://img.shields.io/badge/Documentation-NoxPay-blue?style=for-the-badge&logo=docusaurus)](https://John-Varghese-EH.github.io/NoxPay/)
 [![GitHub](https://img.shields.io/badge/GitHub-NoxPay-black?style=for-the-badge&logo=github)](https://github.com/John-Varghese-EH/NoxPay)
-
-NoxPay is an open-source, self-hosted payment solution designed for Indian merchants and global businesses. Protect your sovereignty, minimize fees, and automate your settlement workflows for both UPI and Crypto.
-
 <div align="center">
   <img src="dashboard/src/app/icon.svg" alt="NoxPay Logo" width="140" />
-  <h3><b>The Ultimate Self-Hosted UPI & Crypto Checkouts</b></h3>
+  <h3><b>The Ultimate Self-Hosted UPI & Crypto Payment Gateway</b></h3>
   <p>Eliminate middleman fees. Retain 100% of your revenue. Deploy your own payment infrastructure in minutes.</p>
-
+  
+  [![Documentation](https://img.shields.io/badge/Documentation-NoxPay-blue?logo=docusaurus)](https://John-Varghese-EH.github.io/NoxPay/)
   [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-black.svg?logo=vercel)](https://vercel.com/)
   [![Supabase Powered](https://img.shields.io/badge/Supabase-Database-emerald.svg?logo=supabase)](https://supabase.com/)
   [![Next.js 14](https://img.shields.io/badge/Next.js-14.2-blue.svg?logo=nextdotjs)](https://nextjs.org/)
   [![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688.svg?logo=fastapi)](https://fastapi.tiangolo.org/)
 </div>
 
+NoxPay is an open-source, self-hosted payment solution designed for Indian merchants and global businesses. Protect your sovereignty, minimize fees, and automate your settlement workflows for both UPI and Crypto.
+
+---
+> [!NOTE]
+> **🚧 Work in Progress:**  
+> This project is actively being developed! Contributions, feedback, and ideas are welcome.  
+> *Star the repo and join the project!*
 ---
 
 ## 🏗️ Architecture
@@ -204,5 +206,13 @@ curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
 
 ---
 
+<div align="center">
+  
 Crafted with ❤️ by **[John Varghese (J0X)](https://github.com/John-Varghese-EH)**  
 *NoxPay is an open-source payment protocol. Use responsibly.*
+
+[![Buy me a Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/CyberTrinity)
+[![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/CyberTrinity)
+[![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sponsors/John-Varghese-EH)
+
+</div>
