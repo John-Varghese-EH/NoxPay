@@ -15,6 +15,7 @@ interface CheckoutClientProps {
 
 export default function CheckoutClient({ intent, clientBrand }: CheckoutClientProps) {
     const [lang, setLang] = useState<Language>('en')
+    const [showOffline, setShowOffline] = useState(false)
     const t = translations[lang]
 
     const themeColor = clientBrand?.theme_color || '#7c3aed'
@@ -93,13 +94,44 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                                 </p>
 
                                 {intent.currency === 'UPI' && (
-                                    <a
-                                        href={paymentUri}
-                                        className="w-full py-3 rounded-lg flex items-center justify-center gap-2 font-medium text-white transition-opacity hover:opacity-90"
-                                        style={{ backgroundColor: themeColor }}
-                                    >
-                                        {t.openUpi} <ExternalLink className="w-4 h-4" />
-                                    </a>
+                                    <>
+                                        <a
+                                            href={paymentUri}
+                                            className="w-full py-3 rounded-lg flex items-center justify-center gap-2 font-medium text-white transition-opacity hover:opacity-90"
+                                            style={{ backgroundColor: themeColor }}
+                                        >
+                                            {t.openUpi} <ExternalLink className="w-4 h-4" />
+                                        </a>
+
+                                        <button
+                                            onClick={() => setShowOffline(!showOffline)}
+                                            className="mt-4 text-[10px] font-bold text-slate-500 hover:text-slate-300 transition-colors uppercase tracking-widest flex items-center gap-2"
+                                        >
+                                            <div className={`w-1.5 h-1.5 rounded-full ${showOffline ? 'bg-violet-500 animate-pulse' : 'bg-slate-700'}`}></div>
+                                            {t.noInternet}
+                                        </button>
+
+                                        {showOffline && (
+                                            <div className="mt-4 w-full text-left bg-slate-950/50 rounded-xl p-4 border border-slate-800 animate-in slide-in-from-top-2 duration-300">
+                                                <div className="mb-4">
+                                                    <p className="text-[10px] font-bold text-violet-400 mb-2 uppercase tracking-widest">{t.ussdTitle}</p>
+                                                    <ul className="text-[11px] text-slate-400 space-y-1 leading-relaxed">
+                                                        <li>{t.ussdStep1}</li>
+                                                        <li>{t.ussdStep2} <span className="text-slate-200 font-mono select-all bg-slate-900 px-1 rounded">{intent.upi_vpa}</span></li>
+                                                        <li>{t.ussdStep3}</li>
+                                                    </ul>
+                                                </div>
+                                                <div className="pt-3 border-t border-slate-800/50">
+                                                    <p className="text-[10px] font-bold text-violet-400 mb-2 uppercase tracking-widest">{t.ivrTitle}</p>
+                                                    <ul className="text-[11px] text-slate-400 space-y-1 leading-relaxed">
+                                                        <li>{t.ivrStep1}</li>
+                                                        <li>{t.ivrStep2}</li>
+                                                        <li>{t.ivrStep3} <span className="text-slate-200 font-mono select-all bg-slate-900 px-1 rounded">{intent.order_id}</span></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
 
                                 <ExpiryTimer

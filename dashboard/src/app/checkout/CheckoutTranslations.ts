@@ -13,7 +13,16 @@ export const translations = {
         securedBy: "Secured by NoxPay",
         expiresIn: "Expires in",
         expired: "Expired",
-        completePayment: "Complete your payment securely."
+        completePayment: "Complete your payment securely.",
+        noInternet: "No Internet? Pay Offline",
+        ussdTitle: "Option 1: USSD (*99#)",
+        ussdStep1: "1. Dial *99# from your registered mobile number.",
+        ussdStep2: "2. Select 'Send Money' and enter UPI ID: ",
+        ussdStep3: "3. Enter amount and your UPI PIN.",
+        ivrTitle: "Option 2: UPI 123Pay (IVR)",
+        ivrStep1: "1. Call 08045163666 or 08045163581.",
+        ivrStep2: "2. Select 'Transfer Money' and follow prompts.",
+        ivrStep3: "3. Enter this Order ID when asked for remarks."
     },
     hi: {
         amountDue: "देय राशि",
@@ -29,7 +38,16 @@ export const translations = {
         securedBy: "NoxPay द्वारा सुरक्षित",
         expiresIn: "समाप्ति में समय",
         expired: "समय समाप्त",
-        completePayment: "अपना भुगतान सुरक्षित रूप से पूरा करें।"
+        completePayment: "अपना भुगतान सुरक्षित रूप से पूरा करें।",
+        noInternet: "इंटरनेट नहीं है? ऑफलाइन भुगतान करें",
+        ussdTitle: "विकल्प 1: USSD (*99#)",
+        ussdStep1: "1. अपने पंजीकृत मोबाइल नंबर से *99# डायल करें।",
+        ussdStep2: "2. 'Send Money' चुनें और प्रभारी UPI आईडी दर्ज करें: ",
+        ussdStep3: "3. राशि और अपना UPI PIN दर्ज करें।",
+        ivrTitle: "विकल्प 2: UPI 123Pay (IVR)",
+        ivrStep1: "1. 08045163666 या 08045163581 पर कॉल करें।",
+        ivrStep2: "2. 'Transfer Money' चुनें और निर्देशों का पालन करें।",
+        ivrStep3: "3. रिमार्क्स मांगे जाने पर यह ऑर्डर आईडी दर्ज करें।"
     }
 };
 

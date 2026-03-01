@@ -1,4 +1,11 @@
-# NoxPay: Sovereign SaaS Payment Gateway 🌌
+# 🌌 NoxPay
+
+**Sovereign SaaS UPI & Crypto Payment Gateway**
+
+[![Documentation](https://img.shields.io/badge/Documentation-NoxPay-blue?style=for-the-badge&logo=docusaurus)](https://John-Varghese-EH.github.io/NoxPay/)
+[![GitHub](https://img.shields.io/badge/GitHub-NoxPay-black?style=for-the-badge&logo=github)](https://github.com/John-Varghese-EH/NoxPay)
+
+NoxPay is an open-source, self-hosted payment solution designed for Indian merchants and global businesses. Protect your sovereignty, minimize fees, and automate your settlement workflows for both UPI and Crypto.
 
 <div align="center">
   <img src="dashboard/src/app/icon.svg" alt="NoxPay Logo" width="140" />
