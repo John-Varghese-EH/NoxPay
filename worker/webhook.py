@@ -53,6 +53,7 @@ async def deliver_webhook(client_id: str, payment_intent_id: str):
                 "amount": float(intent_data['amount']),
                 "currency": intent_data['currency'],
                 "status": intent_data['status'],
+                "metadata": intent_data.get('metadata', {}),
                 "created_at": intent_data['created_at']
             }
         }
@@ -104,6 +105,22 @@ async def deliver_webhook(client_id: str, payment_intent_id: str):
                 
             if attempt < max_attempts:
                 delay = base_delay ** attempt
+                # Calculate next retry time for database visibility
+                from datetime import datetime, timedelta
+                next_retry = datetime.utcnow() + timedelta(seconds=delay)
+                
+                log_data = {
+                    "client_id": client_id,
+                    "payment_intent_id": payment_intent_id,
+                    "url": webhook_url,
+                    "payload": payload,
+                    "response_code": status_code if 'status_code' in locals() else None,
+                    "attempts": attempt,
+                    "status": "retrying",
+                    "next_retry_at": next_retry.isoformat()
+                }
+                supabase.table("webhook_logs").insert(log_data).execute()
+                
                 logger.info(f"Retrying webhook delivery in {delay} seconds...")
                 await asyncio.sleep(delay)
                 

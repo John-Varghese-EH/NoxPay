@@ -21,6 +21,8 @@ export default function CryptoPaymentPage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [testIntent, setTestIntent] = useState<any | null>(null)
     const [status, setStatus] = useState<'pending' | 'success' | 'creating'>('creating')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [recentTransactions, setRecentTransactions] = useState<any[]>([])
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -42,6 +44,18 @@ export default function CryptoPaymentPage() {
                     setSelectedProjectId(clientsData[0].id)
                 }
             }
+
+            if (selectedProjectId) {
+                const { data: txs } = await supabase
+                    .from('verified_transactions')
+                    .select('*, payment_intents!inner(*)')
+                    .eq('payment_intents.client_id', selectedProjectId)
+                    .order('verified_at', { ascending: false })
+                    .limit(5)
+
+                if (txs) setRecentTransactions(txs)
+            }
+
             setLoading(false)
         }
         fetchUserData()
@@ -104,6 +118,40 @@ export default function CryptoPaymentPage() {
             supabase.removeChannel(channel)
         }
     }, [testIntent, supabase])
+
+    // Effect for global crypto transaction monitoring
+    useEffect(() => {
+        if (!selectedProjectId) return;
+
+        const channel = supabase
+            .channel('crypto_txs')
+            .on(
+                'postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'verified_transactions'
+                },
+                async (payload) => {
+                    // Check if this tx belongs to our client (requires a re-fetch or complex filter)
+                    const { data: fullTx } = await supabase
+                        .from('verified_transactions')
+                        .select('*, payment_intents!inner(*)')
+                        .eq('id', payload.new.id)
+                        .eq('payment_intents.client_id', selectedProjectId)
+                        .single()
+
+                    if (fullTx) {
+                        setRecentTransactions(prev => [fullTx, ...prev].slice(0, 5))
+                    }
+                }
+            )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
+        }
+    }, [selectedProjectId, supabase])
 
 
     if (loading) {
@@ -221,6 +269,46 @@ export default function CryptoPaymentPage() {
                         >
                             Reset Demo
                         </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Bottom Row: Recent Transactions Feed */}
+            <div className="glass-card p-6 border-t border-slate-800">
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-lg font-semibold text-white">Live Transaction Feed</h2>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Live Monitoring</span>
+                    </div>
+                </div>
+
+                <div className="space-y-3">
+                    {recentTransactions.length > 0 ? (
+                        recentTransactions.map((tx) => (
+                            <div key={tx.id} className="flex items-center justify-between p-4 rounded-xl bg-slate-900/50 border border-slate-800/50 hover:border-slate-700 transition-colors">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+                                        <CheckCircle2 className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold text-white">+{tx.amount} USDT</p>
+                                        <p className="text-[10px] text-slate-500 font-mono truncate max-w-[150px]">{tx.tx_hash}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-xs font-medium text-slate-300">Order: {tx.payment_intents?.order_id}</p>
+                                    <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">
+                                        {new Date(tx.verified_at).toLocaleTimeString()}
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="py-12 flex flex-col items-center justify-center text-center opacity-50">
+                            <Loader2 className="w-6 h-6 animate-spin mb-3 text-slate-600" />
+                            <p className="text-sm text-slate-500">Waiting for incoming blockchain transactions...</p>
+                        </div>
                     )}
                 </div>
             </div>

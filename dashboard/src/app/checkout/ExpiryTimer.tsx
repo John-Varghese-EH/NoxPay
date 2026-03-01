@@ -4,7 +4,15 @@ import { useEffect, useState } from 'react'
 import { Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-export default function ExpiryTimer({ expiresAt }: { expiresAt: string }) {
+export default function ExpiryTimer({
+    expiresAt,
+    expiredLabel = "Expired",
+    expiresInLabel = "Expires in"
+}: {
+    expiresAt: string,
+    expiredLabel?: string,
+    expiresInLabel?: string
+}) {
     const router = useRouter()
     const [timeLeft, setTimeLeft] = useState<string>('--:--')
     const [isExpiredLocally, setIsExpiredLocally] = useState(false)
@@ -43,14 +51,14 @@ export default function ExpiryTimer({ expiresAt }: { expiresAt: string }) {
     if (isExpiredLocally) {
         return (
             <div className="flex items-center gap-1.5 text-[10px] text-red-500 mt-4 font-bold uppercase tracking-wide animate-pulse">
-                <Clock className="w-3 h-3" /> Expired
+                <Clock className="w-3 h-3" /> {expiredLabel}
             </div>
         )
     }
 
     return (
         <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-4 font-medium uppercase tracking-wide">
-            <Clock className="w-3 h-3" /> Expires in <span className="text-amber-400 font-mono text-xs ml-0.5">{timeLeft}</span>
+            <Clock className="w-3 h-3" /> {expiresInLabel} <span className="text-amber-400 font-mono text-xs ml-0.5">{timeLeft}</span>
         </div>
     )
 }

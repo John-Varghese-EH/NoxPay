@@ -21,6 +21,7 @@ class CreateIntentRequest(BaseModel):
     currency: str = "UPI"
     order_id: str
     upi_vpa: Optional[str] = None  # Falls back to client's configured VPA
+    metadata: Optional[dict] = {}  # Custom metadata for the transaction
 
     @field_validator("amount")
     @classmethod
@@ -52,6 +53,7 @@ class IntentResponse(BaseModel):
     payment_uri: Optional[str] = None
     qr_code_base64: Optional[str] = None
     checkout_url: Optional[str] = None
+    metadata: Optional[dict] = {}
     expires_at: datetime
 
 @router.post("/create-payment", response_model=IntentResponse, dependencies=[Depends(rate_limit)])
@@ -91,6 +93,7 @@ async def create_intent(intent_req: CreateIntentRequest, request: Request, clien
         "order_id": intent_req.order_id,
         "upi_vpa": vpa,
         "status": "pending",
+        "metadata": intent_req.metadata or {},
         "expires_at": expires_at.isoformat()
     }
     
@@ -129,6 +132,7 @@ async def create_intent(intent_req: CreateIntentRequest, request: Request, clien
         "payment_uri": uri,
         "qr_code_base64": qr_base64,
         "checkout_url": checkout_url,
+        "metadata": created_intent.get("metadata", {}),
         "expires_at": created_intent["expires_at"]
     }
 
