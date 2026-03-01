@@ -15,8 +15,9 @@ Our mission is to empower developers and businesses with a payment platform that
 - **Crypto Observability**: Real-time tracking of USDT (TRC20) and Solana (USDC/SOL) payments. [Learn more](./worker-crypto.md)
 - **Multi-Language Checkout**: Clean, professional checkout flows in English and Hindi. [Learn more](./checkout-experience.md)
 - **Merchant Dashboard**: No-code payment link creation and detailed transaction monitoring. [Learn more](./dashboard-features.md)
-- **Webhook System**: Robust HMAC-signed webhooks with persistent retry logic.
-- **Technical Robustness**: IP whitelisting, burst-tolerant rate limiting, and security headers.
+- **Webhook System**: Robust HMAC-signed webhooks with persistent retry logic. [Learn more](./webhook_verification.md)
+- **Technical Robustness**: IP whitelisting, burst-tolerant rate limiting, and security headers. [Learn more](./security-compliance.md)
+- **Developer Tools**: Troubleshooting guides and advanced configuration for power users. [Check the guide](./troubleshooting.md)
 
 ## 🏁 How NoxPay Works
 
