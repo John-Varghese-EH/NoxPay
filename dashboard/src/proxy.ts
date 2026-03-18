@@ -1,7 +1,7 @@
 import { updateSession } from '@/utils/supabase/middleware'
 import { type NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const authPassword = process.env.AUTH_PASSWORD
 
     // If an AUTH_PASSWORD is set, we require it globally for the dashboard
