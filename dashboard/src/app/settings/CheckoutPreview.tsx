@@ -6,11 +6,17 @@ import { ShieldCheck, Clock } from 'lucide-react'
 export default function CheckoutPreview({ initialColor, initialLogo, initialName }: { initialColor: string, initialLogo: string, initialName: string }) {
     const [themeColor, setThemeColor] = useState(initialColor)
     const [logoUrl, setLogoUrl] = useState(initialLogo)
+    const [imageError, setImageError] = useState(false)
 
     // Restrict logo URLs to safe schemes to avoid unsafe values being used in DOM attributes.
     const sanitizeLogoUrl = (rawUrl: string): string => {
         const trimmed = rawUrl.trim()
         if (!trimmed) {
+            return ''
+        }
+        
+        const lowerUrl = trimmed.toLowerCase()
+        if (lowerUrl.startsWith('javascript:') || lowerUrl.startsWith('data:') || lowerUrl.startsWith('vbscript:')) {
             return ''
         }
 
@@ -30,6 +36,7 @@ export default function CheckoutPreview({ initialColor, initialLogo, initialName
     }
 
     const handleLogoUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setImageError(false)
         const safeValue = sanitizeLogoUrl(e.target.value)
         setLogoUrl(safeValue)
     }
@@ -107,10 +114,10 @@ export default function CheckoutPreview({ initialColor, initialLogo, initialName
 
                 {/* Header Branding */}
                 <div className="p-5 text-center border-b border-slate-800 transition-colors duration-300" style={{ backgroundColor: `${themeColor}15` }}>
-                    {logoUrl ? (
+                    {logoUrl && !imageError ? (
                         <div className="w-12 h-12 mx-auto mb-2 rounded-xl overflow-hidden bg-white/5 p-1 flex items-center justify-center">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={logoUrl} alt={initialName} className="max-w-full max-h-full object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
+                            <img src={logoUrl} alt={initialName} className="max-w-full max-h-full object-contain" onError={() => setImageError(true)} />
                         </div>
                     ) : (
                         <div className="w-12 h-12 mx-auto mb-2 rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center border border-slate-700">
