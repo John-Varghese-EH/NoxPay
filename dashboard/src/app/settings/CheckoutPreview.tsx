@@ -7,6 +7,33 @@ export default function CheckoutPreview({ initialColor, initialLogo, initialName
     const [themeColor, setThemeColor] = useState(initialColor)
     const [logoUrl, setLogoUrl] = useState(initialLogo)
 
+    // Restrict logo URLs to safe schemes to avoid unsafe values being used in DOM attributes.
+    const sanitizeLogoUrl = (rawUrl: string): string => {
+        const trimmed = rawUrl.trim()
+        if (!trimmed) {
+            return ''
+        }
+
+        try {
+            // Support both absolute and relative URLs by using the current origin as base.
+            const url = new URL(trimmed, typeof window !== 'undefined' ? window.location.origin : 'http://localhost')
+
+            // Allow only http and https schemes for image sources.
+            if (url.protocol === 'http:' || url.protocol === 'https:') {
+                return trimmed
+            }
+        } catch {
+            // If URL construction fails, treat it as invalid.
+        }
+
+        return ''
+    }
+
+    const handleLogoUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const safeValue = sanitizeLogoUrl(e.target.value)
+        setLogoUrl(safeValue)
+    }
+
     const colorPresets = [
         { name: 'Nox Purple', hex: '#7c3aed' },
         { name: 'Emerald', hex: '#10b981' },
@@ -64,7 +91,7 @@ export default function CheckoutPreview({ initialColor, initialLogo, initialName
                             type="url"
                             name="logo_url"
                             value={logoUrl}
-                            onChange={(e) => setLogoUrl(e.target.value)}
+                            onChange={handleLogoUrlChange}
                             placeholder="https://yourbrand.com/logo.png"
                             className="w-full bg-slate-950 border border-slate-800 rounded-md px-4 py-2 text-sm text-slate-200 focus:ring-violet-500 focus:border-violet-500"
                         />
