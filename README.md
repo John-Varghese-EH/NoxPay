@@ -105,93 +105,306 @@ Yes. Traditional gateways (Stripe/PayPal) charge 4-7% for international transact
 
 ---
 
-## 🛠️ Installation & Setup
+## 🛠️ Complete Setup Guide
+
+This guide walks you through deploying NoxPay from scratch — **database → dashboard → API → worker** — entirely on free tiers.
 
 ### 📋 Prerequisites
-- **Node.js** (v18+)
-- **Python** (v3.9+)
-- **Supabase Account** (Free tier works perfectly)
-- **Vercel CLI** (Optional, for easy deployment)
+- **Node.js** (v18+) & **npm**
+- **Python** (v3.9+) & **pip**
+- A **GitHub** account
+- A **Supabase** account ([supabase.com](https://supabase.com) — Free tier)
+- A **Vercel** account ([vercel.com](https://vercel.com) — Free tier)
+- A **Koyeb** account ([koyeb.com](https://koyeb.com) — Free tier, no credit card)
+
+---
+
+### Step 1: Set Up Supabase (Database)
+
+1. Go to [supabase.com](https://supabase.com) → **New Project**.
+2. Note down these values (you'll need them later):
+
+   | Value | Where to Find |
+   | :--- | :--- |
+   | `SUPABASE_URL` | Settings → API → Project URL |
+   | `SUPABASE_KEY` (Service Role) | Settings → API → `service_role` key (⚠️ keep secret!) |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Settings → API → `anon` public key |
+
+3. **Create the database schema** — Go to **SQL Editor** → **New Query** and paste the contents of [`supabase/schema.sql`](supabase/schema.sql), then click **Run**.
+
+4. **Enable Realtime** — Go to **Database → Replication** and enable Realtime for the `payment_intents` table (this powers live checkout status updates).
+
+---
+
+### Step 2: Deploy Dashboard + API on Vercel
+
+NoxPay's `vercel.json` is preconfigured to deploy the Next.js dashboard and FastAPI backend as a single project.
+
+#### Option A: One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJohn-Varghese-EH%2FNoxPay)
+
+#### Option B: Manual Deploy
+
+1. **Fork** this repo to your GitHub account.
+2. Go to [vercel.com/new](https://vercel.com/new) → Import your forked `NoxPay` repo.
+3. Vercel auto-detects the monorepo structure via `vercel.json`.
+4. Click **Deploy** (initial deploy will fail — that's OK, we need env vars first).
+
+#### Configure Environment Variables
+
+In Vercel → Your Project → **Settings → Environment Variables**, add:
+
+| Variable | Value | Notes |
+| :--- | :--- | :--- |
+| `SUPABASE_URL` | `https://xxx.supabase.co` | From Step 1 |
+| `SUPABASE_KEY` | `eyJ...` (Service Role key) | ⚠️ Keep secret |
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://xxx.supabase.co` | Same as SUPABASE_URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJ...` (anon key) | Public, safe for frontend |
+| `AUTH_PASSWORD` | Any strong password | Dashboard login password |
+| `MASTER_API_KEY` | Random 64-char hex string | Generate with `openssl rand -hex 32` |
+| `ALLOWED_ORIGINS` | `https://your-project.vercel.app` | Your Vercel domain |
+
+5. After adding all variables → **Deployments → Redeploy** the latest deployment.
+6. Your dashboard is now live at `https://your-project.vercel.app` 🎉
+
+#### How Vercel Routing Works
+
+```
+your-project.vercel.app/           → Next.js Dashboard (merchant panel + checkout)
+your-project.vercel.app/api/*      → FastAPI Backend (payment intents, webhooks)
+your-project.vercel.app/checkout   → Hosted checkout page (customer-facing)
+your-project.vercel.app/widget     → Embeddable iframe widget
+```
+
+---
+
+### Step 3: Deploy Worker on Koyeb (Free, No Credit Card)
+
+The **worker** is a long-running Python process that monitors bank emails (IMAP) and blockchain transactions to auto-verify payments. It needs an always-on host — Koyeb's free Nano tier is perfect.
+
+#### 3a. Create a Koyeb Account
+
+1. Go to [koyeb.com](https://app.koyeb.com/signup) and sign up (no credit card required).
+2. Connect your **GitHub** account when prompted.
+
+#### 3b. Create a New Service
+
+1. Click **Create Service** → Select **GitHub**.
+2. Choose your `NoxPay` repository.
+3. Configure the service:
+
+   | Setting | Value |
+   | :--- | :--- |
+   | **Service type** | Worker |
+   | **Builder** | Dockerfile |
+   | **Dockerfile path** | `Dockerfile` (auto-detected) |
+   | **Instance type** | `Nano` (free) |
+   | **Region** | Choose nearest to your bank |
+
+4. **Override the Run Command** to:
+   ```
+   python worker/main.py
+   ```
+
+#### 3c. Set Environment Variables
+
+In Koyeb → Service Settings → **Environment Variables**, add:
+
+| Variable | Value | Notes |
+| :--- | :--- | :--- |
+| `SUPABASE_URL` | `https://xxx.supabase.co` | Same as Vercel |
+| `SUPABASE_KEY` | `eyJ...` (Service Role key) | Same as Vercel |
+| `IMAP_SERVER` | `imap.gmail.com` | Your email provider's IMAP server |
+| `IMAP_PORT` | `993` | Standard IMAP SSL port |
+| `IMAP_USER` | `your-bank-email@gmail.com` | Email receiving bank alerts |
+| `IMAP_PASSWORD` | `xxxx xxxx xxxx xxxx` | Gmail App Password (see below) |
+| `USDT_WATCH_ADDRESS` | `T...` (your TRC20 address) | Optional: for crypto payments |
+| `TRON_RPC_URL` | `https://api.trongrid.io` | Optional: Tron RPC endpoint |
+
+#### 3d. Gmail App Password Setup
+
+If using Gmail for bank alert forwarding:
+
+1. Go to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords).
+2. Select **Mail** → **Other** → name it `NoxPay Worker`.
+3. Copy the 16-character password → use it as `IMAP_PASSWORD`.
+
+> **Note**: You must have **2-Factor Authentication** enabled on your Google account to generate App Passwords.
+
+#### 3e. Deploy
+
+Click **Deploy** → Koyeb builds the Docker image and starts the worker. Check the **Logs** tab to verify:
+
+```
+Starting VoidPay Worker 🚀
+Connecting to IMAP imap.gmail.com...
+IMAP Logged in. Watching for SEEN=False messages...
+Entering IDLE loop...
+```
+
+---
+
+### Step 4: Configure Bank Email Alerts
+
+For the worker to auto-verify payments, your bank must send email alerts for every transaction. See the detailed instructions in [`BANK_CONFIGURATION.md`](BANK_CONFIGURATION.md) for supported banks.
+
+**Quick summary**: Enable email alerts on your bank account → set the threshold to **₹1 / $0.01** → forward alerts to the Gmail address used in Step 3.
+
+---
 
 ### 💻 Local Development
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/John-Varghese-EH/NoxPay.git
-   cd NoxPay
-   ```
+For local development, use the automated setup script:
 
-2. **Run the Environment Setup Script**
-   This script will prompt you for your Supabase and Email credentials to generate `.env` files for all components.
-   ```bash
-   chmod +x setup.sh
-   ./setup.sh
-   ```
+```bash
+git clone https://github.com/John-Varghese-EH/NoxPay.git
+cd NoxPay
+chmod +x setup.sh
+./setup.sh
+```
 
-3. **Start the Components**
-   You'll need three terminal sessions:
+This generates `.env` files for all three components. Then start each in a separate terminal:
 
-   **Session 1: Dashboard (Frontend)**
-   ```bash
-   cd dashboard
-   npm install
-   npm run dev
-   ```
+```bash
+# Terminal 1 — Dashboard
+cd dashboard && npm install && npm run dev
 
-   **Session 2: API (Backend)**
-   ```bash
-   cd api
-   pip install -r requirements.txt
-   uvicorn main:app --reload --port 8000
-   ```
+# Terminal 2 — API
+cd api && pip install -r requirements.txt && uvicorn main:app --reload --port 8000
 
-   **Session 3: Worker (Background)**
-   ```bash
-   cd worker
-   pip install -r requirements.txt
-   python main.py
-   ```
+# Terminal 3 — Worker
+cd worker && pip install -r requirements.txt && python main.py
+```
+
+Your local instance runs at `http://localhost:3000`.
 
 ---
 
 ## ⚙️ Environment Variables Reference
 
-| Variable | Scope | Description |
+### Dashboard (`dashboard/.env.local`)
+
+| Variable | Required | Description |
 | :--- | :--- | :--- |
-| `SUPABASE_URL` | Universal | Your Supabase project URL. |
-| `SUPABASE_KEY` | Server-side | Supabase Service Role Key (Keep this secret!). |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Dashboard | Supabase public anonymous key. |
-| `JWT_SECRET` | API | Secret used for signing and verifying JWTs. |
-| `BANK_EMAIL` | Worker | Email address receiving transaction alerts. |
-| `BANK_APP_PASSWORD` | Worker | App-specific password for the bank email (IMAP). |
-| `MASTER_API_KEY` | Dashboard | Used for internal dashboard operations. |
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase project URL (public) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anonymous key (public) |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Supabase service role key (server-side only) |
+| `AUTH_PASSWORD` | ✅ | Password to access the merchant dashboard |
+| `MASTER_API_KEY` | ✅ | Secret key for dashboard ↔ API communication |
+| `NEXT_PUBLIC_APP_URL` | ❌ | Base URL override (defaults to Vercel domain) |
+
+### API (`api/.env`)
+
+| Variable | Required | Description |
+| :--- | :--- | :--- |
+| `SUPABASE_URL` | ✅ | Supabase project URL |
+| `SUPABASE_KEY` | ✅ | Supabase service role key |
+| `MASTER_API_KEY` | ✅ | Must match the dashboard's MASTER_API_KEY |
+| `ALLOWED_ORIGINS` | ✅ | Comma-separated CORS origins (e.g. `https://yourdomain.com`) |
+| `JWT_SECRET` | ❌ | JWT signing secret (auto-generated by `setup.sh`) |
+
+### Worker (`worker/.env`)
+
+| Variable | Required | Description |
+| :--- | :--- | :--- |
+| `SUPABASE_URL` | ✅ | Supabase project URL |
+| `SUPABASE_KEY` | ✅ | Supabase service role key |
+| `IMAP_SERVER` | ✅ | Email IMAP server (e.g. `imap.gmail.com`) |
+| `IMAP_PORT` | ❌ | IMAP port (default: `993`) |
+| `IMAP_USER` | ✅ | Email address for bank alerts |
+| `IMAP_PASSWORD` | ✅ | Email app password |
+| `USDT_WATCH_ADDRESS` | ❌ | TRC20 wallet address to monitor for USDT payments |
+| `TRON_RPC_URL` | ❌ | Tron RPC endpoint (default: `https://api.trongrid.io`) |
+| `SOLANA_RPC_URL` | ❌ | Solana RPC endpoint |
+| `SOLANA_WATCH_ADDRESS` | ❌ | Solana wallet to monitor |
+| `POLYGON_RPC_URL` | ❌ | Polygon RPC endpoint |
+| `POLYGON_WATCH_ADDRESS` | ❌ | Polygon wallet to monitor |
+| `POLL_INTERVAL` | ❌ | Blockchain polling interval in seconds (default: `5`) |
 
 ---
 
-## 🚀 Deployment
+## 🚀 Deployment Summary
 
-### 1. Platform (Dashboard + API)
-NoxPay is optimized for **Vercel**.
+| Component | Platform | Cost | Always-On? |
+| :--- | :--- | :--- | :--- |
+| **Dashboard + API** | [Vercel](https://vercel.com) | Free | ✅ Serverless |
+| **Worker** | [Koyeb](https://koyeb.com) | Free (Nano) | ✅ No sleep |
+| **Database** | [Supabase](https://supabase.com) | Free | ✅ Always-on |
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJohn-Varghese-EH%2FNoxPay)
+> For more deployment options (Render, Oracle Cloud, Fly.io, etc.), see [`deployment_guide.md`](deployment_guide.md).
 
-1. Click the button above to clone and deploy.
-2. Configure the environment variables in the Vercel dashboard.
-3. Vercel automatically routes `/api/*` to the FastAPI backend.
+---
 
-### 2. Verification Worker
-The worker requires a persistent environment to poll for bank alerts and blockchain events. Deploy it to a VPS (Ubuntu/Debian):
+## 📈 Merchant / Developer Integration Guide
+
+Once NoxPay is deployed, you (or your merchants) can integrate payments via the REST API. Here's the complete flow:
+
+### Authentication
+
+Every API request requires two headers:
+
+| Header | Value | Description |
+| :--- | :--- | :--- |
+| `X-Client-ID` | `your-client-uuid` | The merchant's Client ID (from dashboard) |
+| `X-Client-Secret` | `sk_live_...` | The merchant's API secret (shown once at creation) |
+
+---
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/intents/create-payment` | Create a new payment intent |
+| `GET` | `/api/v1/intents/{order_id}` | Check payment status |
+| `POST` | `/api/v1/webhooks/test` | Send a test webhook |
+| `GET` | `/api/v1/webhooks/logs` | View webhook delivery logs |
+| `GET` | `/health` | API health check |
+
+---
+
+### Example 1: Create a UPI Payment (cURL)
 
 ```bash
-chmod +x hidencloud_setup.sh
-./hidencloud_setup.sh
+curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
+  -H "X-Client-ID: a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
+  -H "X-Client-Secret: sk_live_xAbCdEfGhIjKlMnOpQrStUvWxYz0123456789" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 499.00,
+    "currency": "UPI",
+    "order_id": "ORDER_20240315_001",
+    "metadata": {
+      "customer_name": "Rahul Sharma",
+      "product": "Premium Plan"
+    }
+  }'
 ```
+
+**Response:**
+```json
+{
+  "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "order_id": "ORDER_20240315_001",
+  "amount": 499.00,
+  "currency": "UPI",
+  "status": "pending",
+  "payment_uri": "upi://pay?pa=merchant@sbi&pn=MyStore&am=499.00&tr=ORDER_20240315_001",
+  "qr_code_base64": "data:image/png;base64,iVBORw0KGgo...",
+  "checkout_url": "https://your-noxpay.vercel.app/checkout?intent=f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "metadata": { "customer_name": "Rahul Sharma", "product": "Premium Plan" },
+  "expires_at": "2024-03-15T15:15:00.000Z"
+}
+```
+
+You can either:
+- **Redirect** the customer to the `checkout_url` (hosted checkout page)
+- **Embed** the `qr_code_base64` directly in your own UI
 
 ---
 
-## 📈 Integration Example
+### Example 2: Create a USDT Crypto Payment
 
-**Create a Payment Intent via API:**
 ```bash
 curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
   -H "X-Client-ID: <YOUR_CLIENT_ID>" \
@@ -202,6 +415,222 @@ curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
     "currency": "USDT",
     "order_id": "INV_98765"
   }'
+```
+
+---
+
+### Example 3: Python Integration
+
+```python
+import requests
+import hmac
+import hashlib
+import json
+
+NOXPAY_URL = "https://your-noxpay.vercel.app"
+CLIENT_ID = "your-client-uuid"
+CLIENT_SECRET = "sk_live_your_secret_here"
+
+# --- Create a payment ---
+def create_payment(amount: float, order_id: str, currency: str = "UPI"):
+    response = requests.post(
+        f"{NOXPAY_URL}/api/v1/intents/create-payment",
+        headers={
+            "X-Client-ID": CLIENT_ID,
+            "X-Client-Secret": CLIENT_SECRET,
+            "Content-Type": "application/json",
+        },
+        json={
+            "amount": amount,
+            "currency": currency,
+            "order_id": order_id,
+            "metadata": {"source": "python-sdk"}
+        },
+    )
+    response.raise_for_status()
+    return response.json()
+
+# --- Check payment status ---
+def check_status(order_id: str):
+    response = requests.get(
+        f"{NOXPAY_URL}/api/v1/intents/{order_id}",
+        headers={
+            "X-Client-ID": CLIENT_ID,
+            "X-Client-Secret": CLIENT_SECRET,
+        },
+    )
+    response.raise_for_status()
+    return response.json()
+
+# --- Verify webhook signature ---
+def verify_webhook(payload: bytes, signature: str, webhook_secret: str) -> bool:
+    """Verify the X-NoxPay-Signature header on incoming webhooks."""
+    expected = hmac.new(
+        webhook_secret.encode(), payload, hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, signature)
+
+# Usage
+payment = create_payment(amount=299.00, order_id="ORD_001")
+print(f"Checkout URL: {payment['checkout_url']}")
+print(f"QR Code available: {'qr_code_base64' in payment}")
+```
+
+---
+
+### Example 4: Node.js / Express Integration
+
+```javascript
+const crypto = require("crypto");
+
+const NOXPAY_URL = "https://your-noxpay.vercel.app";
+const CLIENT_ID = "your-client-uuid";
+const CLIENT_SECRET = "sk_live_your_secret_here";
+const WEBHOOK_SECRET = "whsec_your_webhook_secret";
+
+// --- Create a payment intent ---
+async function createPayment(amount, orderId, currency = "UPI") {
+  const res = await fetch(`${NOXPAY_URL}/api/v1/intents/create-payment`, {
+    method: "POST",
+    headers: {
+      "X-Client-ID": CLIENT_ID,
+      "X-Client-Secret": CLIENT_SECRET,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ amount, currency, order_id: orderId }),
+  });
+
+  if (!res.ok) throw new Error(`NoxPay error: ${res.status}`);
+  return res.json();
+}
+
+// --- Poll payment status ---
+async function checkStatus(orderId) {
+  const res = await fetch(`${NOXPAY_URL}/api/v1/intents/${orderId}`, {
+    headers: {
+      "X-Client-ID": CLIENT_ID,
+      "X-Client-Secret": CLIENT_SECRET,
+    },
+  });
+  return res.json();
+}
+
+// --- Express webhook handler ---
+const express = require("express");
+const app = express();
+app.use(express.raw({ type: "application/json" }));
+
+app.post("/webhooks/noxpay", (req, res) => {
+  const signature = req.headers["x-noxpay-signature"];
+  const expected = crypto
+    .createHmac("sha256", WEBHOOK_SECRET)
+    .update(req.body)
+    .digest("hex");
+
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    return res.status(401).json({ error: "Invalid signature" });
+  }
+
+  const event = JSON.parse(req.body);
+  console.log("Payment verified:", event);
+
+  // Update your order status in your database here
+  res.status(200).json({ received: true });
+});
+
+app.listen(3001, () => console.log("Webhook server ready on :3001"));
+```
+
+---
+
+### Example 5: PHP Integration
+
+```php
+<?php
+$NOXPAY_URL    = "https://your-noxpay.vercel.app";
+$CLIENT_ID     = "your-client-uuid";
+$CLIENT_SECRET = "sk_live_your_secret_here";
+
+// --- Create a payment ---
+function createPayment($amount, $orderId, $currency = "UPI") {
+    global $NOXPAY_URL, $CLIENT_ID, $CLIENT_SECRET;
+
+    $ch = curl_init("$NOXPAY_URL/api/v1/intents/create-payment");
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER     => [
+            "X-Client-ID: $CLIENT_ID",
+            "X-Client-Secret: $CLIENT_SECRET",
+            "Content-Type: application/json",
+        ],
+        CURLOPT_POSTFIELDS => json_encode([
+            "amount"   => $amount,
+            "currency" => $currency,
+            "order_id" => $orderId,
+        ]),
+    ]);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return json_decode($response, true);
+}
+
+// --- Verify webhook ---
+function verifyWebhook($payload, $signature, $webhookSecret) {
+    $expected = hash_hmac("sha256", $payload, $webhookSecret);
+    return hash_equals($expected, $signature);
+}
+
+// Usage
+$payment = createPayment(150.00, "INV_12345");
+echo "Redirect customer to: " . $payment["checkout_url"];
+?>
+```
+
+---
+
+### Webhook Events
+
+When a payment is verified, NoxPay sends a `POST` request to your configured `webhook_url` with a signed payload:
+
+```json
+{
+  "event": "payment.success",
+  "data": {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "order_id": "ORDER_20240315_001",
+    "amount": 499.00,
+    "currency": "UPI",
+    "status": "settled",
+    "utr": "412345678901",
+    "metadata": { "customer_name": "Rahul Sharma" }
+  }
+}
+```
+
+The `X-NoxPay-Signature` header contains an HMAC-SHA256 signature. **Always verify this signature** before processing the webhook — see the code examples above.
+
+---
+
+### Payment Flow Summary
+
+```mermaid
+sequenceDiagram
+    participant M as Your Server
+    participant N as NoxPay API
+    participant C as Customer
+    participant W as NoxPay Worker
+    participant B as Bank / Blockchain
+
+    M->>N: POST /api/v1/intents/create-payment
+    N-->>M: { checkout_url, qr_code, status: "pending" }
+    M->>C: Redirect to checkout_url (or show QR)
+    C->>B: Makes payment (UPI / USDT)
+    B->>W: Email alert / Blockchain tx detected
+    W->>N: Updates status → "settled"
+    N->>M: POST webhook → payment.success
+    M->>C: Order confirmed! ✅
 ```
 
 ---
