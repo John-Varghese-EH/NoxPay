@@ -8,6 +8,7 @@ from supabase import create_client
 from api.middleware.auth import verify_api_key
 from api.middleware.rate_limit import rate_limit
 from api.utils.hmac import sign_payload
+from api.utils.security import validate_webhook_url
 
 router = APIRouter(prefix="/api/v1/webhooks", tags=["Webhooks"])
 
@@ -28,6 +29,11 @@ async def test_webhook(payload: WebhookTestRequest, request: Request, client: di
     webhook_url = client.get("webhook_url")
     if not webhook_url:
         raise HTTPException(status_code=400, detail="No webhook_url configured for this client.")
+        
+    try:
+        validate_webhook_url(webhook_url)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     
     # Use dedicated webhook_secret for HMAC signing
     webhook_secret = client.get("webhook_secret", "")

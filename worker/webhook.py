@@ -7,6 +7,7 @@ import time
 import httpx
 from worker.config import get_settings
 from worker.matcher import supabase
+from worker.security import validate_webhook_url
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,13 @@ async def deliver_webhook(client_id: str, payment_intent_id: str):
             
         client_data = client_res.data[0]
         webhook_url = client_data['webhook_url']
+        
+        try:
+            validate_webhook_url(webhook_url)
+        except ValueError as e:
+            logger.error(f"Invalid webhook URL for client {client_id}: {e}")
+            return
+            
         webhook_secret = client_data.get('webhook_secret', '')
         
         if not webhook_secret:
