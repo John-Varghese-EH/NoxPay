@@ -368,7 +368,7 @@ Every API request requires two headers:
 ```bash
 curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
   -H "X-Client-ID: a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
-  -H "X-Client-Secret: sk_live_xAbCdEfGhIjKlMnOpQrStUvWxYz0123456789" \
+  -H "X-Client-Secret: sk_live_secret" \
   -H "Content-Type: application/json" \
   -d '{
     "amount": 499.00,
