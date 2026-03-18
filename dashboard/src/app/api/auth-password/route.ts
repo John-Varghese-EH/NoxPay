@@ -7,7 +7,8 @@ export async function POST(request: Request) {
         const correctPassword = process.env.AUTH_PASSWORD
 
         if (password === correctPassword) {
-            cookies().set('noxpay-global-auth', 'true', {
+            const cookieStore = await cookies();
+            cookieStore.set('noxpay-global-auth', 'true', {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
