@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { Activity, TrendingUp, CheckCircle, Target } from 'lucide-react'
 
 export default async function AnalyticsPage() {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
         data: { user },

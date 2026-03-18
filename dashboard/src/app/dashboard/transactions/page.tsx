@@ -7,7 +7,7 @@ export default async function TransactionsPage({
 }: {
     searchParams: { project?: string; tab?: string }
 }) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const currentTab = searchParams.tab || 'all'
 
     const {

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { CheckCircle2, XCircle, Clock, RefreshCw, AlertCircle } from 'lucide-react'
 
 export default async function WebhooksPage() {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
         data: { user },
@@ -53,7 +53,7 @@ export default async function WebhooksPage() {
         const logId = formData.get('logId')?.toString()
         if (!logId) return
 
-        const supabase = createClient()
+        const supabase = await createClient()
         // 1. Fetch the log
         const { data: logData } = await supabase.from('webhook_logs').select('*').eq('id', logId).single()
         if (!logData) return

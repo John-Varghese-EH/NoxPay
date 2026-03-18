@@ -9,7 +9,7 @@ export default async function PaymentLinksPage({
 }: {
     searchParams: { success_id?: string }
 }) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
         data: { user },
@@ -30,7 +30,7 @@ export default async function PaymentLinksPage({
 
         if (isNaN(amount) || amount <= 0) return
 
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: client } = await supabase.from('clients').select('id, upi_vpa').limit(1).single()
 
         if (client) {

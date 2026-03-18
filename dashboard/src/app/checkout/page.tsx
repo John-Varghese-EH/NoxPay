@@ -16,7 +16,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: { i
         )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Fetch intent details
     const { data: intent } = await supabase

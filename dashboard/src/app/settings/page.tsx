@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import CheckoutPreview from './CheckoutPreview'
 
 export default async function SettingsPage() {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
         data: { user },
@@ -27,7 +27,7 @@ export default async function SettingsPage() {
         const vpa = formData.get('upi_vpa') as string
         if (!vpa || !vpa.includes('@')) return redirect('/settings?message=Invalid UPI VPA format')
 
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: { user: currentUser } } = await supabase.auth.getUser()
         if (!currentUser) return redirect('/login')
 
@@ -46,7 +46,7 @@ export default async function SettingsPage() {
         const wallet = formData.get('crypto_wallet') as string
         if (!wallet) return redirect('/settings?message=Wallet address required')
 
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: currentClient } = await supabase.from('clients').select('id').limit(1).single()
 
         if (currentClient) {
@@ -63,7 +63,7 @@ export default async function SettingsPage() {
         const account_number = formData.get('account_number') as string
         const ifsc = formData.get('ifsc') as string
 
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: currentClient } = await supabase.from('clients').select('id').limit(1).single()
 
         if (currentClient) {
@@ -81,7 +81,7 @@ export default async function SettingsPage() {
         const emailsStr = formData.get('emails') as string
         const emails = emailsStr.split(',').map(e => e.trim()).filter(e => e)
 
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: currentClient } = await supabase.from('clients').select('id').limit(1).single()
 
         if (currentClient) {
@@ -100,7 +100,7 @@ export default async function SettingsPage() {
         const usdt = formData.get('method_usdt') === 'on'
         const bank_transfer = formData.get('method_bank') === 'on'
 
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: currentClient } = await supabase.from('clients').select('id').limit(1).single()
 
         if (currentClient) {
@@ -119,7 +119,7 @@ export default async function SettingsPage() {
         const logo_url = formData.get('logo_url') as string
         const return_url = formData.get('return_url') as string
 
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: currentClient } = await supabase.from('clients').select('id').limit(1).single()
 
         if (currentClient) {

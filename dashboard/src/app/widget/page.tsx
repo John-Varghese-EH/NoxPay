@@ -19,7 +19,7 @@ export default async function WidgetPage({ searchParams }: { searchParams: { int
         )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Fetch intent details
     const { data: intent } = await supabase

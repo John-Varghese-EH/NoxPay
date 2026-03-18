@@ -10,7 +10,7 @@ export default async function ApiKeysPage({
 }: {
     searchParams: { new_secret?: string }
 }) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
         data: { user },
@@ -29,7 +29,7 @@ export default async function ApiKeysPage({
     // --- Server Actions ---
     const rotateSecret = async () => {
         'use server'
-        const supabase = createClient()
+        const supabase = await createClient()
         const { data: currentClient } = await supabase.from('clients').select('id').limit(1).single()
 
         if (currentClient) {

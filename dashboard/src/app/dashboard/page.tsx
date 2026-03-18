@@ -7,7 +7,7 @@ export default async function DashboardPage({
 }: {
     searchParams: { project?: string }
 }) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
         data: { user },

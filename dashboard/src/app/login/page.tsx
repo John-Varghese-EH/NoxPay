@@ -7,7 +7,7 @@ export default async function LoginPage({
 }: {
     searchParams: { message: string }
 }) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
         data: { session },
@@ -22,7 +22,7 @@ export default async function LoginPage({
 
         const email = formData.get('email') as string
         const password = formData.get('password') as string
-        const supabase = createClient()
+        const supabase = await createClient()
 
         const { error } = await supabase.auth.signInWithPassword({
             email,
@@ -39,10 +39,11 @@ export default async function LoginPage({
     const signUp = async (formData: FormData) => {
         'use server'
 
-        const origin = headers().get('origin')
+        const headersList = await headers()
+        const origin = headersList.get('origin')
         const email = formData.get('email') as string
         const password = formData.get('password') as string
-        const supabase = createClient()
+        const supabase = await createClient()
 
         const { error } = await supabase.auth.signUp({
             email,

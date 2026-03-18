@@ -42,7 +42,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const isLoggedIn = !!user
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
