@@ -23,20 +23,6 @@ Koyeb is a modern PaaS that supports Docker and persistent services. Their "Nano
     6.  For the **Worker**, set the run command to `python worker/main.py`.
     7.  For the **API**, set the run command to `uvicorn api.main:app --host 0.0.0.0 --port 8000`.
 
-### 3. Render (Web Only)
-
-### 3. Firebase (Hosting Only) — ⚠️ **Partial Support**
-Firebase is a robust platform, but because NoxPay is optimized for **Supabase Realtime**, you can only use Firebase for the **Frontend (Dashboard)** on the free plan.
-
-*   **Pros**: Extremely fast global CDN, excellent free tier for static hosting.
-*   **Cons**: No native support for the persistent Python Worker (Firebase Functions are for short-lived tasks only and require the "Blaze" paid plan for outbound requests).
-*   **Suitability**: Only for the Dashboard. You still need **Oracle Cloud** or **Koyeb** for the API and Worker.
-*   **Setup**:
-    1.  Install Firebase CLI: `npm install -g firebase-tools`.
-    2.  Run `firebase login` and `firebase init hosting`.
-    3.  Select your project and set the public directory to `dashboard/out` (if using static export) or use Firebase App Hosting for Next.js.
-    4.  **Note**: You must still point your `SUPABASE_URL` to your existing Supabase project, as Firebase Firestore is not a drop-in replacement for NoxPay's schema.
-
 ---
 
 ## 🛠️ How to Choose?
