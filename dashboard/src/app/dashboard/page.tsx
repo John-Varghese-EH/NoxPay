@@ -4,6 +4,8 @@ import Link from 'next/link'
 import CreateProjectModal from '@/components/CreateProjectModal'
 import TransactionChart from '@/components/TransactionChart'
 import { format } from 'date-fns'
+import CurrencySelector from '@/components/CurrencySelector'
+import ConvertedAmount from '@/components/ConvertedAmount'
 
 export default async function DashboardPage(props: { searchParams: Promise<any> }) {
     const searchParams = await props.searchParams;
@@ -95,6 +97,7 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                             </div>
                         </div>
                         <CreateProjectModal variant="compact" />
+                        <CurrencySelector />
                     </div>
                 )}
             </div>
@@ -105,7 +108,7 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                         <div className="glass-card metric-card p-6 border-t-2 border-t-violet-500/50 shadow-[0_0_15px_rgba(124,58,237,0.05)] hover:shadow-[0_0_20px_rgba(124,58,237,0.1)] transition-all">
                             <h3 className="text-sm font-medium text-slate-400">Total Volume</h3>
                             <p className="text-3xl font-bold text-white mt-2 tracking-tight">
-                                ₹{totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                <ConvertedAmount amountINR={totalVolume} />
                             </p>
                             <p className="text-xs text-slate-500 mt-2">Lifetime verified transactions</p>
                         </div>
@@ -196,7 +199,7 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                                                 <td className="px-6 py-4 text-xs text-slate-400 group-hover:text-slate-300 transition-colors">{new Date(tx.verified_at).toLocaleString()}</td>
                                                 <td className="px-6 py-4 font-mono text-xs">{tx.payment_intents?.order_id || '—'}</td>
                                                 <td className="px-6 py-4 font-mono text-xs text-slate-500 group-hover:text-slate-400">{tx.utr}</td>
-                                                <td className="px-6 py-4 font-medium text-white">₹{Number(tx.amount).toLocaleString('en-IN')}</td>
+                                                <td className="px-6 py-4 font-medium text-white"><ConvertedAmount amountINR={Number(tx.amount)} /></td>
                                                 <td className="px-6 py-4"><span className="badge badge-success">{tx.bank_source}</span></td>
                                             </tr>
                                         ))}

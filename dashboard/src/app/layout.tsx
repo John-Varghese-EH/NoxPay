@@ -4,6 +4,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/server'
 import Sidebar from '@/components/Sidebar'
+import { CurrencyProvider } from '@/components/CurrencyContext'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
@@ -31,6 +32,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} ${jetbrains.variable} font-sans bg-[#0a0a0f] text-slate-50 min-h-screen`}>
+        <CurrencyProvider>
         {isLoggedIn ? (
           <div className="dashboard-layout">
             {/* Sidebar */}
@@ -73,6 +75,8 @@ export default async function RootLayout({
             </footer>
           </div>
         )}
+        </CurrencyProvider>
+
       </body>
     </html>
   )
