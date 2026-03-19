@@ -276,14 +276,21 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-[10px] font-medium text-slate-500">{new Date(link.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                                                    <span className={`w-fit text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${
-                                                        link.status === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                        : link.status === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                                        : link.status === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                                        : 'bg-slate-800 text-slate-400 border border-slate-700'
-                                                    }`}>
-                                                        {link.status}
-                                                    </span>
+                                                    {(() => {
+                                                        const isExpired = link.status === 'pending' && new Date(link.expires_at) < new Date();
+                                                        const displayStatus = isExpired ? 'expired' : link.status;
+                                                        return (
+                                                            <span className={`w-fit text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${
+                                                                displayStatus === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                                : displayStatus === 'expired' ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                                                : displayStatus === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                                : displayStatus === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                                : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                                            }`}>
+                                                                {displayStatus}
+                                                            </span>
+                                                        );
+                                                    })()}
                                                 </div>
                                             </div>
                                             <div className="flex flex-col items-end gap-1.5 shrink-0">

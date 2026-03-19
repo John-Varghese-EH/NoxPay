@@ -10,6 +10,12 @@ const LANGUAGES: { code: Language; label: string; native: string }[] = [
     { code: 'ta', label: 'TA', native: '\u0ba4\u0bae\u0bbf\u0bb4\u0bcd' },
     { code: 'kn', label: 'KN', native: '\u0c95\u0ca8\u0ccd\u0ca8\u0ca1' },
     { code: 'te', label: 'TE', native: '\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41' },
+    { code: 'ar', label: 'AR', native: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629' },
+    { code: 'ja', label: 'JA', native: '\u65e5\u672c\u8a9e' },
+    { code: 'th', label: 'TH', native: '\u0e44\u0e17\u0e22' },
+    { code: 'fr', label: 'FR', native: 'Fran\u00e7ais' },
+    { code: 'ne', label: 'NE', native: '\u0928\u0947\u092a\u093e\u0932\u0940' },
+    { code: 'ms', label: 'MS', native: 'Melayu' },
 ]
 
 interface LanguageToggleProps {

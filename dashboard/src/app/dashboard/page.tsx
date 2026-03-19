@@ -32,6 +32,7 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
     let totalIntents = 0
     let recentTxns: any[] = []
     let groupedChartData: any[] = []
+    let recentPaymentLinks: any[] = []
 
     if (selectedProjectId) {
         const { data: txns } = await supabase
@@ -65,6 +66,15 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
             .limit(5)
 
         if (recent) recentTxns = recent
+
+        // Fetch recent payment intents for status overview
+        const { data: recentIntents } = await supabase
+            .from('payment_intents')
+            .select('id, order_id, amount, currency, status, created_at, expires_at')
+            .eq('client_id', selectedProjectId)
+            .order('created_at', { ascending: false })
+            .limit(5)
+        if (recentIntents) recentPaymentLinks = recentIntents
     }
 
     const successRate = totalIntents > 0 ? ((successCount / totalIntents) * 100).toFixed(1) : '0.0'
@@ -218,6 +228,41 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                             )}
                         </div>
                     </div>
+
+                    {/* Recent Payment Links with Status */}
+                    {recentPaymentLinks.length > 0 && (
+                        <div className="mt-4">
+                            <h2 className="text-xl font-semibold text-white mb-4">Recent Payment Links</h2>
+                            <div className="glass-card overflow-hidden">
+                                <div className="divide-y divide-slate-800/50">
+                                    {recentPaymentLinks.map((link: any) => {
+                                        const isExpired = link.status === 'pending' && new Date(link.expires_at) < new Date();
+                                        const displayStatus = isExpired ? 'expired' : link.status;
+                                        return (
+                                            <div key={link.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-800/30 transition-colors">
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="font-mono text-sm text-slate-200">{link.order_id}</span>
+                                                    <span className="text-[10px] text-slate-500">{new Date(link.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-sm font-bold text-white">{link.currency === 'UPI' || link.currency === 'BANK' ? '\u20b9' : '\u20ae'}{Number(link.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                                    <span className={`text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${
+                                                        displayStatus === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                        : displayStatus === 'expired' ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                                        : displayStatus === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                        : displayStatus === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                        : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                                    }`}>
+                                                        {displayStatus}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </>
             ) : (
                 <div className="glass-card p-12 flex flex-col items-center justify-center text-center mt-12 bg-slate-900/30 border-dashed border-2 border-slate-700">
