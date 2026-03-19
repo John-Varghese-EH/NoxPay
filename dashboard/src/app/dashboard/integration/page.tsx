@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
 import { Check, Copy, Code, ArrowRightLeft, MousePointerClick, Eye, EyeOff } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
@@ -9,16 +10,35 @@ export default function IntegrationPage() {
     const searchParams = useSearchParams()
     const projectId = searchParams.get('project') || 'YOUR_CLIENT_ID'
     const [activeTab, setActiveTab] = useState<'redirect' | 'iframe' | 'button'>('redirect')
-    const [currency, setCurrency] = useState<'UPI' | 'USDT'>('UPI')
+    const [currency, setCurrency] = useState<'UPI' | 'USDT' | 'BANK'>('UPI')
     const [copied, setCopied] = useState(false)
     const [origin, setOrigin] = useState('https://nox-pay.vercel.app')
     const [showPreview, setShowPreview] = useState(false)
+
+    const [enabledMethods, setEnabledMethods] = useState<{ upi: boolean; usdt: boolean; bank_transfer: boolean }>({ upi: true, usdt: false, bank_transfer: false })
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
             setOrigin(window.location.origin)
         }
-    }, [])
+        // Fetch project's enabled payment methods
+        const fetchMethods = async () => {
+            if (!projectId || projectId === 'YOUR_CLIENT_ID') return
+            const supabase = createClient()
+            const { data } = await supabase
+                .from('clients')
+                .select('payment_methods')
+                .eq('id', projectId)
+                .single()
+            if (data?.payment_methods) {
+                setEnabledMethods(data.payment_methods)
+                // Auto-select the first enabled currency
+                if (data.payment_methods.upi) setCurrency('UPI')
+                else if (data.payment_methods.usdt) setCurrency('USDT')
+            }
+        }
+        fetchMethods()
+    }, [projectId])
 
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text)
@@ -172,18 +192,30 @@ async function startNoxPayment() {
 
                 <div className="flex gap-2">
                     <div className="flex bg-slate-900 border border-slate-800 rounded-lg p-1">
-                        <button
-                            onClick={() => setCurrency('UPI')}
-                            className={`text-xs font-medium px-4 py-1.5 rounded-md transition-all ${currency === 'UPI' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                        >
-                            UPI
-                        </button>
-                        <button
-                            onClick={() => setCurrency('USDT')}
-                            className={`text-xs font-medium px-4 py-1.5 rounded-md transition-all ${currency === 'USDT' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                        >
-                            USDT
-                        </button>
+                        {(!enabledMethods || enabledMethods.upi !== false) && (
+                            <button
+                                onClick={() => setCurrency('UPI')}
+                                className={`text-xs font-medium px-4 py-1.5 rounded-md transition-all ${currency === 'UPI' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+                            >
+                                UPI
+                            </button>
+                        )}
+                        {enabledMethods?.usdt && (
+                            <button
+                                onClick={() => setCurrency('USDT')}
+                                className={`text-xs font-medium px-4 py-1.5 rounded-md transition-all ${currency === 'USDT' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+                            >
+                                USDT
+                            </button>
+                        )}
+                        {enabledMethods?.bank_transfer && (
+                            <button
+                                onClick={() => setCurrency('BANK')}
+                                className={`text-xs font-medium px-4 py-1.5 rounded-md transition-all ${currency === 'BANK' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+                            >
+                                Bank
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
