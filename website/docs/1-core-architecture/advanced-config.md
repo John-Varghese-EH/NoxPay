@@ -1,3 +1,7 @@
+---
+slug: /advanced-config
+---
+
 # Advanced Configuration
 
 NoxPay is highly configurable to suit different merchant needs. This guide explains the environment variables and internal settings.

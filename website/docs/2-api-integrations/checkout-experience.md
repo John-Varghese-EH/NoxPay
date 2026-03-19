@@ -1,3 +1,7 @@
+---
+slug: /checkout-experience
+---
+
 # Checkout Experience
 
 NoxPay provides a premium, responsive checkout UI designed to build trust and minimize friction for your customers.

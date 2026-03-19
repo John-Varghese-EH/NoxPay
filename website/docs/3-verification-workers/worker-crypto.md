@@ -1,3 +1,7 @@
+---
+slug: /worker-crypto
+---
+
 # Crypto Observability
 
 NoxPay tracks blockchain transactions in real-time to provide a seamless checkout experience for crypto payments.

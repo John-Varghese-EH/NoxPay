@@ -1,3 +1,7 @@
+---
+slug: /security
+---
+
 # Security & Robustness
 
 NoxPay is built with a "Security First" mindset to ensure your payments are safe and your infrastructure is resilient.

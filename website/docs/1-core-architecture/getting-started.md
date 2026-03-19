@@ -1,3 +1,7 @@
+---
+slug: /getting-started
+---
+
 # Getting Started
 
 This guide will help you set up NoxPay for local development and prepare it for production.

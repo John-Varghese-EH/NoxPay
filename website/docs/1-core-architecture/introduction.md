@@ -1,3 +1,7 @@
+---
+slug: /introduction
+---
+
 # Introduction
 
 Welcome to the NoxPay Documentation. NoxPay is a sovereign, self-hosted payment gateway for Indian merchants and international businesses looking to accept UPI, USDT (TRC20), and more.

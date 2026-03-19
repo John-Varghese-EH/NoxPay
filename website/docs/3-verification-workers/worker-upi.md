@@ -1,3 +1,7 @@
+---
+slug: /worker-upi
+---
+
 # UPI Auto-Settlement
 
 NoxPay's worker provides real-time settlement for UPI payments by monitoring your bank account's incoming SMS/email alerts via IMAP.

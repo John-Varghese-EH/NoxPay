@@ -1,3 +1,7 @@
+---
+slug: /troubleshooting
+---
+
 # Troubleshooting Guide
 
 This guide covers common issues you might encounter while setting up or running NoxPay.

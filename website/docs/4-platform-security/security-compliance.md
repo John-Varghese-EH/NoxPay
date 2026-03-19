@@ -1,3 +1,7 @@
+---
+slug: /security-compliance
+---
+
 # Security & Compliance
 
 NoxPay is built with a "Security First" philosophy, ensuring that your sovereign payment gateway is as secure as centralized alternatives.

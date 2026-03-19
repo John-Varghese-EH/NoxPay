@@ -1,3 +1,7 @@
+---
+slug: /dashboard-features
+---
+
 # Merchant Dashboard
 
 The NoxPay Dashboard is a powerful, no-code interface where you can manage your payments, projects, and security settings.
