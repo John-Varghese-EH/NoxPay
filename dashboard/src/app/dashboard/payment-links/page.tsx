@@ -186,7 +186,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                                     type="text"
                                     name="order_id"
                                     placeholder="customer_order_123"
-                                    pattern="[a-zA-Z0-9_-]*"
+                                    pattern="^[a-zA-Z0-9_-]*$"
                                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all font-mono text-sm"
                                 />
                             </div>
