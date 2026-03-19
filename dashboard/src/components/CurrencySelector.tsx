@@ -7,8 +7,6 @@ import { CURRENCIES, CurrencyCode } from '@/utils/currency'
 export default function CurrencySelector() {
     const { currency, setCurrency, mounted } = useCurrency()
     const [open, setOpen] = useState(false)
-
-    if (!mounted) return null
     const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -18,6 +16,8 @@ export default function CurrencySelector() {
         document.addEventListener('mousedown', handler)
         return () => document.removeEventListener('mousedown', handler)
     }, [])
+
+    if (!mounted) return null
 
     const curr = CURRENCIES[currency]
 
