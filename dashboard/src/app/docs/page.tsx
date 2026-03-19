@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs';
 import Link from "next/link";
 
 const DOCS_DOMAIN = "https://john-varghese-eh.github.io/NoxPay/";

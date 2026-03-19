@@ -15,13 +15,13 @@ Our mission is to empower developers and businesses with a payment platform that
 
 ## 🛠️ Core Features
 
-- **UPI Auto-Settlement**: Live monitoring of bank accounts via IMAP for instant transaction verification. [Learn more](./worker-upi.md)
-- **Crypto Observability**: Real-time tracking of USDT (TRC20) and Solana (USDC/SOL) payments. [Learn more](./worker-crypto.md)
-- **Multi-Language Checkout**: Clean, professional checkout flows in English and Hindi. [Learn more](./checkout-experience.md)
-- **Merchant Dashboard**: No-code payment link creation and detailed transaction monitoring. [Learn more](./dashboard-features.md)
-- **Webhook System**: Robust HMAC-signed webhooks with persistent retry logic. [Learn more](./webhook_verification.md)
-- **Technical Robustness**: IP whitelisting, burst-tolerant rate limiting, and security headers. [Learn more](./security-compliance.md)
-- **Developer Tools**: Troubleshooting guides and advanced configuration for power users. [Check the guide](./troubleshooting.md)
+- **UPI Auto-Settlement**: Live monitoring of bank accounts via IMAP for instant transaction verification. [Learn more](../3-verification-workers/worker-upi.md)
+- **Crypto Observability**: Real-time tracking of USDT (TRC20) and Solana (USDC/SOL) payments. [Learn more](../3-verification-workers/worker-crypto.md)
+- **Multi-Language Checkout**: Clean, professional checkout flows in English and Hindi. [Learn more](../2-api-integrations/checkout-experience.md)
+- **Merchant Dashboard**: No-code payment link creation and detailed transaction monitoring. [Learn more](../4-platform-security/dashboard-features.md)
+- **Webhook System**: Robust HMAC-signed webhooks with persistent retry logic. [Learn more](../2-api-integrations/webhook_verification.md)
+- **Technical Robustness**: IP whitelisting, burst-tolerant rate limiting, and security headers. [Learn more](../4-platform-security/security-compliance.md)
+- **Developer Tools**: Troubleshooting guides and advanced configuration for power users. [Check the guide](../4-platform-security/troubleshooting.md)
 
 ## 🏁 How NoxPay Works
 

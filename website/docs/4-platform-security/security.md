@@ -21,7 +21,7 @@ Every settlement notification sent to your `webhook_url` includes a signature. W
 ### Replay Protection
 We include a `X-NoxPay-Timestamp` header. We recommend verifying that this timestamp is within the last 5 minutes to prevent replay attacks.
 
-[See Webhook Verification Guide](./webhook_verification.md)
+[See Webhook Verification Guide](../2-api-integrations/webhook_verification.md)
 
 ## 🌐 IP Whitelisting
 

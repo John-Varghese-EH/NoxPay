@@ -13,7 +13,7 @@ The base URL for all API requests to the NoxPay instance is the root path of the
 `ash
 # Example Local URL
 http://127.0.0.1:8000/api/v1
-`
+```
 
 ---
 
@@ -33,7 +33,7 @@ Every programmatic request you make must include two specific HTTP headers:
 curl -X GET "https://api.yournoxpay.com/api/v1/health" \
   -H "X-Client-ID: 7a3c31b3-..." \
   -H "X-Client-Secret: sk_live_83b2..."
-`
+```
 
 > **CAUTION:**
 > **Client Secrets are strictly restricted to Backend Systems!** You must never inject X-Client-Secret directly into an overarching frontend app (like React, Angular, or Vue). All NoxPay Intent creation requests must route securely through your own backend server.
@@ -60,19 +60,19 @@ Creates a new Payment Intent and returns the exact deposit parameters or checkou
 
 #### Request Example
 
-`json
+```json
 {
   "amount": 99.50,
   "currency": "USDT_TRC20",
   "order_id": "INV_298418_XYZ"
 }
-`
+```
 
 #### Response (200 OK)
 
 The response provides the unique identifier NoxPay uses for tracking, as well as the target deposit entity (a UPI VPA or Crypto Wallet Address).
 
-`json
+```json
 {
   "success": true,
   "intent_id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
@@ -85,7 +85,7 @@ The response provides the unique identifier NoxPay uses for tracking, as well as
   "checkout_url": "https://noxpay.com/checkout/9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
   "created_at": "2023-11-20T14:32:00.000Z"
 }
-`
+```
 
 ---
 
@@ -93,7 +93,7 @@ The response provides the unique identifier NoxPay uses for tracking, as well as
 
 Often you need to silently poll NoxPay to discover if a transaction has settled securely.
 
-**Endpoint:** GET /api/v1/intents/{intent_id}
+**Endpoint:** GET /api/v1/intents/\{intent_id\}
 
 #### URL Parameters
 
@@ -103,7 +103,7 @@ Often you need to silently poll NoxPay to discover if a transaction has settled 
 
 #### Response (200 OK)
 
-`json
+```json
 {
   "intent_id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
   "amount": 99.50,
@@ -112,7 +112,7 @@ Often you need to silently poll NoxPay to discover if a transaction has settled 
   "transaction_hash": "25a589255a298bf6fbe1e28bc0da0a631c15...",
   "verified_at": "2023-11-20T14:35:12.000Z"
 }
-`
+```
 
 ---
 
@@ -125,13 +125,13 @@ NoxPay attempts to parse input intelligently and will decline syntactically flaw
 | AUTH_INVALID_HEADERS | 401 | Missing X-Client-ID or X-Client-Secret. |
 | AUTH_INVALID_SECRET | 403 | Validation failed on the cryptographic mapping of ID to Key. |
 | METHOD_UNSUPPORTED | 400 | The currency explicitly requested falls outside global accepted parameters. |
-| INTENT_NOT_FOUND | 404 | The /intents/{intent_id} route received a ghost UUID. |
+| INTENT_NOT_FOUND | 404 | The /intents/\{intent_id\} route received a ghost UUID. |
 
-`json
+```json
 {
   "detail": "Invalid authentication credentials. X-Client-ID and X-Client-Secret mismatch."
 }
-`
+```
 "@
 
  = @"
@@ -170,7 +170,7 @@ You must emulate this exact same cryptographic process on your backend to prove 
 
 To correctly generate signatures in JavaScript, you must ensure the framework gives you access to the **raw, unparsed request buffer**. (Use express.raw({type: 'application/json'})).
 
-`javascript
+```javascript
 const crypto = require('crypto');
 const express = require('express');
 const app = express();
@@ -209,11 +209,11 @@ app.post('/noxpay-webhook', express.raw({type: 'application/json'}), (req, res) 
   
   res.status(200).send("Webhook Processed");
 });
-`
+```
 
 ### Python / FastAPI Example
 
-`python
+```python
 import hmac
 import hashlib
 from fastapi import FastAPI, Request, HTTPException, Header
@@ -246,7 +246,7 @@ async def handle_noxpay_webhook(
         print(f"Verified Deposit Match: {event.get('order_id')}")
     
     return {"status": "success"}
-`
+```
 
 ---
 
@@ -254,7 +254,7 @@ async def handle_noxpay_webhook(
 
 Once verified, the parsed JSON body will follow this exact schema for all payment.success alerts.
 
-`json
+```json
 {
   "event_type": "payment.success",
   "intent_id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
@@ -264,7 +264,7 @@ Once verified, the parsed JSON body will follow this exact schema for all paymen
   "transaction_hash": "25a589255a298bf6fbe1e28bc0da0a631c15...",
   "verified_at": "2023-11-20T14:35:12.000Z"
 }
-`
+```
 
 > **IMPORTANT:**
 > NoxPay requires your endpoint to return a 200 series HTTP status code within 10 seconds. If a webhook times out, or your server returns a 500 error, the NoxPay queue will execute an Exponential Backoff protocol and retry the delivery a maximum of 5 times over 48 hours.
