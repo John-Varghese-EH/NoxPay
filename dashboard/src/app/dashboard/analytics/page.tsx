@@ -87,8 +87,9 @@ export default async function AnalyticsPage() {
     const { count: failedCount } = await supabase.from('payment_intents').select('*', { count: 'exact', head: true }).eq('status', 'failed')
     const { count: expiredCount } = await supabase.from('payment_intents').select('*', { count: 'exact', head: true }).eq('status', 'expired')
     const { count: pendingCount } = await supabase.from('payment_intents').select('*', { count: 'exact', head: true }).eq('status', 'pending')
+    const { count: flaggedCount } = await supabase.from('payment_intents').select('*', { count: 'exact', head: true }).eq('is_flagged', true)
 
-    const totalIntents = (successCount || 0) + (pendingCount || 0) + (failedCount || 0) + (expiredCount || 0)
+    const totalIntents = (successCount || 0) + (pendingCount || 0) + (failedCount || 0) + (expiredCount || 0) + (flaggedCount || 0)
     const successRate = totalIntents > 0 ? ((successCount || 0) / totalIntents) * 100 : 0
 
     return (
@@ -171,6 +172,7 @@ export default async function AnalyticsPage() {
                             { label: 'Pending', count: pendingCount || 0, color: 'bg-amber-500', textColor: 'text-amber-400' },
                             { label: 'Failed', count: failedCount || 0, color: 'bg-red-500', textColor: 'text-red-400' },
                             { label: 'Expired', count: expiredCount || 0, color: 'bg-slate-500', textColor: 'text-slate-400' },
+                            { label: 'Flagged', count: flaggedCount || 0, color: 'bg-amber-500', textColor: 'text-amber-400' },
                         ].map((item) => {
                             const pct = totalIntents > 0 ? (item.count / totalIntents) * 100 : 0
                             return (
