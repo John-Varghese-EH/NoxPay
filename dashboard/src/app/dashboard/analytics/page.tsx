@@ -2,6 +2,8 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { Activity, TrendingUp, CheckCircle, Target } from 'lucide-react'
+import ConvertedAmount from '@/components/ConvertedAmount'
+import CurrencySelector from '@/components/CurrencySelector'
 
 export default async function AnalyticsPage() {
     const supabase = await createClient()
@@ -94,9 +96,12 @@ export default async function AnalyticsPage() {
 
     return (
         <div className="flex-1 w-full flex flex-col gap-6 p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
-            <div className="flex flex-col mb-2">
-                <h1 className="text-3xl font-bold text-white tracking-tight">Advanced Analytics</h1>
-                <p className="text-slate-400 mt-2 text-sm">Comprehensive breakdown of your transaction volumes, platform success rates, and project performance.</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-white tracking-tight">Advanced Analytics</h1>
+                    <p className="text-slate-400 mt-2 text-sm">Comprehensive breakdown of your transaction volumes, platform success rates, and project performance.</p>
+                </div>
+                <CurrencySelector />
             </div>
 
             {/* Top Metric Cards */}

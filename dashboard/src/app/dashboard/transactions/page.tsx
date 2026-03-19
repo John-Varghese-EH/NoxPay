@@ -1,12 +1,14 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import { AlertCircle, CheckCircle2, XCircle, Search, Filter, Flag } from 'lucide-react'
+import { AlertCircle, CheckCircle2, XCircle, Search, Filter, Flag, Download } from 'lucide-react'
+import ExportCSV from '@/components/ExportCSV'
 import FlaggedActions from '@/components/FlaggedActions'
 
 export default async function TransactionsPage(props: { searchParams: Promise<any> }) {
     const searchParams = await props.searchParams;
     const supabase = await createClient()
     const currentTab = searchParams.tab || 'all'
+    const searchQuery = (searchParams.q || '').trim()
 
     const {
         data: { user },
@@ -58,6 +60,11 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
             query.eq('status', 'success')
         } else if (currentTab === 'pending') {
             query.eq('status', 'pending')
+        }
+
+        // Apply search filter
+        if (searchQuery) {
+            query.ilike('order_id', `%${searchQuery}%`)
         }
 
         const { data } = await query
@@ -137,15 +144,25 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
             {/* Table */}
             <div className="glass-card overflow-hidden">
                 <div className="p-4 bg-slate-900/40 border-b border-slate-800 flex justify-between items-center">
-                    <div className="relative w-64">
+                    <form method="GET" className="relative w-64">
+                        <input type="hidden" name="project" value={selectedProjectId || ''} />
+                        <input type="hidden" name="tab" value={currentTab} />
                         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                         <input
                             type="text"
+                            name="q"
+                            defaultValue={searchQuery}
                             placeholder="Search Order ID..."
                             className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 focus:ring-violet-500 focus:border-violet-500"
                         />
+                    </form>
+                    <div className="flex items-center gap-3">
+                        {searchQuery && (
+                            <a href={`/dashboard/transactions?project=${selectedProjectId}&tab=${currentTab}`} className="text-xs text-violet-400 hover:text-violet-300">Clear search</a>
+                        )}
+                        <div className="text-xs text-slate-500">{allIntents.length} results</div>
+                        <ExportCSV data={allIntents} />
                     </div>
-                    <div className="text-xs text-slate-500">{allIntents.length} results</div>
                 </div>
 
                 {allIntents.length > 0 ? (
@@ -205,7 +222,7 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
                                                             {intent.resolution === 'approved' ? 'Manually Approved' : 'Manually Rejected'}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-slate-600 text-xs">\u2014</span>
+                                                        <span className="text-slate-600 text-xs italic">None</span>
                                                     )}
                                                 </td>
                                             )}

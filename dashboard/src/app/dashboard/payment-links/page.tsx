@@ -43,6 +43,8 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
         const currency = formData.get('currency') as string
         const projectId = formData.get('project_id') as string
         const rawOrderId = (formData.get('order_id') as string || '').trim()
+        const expiryMinutes = parseInt(formData.get('expiry') as string || '15', 10)
+        const description = (formData.get('description') as string || '').trim()
         const orderId = rawOrderId || ('link_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now())
 
         if (isNaN(amount) || amount <= 0) return
@@ -68,7 +70,8 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
             order_id: orderId,
             upi_vpa: client.upi_vpa || 'noxpay@sbi',
             status: 'pending',
-            expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+            expires_at: new Date(Date.now() + expiryMinutes * 60 * 1000).toISOString(),
+            description
         }).select().single()
 
         if (error) {
@@ -82,7 +85,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
             revalidatePath('/dashboard/payment-links')
             return redirect(`/dashboard/payment-links?project=${projectId}&success_id=${intent.id}`)
         }
-        
+
         return redirect(`/dashboard/payment-links?project=${projectId}&error=Unknown+error.+Please+try+again.`)
     }
 
@@ -111,11 +114,10 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                                 <a
                                     key={c.id}
                                     href={`/dashboard/payment-links?project=${c.id}`}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
-                                        c.id === selectedProjectId
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${c.id === selectedProjectId
                                             ? 'bg-violet-600 shadow-md text-white'
                                             : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                                    }`}
+                                        }`}
                                 >
                                     {c.name}
                                 </a>
@@ -153,7 +155,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                             <div>
                                 <label className="text-sm font-medium text-slate-400 block mb-2">Amount</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">$</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">₹</span>
                                     <input
                                         type="number"
                                         name="amount"
@@ -268,39 +270,39 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                                     {recentLinks.slice(0, 6).map((link: any) => {
                                         const selfCheckoutUrl = `${siteUrl}/checkout?intent=${link.id}`;
                                         return (
-                                        <div key={link.id} className="p-4 sm:px-6 flex items-center justify-between gap-4 hover:bg-slate-800/30 transition-all group">
-                                            <div className="flex flex-col min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className="font-mono text-sm font-medium text-slate-200 truncate group-hover:text-violet-300 transition-colors">{link.order_id}</span>
-                                                    <CopyButton textToCopy={selfCheckoutUrl} className="text-slate-500 hover:text-white shrink-0 bg-slate-800/50 hover:bg-violet-600 p-1 rounded transition-colors" />
+                                            <div key={link.id} className="p-4 sm:px-6 flex items-center justify-between gap-4 hover:bg-slate-800/30 transition-all group">
+                                                <div className="flex flex-col min-w-0">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="font-mono text-sm font-medium text-slate-200 truncate group-hover:text-violet-300 transition-colors">{link.order_id}</span>
+                                                        <CopyButton textToCopy={selfCheckoutUrl} className="text-slate-500 hover:text-white shrink-0 bg-slate-800/50 hover:bg-violet-600 p-1 rounded transition-colors" />
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] font-medium text-slate-500">{new Date(link.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                                                        {(() => {
+                                                            const isExpired = link.status === 'pending' && new Date(link.expires_at) < new Date();
+                                                            const displayStatus = isExpired ? 'expired' : link.status;
+                                                            return (
+                                                                <span className={`w-fit text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${displayStatus === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                                        : displayStatus === 'expired' ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                                                            : displayStatus === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                                                : displayStatus === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                                                    : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                                                    }`}>
+                                                                    {displayStatus}
+                                                                </span>
+                                                            );
+                                                        })()}
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[10px] font-medium text-slate-500">{new Date(link.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                                                    {(() => {
-                                                        const isExpired = link.status === 'pending' && new Date(link.expires_at) < new Date();
-                                                        const displayStatus = isExpired ? 'expired' : link.status;
-                                                        return (
-                                                            <span className={`w-fit text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${
-                                                                displayStatus === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                                : displayStatus === 'expired' ? 'bg-red-500/10 text-red-400 border border-red-500/20'
-                                                                : displayStatus === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                                                : displayStatus === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                                                : 'bg-slate-800 text-slate-400 border border-slate-700'
-                                                            }`}>
-                                                                {displayStatus}
-                                                            </span>
-                                                        );
-                                                    })()}
+                                                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                                                    <span className="text-sm font-bold text-white tracking-tight">{link.currency === 'UPI' ? '₹' : '₮'}{Number(link.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                                                    <a href={selfCheckoutUrl} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-violet-400 hover:text-violet-300 flex items-center gap-1">
+                                                        Open <ExternalLink className="w-3 h-3" />
+                                                    </a>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-end gap-1.5 shrink-0">
-                                                <span className="text-sm font-bold text-white tracking-tight">{link.currency === 'UPI' ? '₹' : '₮'}{Number(link.amount).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
-                                                <a href={selfCheckoutUrl} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-violet-400 hover:text-violet-300 flex items-center gap-1">
-                                                    Open <ExternalLink className="w-3 h-3" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    )})}
+                                        )
+                                    })}
                                 </div>
                             </div>
                         )}
