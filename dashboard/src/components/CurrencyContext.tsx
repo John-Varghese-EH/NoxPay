@@ -8,23 +8,27 @@ interface CurrencyContextType {
     setCurrency: (c: CurrencyCode) => void
     convert: (amountINR: number) => string
     symbol: string
+    mounted: boolean
 }
 
 const CurrencyContext = createContext<CurrencyContextType>({
     currency: 'INR',
     setCurrency: () => {},
-    convert: (a) => '₹' + a.toFixed(2),
-    symbol: '₹',
+    convert: (a) => '\u20b9' + a.toFixed(2),
+    symbol: '\u20b9',
+    mounted: false,
 })
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
     const [currency, setCurrencyState] = useState<CurrencyCode>('INR')
+    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
         const saved = localStorage.getItem('noxpay_currency') as CurrencyCode
         if (saved && CURRENCIES[saved]) {
             setCurrencyState(saved)
         }
+        setMounted(true)
     }, [])
 
     const setCurrency = (c: CurrencyCode) => {
@@ -37,10 +41,10 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
         return formatCurrency(converted, currency)
     }
 
-    const symbol = CURRENCIES[currency]?.symbol || '₹'
+    const symbol = CURRENCIES[currency]?.symbol || '\u20b9'
 
     return (
-        <CurrencyContext.Provider value={{ currency, setCurrency, convert, symbol }}>
+        <CurrencyContext.Provider value={{ currency, setCurrency, convert, symbol, mounted }}>
             {children}
         </CurrencyContext.Provider>
     )

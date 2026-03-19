@@ -38,7 +38,7 @@ interface CheckoutClientProps {
 
 export default function CheckoutClient({ intent, clientBrand }: CheckoutClientProps) {
     const [lang, setLang] = useState<Language>('en')
-    const { convert, currency: displayCurrency } = useCurrency()
+    const { convert, currency: displayCurrency, mounted } = useCurrency()
     const [showOffline, setShowOffline] = useState(false)
     const t = translations[lang]
 
@@ -93,7 +93,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                         <div className="flex justify-between items-end">
                             <div className="flex flex-col">
                                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{t.amountDue}</span>
-                                {displayCurrency !== 'INR' && (intent.currency === 'UPI' || intent.currency === 'BANK') ? (
+                                {mounted && displayCurrency !== 'INR' && (intent.currency === 'UPI' || intent.currency === 'BANK') ? (
                                     <>
                                         <span className="text-4xl font-bold tracking-tight text-white mb-0 leading-none">
                                             {convert(Number(intent.amount))}
@@ -243,7 +243,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
 
                     {/* Currency Conversion Bar */}
                     <div className="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800/50 flex items-center justify-between">
-                        {displayCurrency !== 'INR' && (intent.currency === 'UPI' || intent.currency === 'BANK') ? (
+                        {mounted && displayCurrency !== 'INR' && (intent.currency === 'UPI' || intent.currency === 'BANK') ? (
                             <span className="text-xs text-slate-500">Showing in <span className="text-slate-300 font-medium">{displayCurrency}</span></span>
                         ) : (
                             <span className="text-xs text-slate-500">Change currency</span>

@@ -4,7 +4,9 @@ import { useCurrency } from '@/components/CurrencyContext'
 import CurrencySelector from '@/components/CurrencySelector'
 
 export default function WidgetCurrencyBar({ amountINR }: { amountINR: number }) {
-    const { convert, currency } = useCurrency()
+    const { convert, currency, mounted } = useCurrency()
+
+    if (!mounted) return null
 
     if (currency === 'INR') {
         return (

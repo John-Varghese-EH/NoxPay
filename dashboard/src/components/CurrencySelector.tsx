@@ -5,8 +5,10 @@ import { useCurrency } from './CurrencyContext'
 import { CURRENCIES, CurrencyCode } from '@/utils/currency'
 
 export default function CurrencySelector() {
-    const { currency, setCurrency } = useCurrency()
+    const { currency, setCurrency, mounted } = useCurrency()
     const [open, setOpen] = useState(false)
+
+    if (!mounted) return null
     const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
