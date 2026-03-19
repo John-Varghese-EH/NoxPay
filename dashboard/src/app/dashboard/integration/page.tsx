@@ -54,34 +54,46 @@ window.location.href = data.checkout_url;
 // Header: X-NoxPay-Signature (HMAC-SHA256)
 // Body: { event_type: "payment.success", intent_id, amount, order_id }`,
 
-        iframe: `<!-- Step 1: Create a payment intent from YOUR server -->
-<!-- Your backend calls: POST ${origin}/api/v1/intents/create-payment -->
-<!-- The response includes { id: "INTENT_ID", checkout_url: "..." } -->
+        iframe: `<!-- NoxPay Iframe Widget Integration -->
 
-<!-- Step 2: Use the intent \`id\` from Step 1 below -->
-<iframe
-    src="${origin}/widget?intent=INTENT_ID"
-    width="420"
-    height="620"
-    frameborder="0"
-    style="
+<!-- STEP 1: Your backend creates the payment intent -->
+<!-- POST ${origin}/api/v1/intents/create-payment -->
+<!-- Headers: x-client-id, x-client-secret -->
+<!-- Body: { "amount": 500, "currency": "${currency}", "order_id": "..." } -->
+<!-- Response JSON looks like: -->
+<!-- { "id": "abc123-uuid", "checkout_url": "...", "payment_uri": "..." } -->
+
+<!-- STEP 2: Use the "id" field from that response as the intent= parameter -->
+<div id="noxpay-container"></div>
+
+<script>
+async function loadNoxPayWidget() {
+    // Call YOUR backend, which calls NoxPay API and returns the intent
+    const res = await fetch('/api/create-noxpay-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 500, currency: '${currency}' })
+    });
+    const data = await res.json();
+
+    // data.id is the INTENT_ID — use it in the iframe src
+    const iframe = document.createElement('iframe');
+    iframe.src = '${origin}/widget?intent=' + data.id;
+    iframe.width = '420';
+    iframe.height = '620';
+    iframe.frameBorder = '0';
+    iframe.allow = 'clipboard-write';
+    iframe.style.cssText = \`
         border-radius: 16px;
         border: 1px solid #1e293b;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         max-width: 100%;
         background: #0a0a0f;
-    "
-    allow="clipboard-write"
-></iframe>
+    \`;
+    document.getElementById('noxpay-container').appendChild(iframe);
+}
 
-<!-- The widget auto-updates when payment is verified -->
-<!-- Listen for postMessage events for cross-origin status: -->
-<script>
-window.addEventListener('message', (e) => {
-    if (e.data.type === 'noxpay_status') {
-        console.log('Payment status:', e.data.status);
-    }
-});
+loadNoxPayWidget();
 </script>`,
 
         button: `<!-- NoxPay Payment Button -->

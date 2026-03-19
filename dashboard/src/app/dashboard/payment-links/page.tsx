@@ -7,7 +7,7 @@ import CopyButton from '@/components/ui/CopyButton'
 export default async function PaymentLinksPage({
     searchParams
 }: {
-    searchParams: { success_id?: string; project?: string }
+    searchParams: { success_id?: string; project?: string; error?: string }
 }) {
     const supabase = await createClient()
 
@@ -59,7 +59,9 @@ export default async function PaymentLinksPage({
             .eq('id', projectId)
             .single()
 
-        if (!client) return
+        if (!client) {
+            return redirect(`/dashboard/payment-links?project=${projectId}&error=Project+not+found`)
+        }
 
         const { data: intent, error } = await supabase.from('payment_intents').insert({
             client_id: client.id,
@@ -71,13 +73,23 @@ export default async function PaymentLinksPage({
             expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString()
         }).select().single()
 
-        if (intent && !error) {
+        if (error) {
+            const msg = error.message.includes('duplicate')
+                ? 'Duplicate+order+ID.+Use+a+unique+order+ID+or+leave+blank.'
+                : encodeURIComponent(error.message)
+            return redirect(`/dashboard/payment-links?project=${projectId}&error=${msg}`)
+        }
+
+        if (intent) {
             revalidatePath('/dashboard/payment-links')
             return redirect(`/dashboard/payment-links?project=${projectId}&success_id=${intent.id}`)
         }
+        
+        return redirect(`/dashboard/payment-links?project=${projectId}&error=Unknown+error.+Please+try+again.`)
     }
 
     const successId = searchParams.success_id
+    const errorParam = searchParams.error
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nox-pay.vercel.app'
     const checkoutUrl = successId ? `${siteUrl}/checkout?intent=${successId}` : ''
     const widgetUrl = successId ? `${siteUrl}/widget?intent=${successId}` : ''
@@ -127,6 +139,15 @@ export default async function PaymentLinksPage({
                             <Plus className="w-5 h-5 text-emerald-400" />
                             Create New Link
                         </h2>
+
+                        {errorParam && (
+                            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4 animate-in slide-in-from-top-2 duration-300">
+                                <p className="text-sm text-red-400 font-medium flex items-center gap-2">
+                                    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+                                    {decodeURIComponent(errorParam)}
+                                </p>
+                            </div>
+                        )}
 
                         <form action={generateLink} className="space-y-5">
                             <input type="hidden" name="project_id" value={selectedProjectId} />
