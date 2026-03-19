@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# VoidPay Setup Script
+# NoxPay Setup Script
 # Generates .env files for local development
 
 echo "+---------------------------------------------------+"
-echo "|              VoidPay Environment Setup              |"
+echo "|              NoxPay Environment Setup              |"
 echo "+---------------------------------------------------+"
 echo
 

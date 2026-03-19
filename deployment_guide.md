@@ -1,12 +1,5 @@
 # 🚀 NoxPay Deployment Guide: Free Hosting Alternatives
 
-## ⚠️ InfinityFree — NOT Compatible
-
-> [!WARNING]
-> **InfinityFree only supports PHP.** NoxPay uses Python (FastAPI) for the API, Python for the worker, and Next.js for the dashboard. InfinityFree **cannot** run any of these. Do not use it.
-
----
-
 ## ✅ Top Free Alternatives (Ranked)
 
 ### 1. Render (Free Tier) — ⭐ **Best Overall**
