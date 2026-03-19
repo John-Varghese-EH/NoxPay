@@ -12,7 +12,21 @@ ALTER TABLE payment_intents ADD COLUMN IF NOT EXISTS resolved_at TIMESTAMPTZ;
 ALTER TABLE payment_intents ADD COLUMN IF NOT EXISTS resolved_by UUID;
 
 -- 3. Allow dashboard users to UPDATE their own payment intents
-CREATE POLICY "Users can update own intents"
-    ON payment_intents FOR UPDATE
-    USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()))
-    WITH CHECK (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()));
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Users can update own intents' AND tablename = 'payment_intents') THEN
+        CREATE POLICY "Users can update own intents"
+            ON payment_intents FOR UPDATE
+            USING (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()))
+            WITH CHECK (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()));
+    END IF;
+END $$;
+
+-- 4. Allow dashboard users to INSERT payment intents for their own clients
+-- (Required for Payment Links generation from the dashboard)
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Users can insert own intents' AND tablename = 'payment_intents') THEN
+        CREATE POLICY "Users can insert own intents"
+            ON payment_intents FOR INSERT
+            WITH CHECK (client_id IN (SELECT id FROM clients WHERE user_id = auth.uid()));
+    END IF;
+END $$;
