@@ -24,16 +24,16 @@ const verifyOwnership = async (projectId: string) => {
 
 export async function saveProjectName(projectId: string, formData: FormData) {
     const name = formData.get('name') as string
-    if (!name || name.trim().length === 0) return redirect(\`/settings?project=\${projectId}&message=Project name cannot be empty\`)
+    if (!name || name.trim().length === 0) return redirect(`/settings?project=${projectId}&message=Project name cannot be empty`)
     
     try {
         const { supabase } = await verifyOwnership(projectId)
         await supabase.from('clients').update({ name: name.trim() }).eq('id', projectId)
         revalidatePath('/dashboard')
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=Project name updated successfully\`)
+        return redirect(`/settings?project=${projectId}&message=Project name updated successfully`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
@@ -45,7 +45,7 @@ export async function deleteProject(projectId: string) {
         revalidatePath('/settings')
         return redirect('/dashboard')
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
@@ -58,16 +58,16 @@ export async function regenerateSecretKey(projectId: string) {
             .map(b => b.toString(16).padStart(2, '0'))
             .join('')
         
-        const skFormat = \`sk_test_\${newSecret}\`
+        const skFormat = `sk_test_${newSecret}`
         const secretHash = await bcrypt.hash(skFormat, 10)
 
         await supabase.from('clients').update({ secret_hash: secretHash }).eq('id', projectId)
         
         revalidatePath('/settings')
         // Redirect back with the new secret so it can be displayed ONCE
-        return redirect(\`/settings?project=\${projectId}&new_secret=\${skFormat}&message=Secret key regenerated successfully\`)
+        return redirect(`/settings?project=${projectId}&new_secret=${skFormat}&message=Secret key regenerated successfully`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
@@ -79,42 +79,42 @@ export async function regenerateWebhookSecret(projectId: string) {
             .map(b => b.toString(16).padStart(2, '0'))
             .join('')
             
-        const whFormat = \`whsec_\${newSecret}\`
+        const whFormat = `whsec_${newSecret}`
 
         await supabase.from('clients').update({ webhook_secret: whFormat }).eq('id', projectId)
         
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=Webhook secret regenerated successfully\`)
+        return redirect(`/settings?project=${projectId}&message=Webhook secret regenerated successfully`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
 export async function saveVpa(projectId: string, formData: FormData) {
     const vpa = formData.get('upi_vpa') as string
-    if (!vpa || !vpa.includes('@')) return redirect(\`/settings?project=\${projectId}&error=Invalid UPI VPA format\`)
+    if (!vpa || !vpa.includes('@')) return redirect(`/settings?project=${projectId}&error=Invalid UPI VPA format`)
 
     try {
         const { supabase } = await verifyOwnership(projectId)
         await supabase.from('clients').update({ upi_vpa: vpa.trim() }).eq('id', projectId)
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=VPA saved successfully\`)
+        return redirect(`/settings?project=${projectId}&message=VPA saved successfully`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
 export async function saveCryptoWallet(projectId: string, formData: FormData) {
     const wallet = formData.get('crypto_wallet') as string
-    if (!wallet) return redirect(\`/settings?project=\${projectId}&error=Wallet address required\`)
+    if (!wallet) return redirect(`/settings?project=${projectId}&error=Wallet address required`)
 
     try {
         const { supabase } = await verifyOwnership(projectId)
         await supabase.from('clients').update({ crypto_wallet: wallet.trim() }).eq('id', projectId)
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=Crypto wallet saved successfully\`)
+        return redirect(`/settings?project=${projectId}&message=Crypto wallet saved successfully`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
@@ -129,9 +129,9 @@ export async function saveBankDetails(projectId: string, formData: FormData) {
             bank_account: { account_name, account_number, ifsc }
         }).eq('id', projectId)
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=Bank details updated\`)
+        return redirect(`/settings?project=${projectId}&message=Bank details updated`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
@@ -143,9 +143,9 @@ export async function saveEmails(projectId: string, formData: FormData) {
         const { supabase } = await verifyOwnership(projectId)
         await supabase.from('clients').update({ notification_emails: emails }).eq('id', projectId)
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=Notification emails updated\`)
+        return redirect(`/settings?project=${projectId}&message=Notification emails updated`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
@@ -160,9 +160,9 @@ export async function savePaymentMethods(projectId: string, formData: FormData) 
             payment_methods: { upi, usdt, bank_transfer }
         }).eq('id', projectId)
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=Payment methods updated\`)
+        return redirect(`/settings?project=${projectId}&message=Payment methods updated`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
 
@@ -179,8 +179,8 @@ export async function saveCheckoutBranding(projectId: string, formData: FormData
             return_url
         }).eq('id', projectId)
         revalidatePath('/settings')
-        return redirect(\`/settings?project=\${projectId}&message=Checkout branding updated\`)
+        return redirect(`/settings?project=${projectId}&message=Checkout branding updated`)
     } catch (e: any) {
-        return redirect(\`/settings?project=\${projectId}&error=\${encodeURIComponent(e.message)}\`)
+        return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
