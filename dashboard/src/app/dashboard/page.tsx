@@ -1,6 +1,9 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import CreateProjectModal from '@/components/CreateProjectModal'
+import TransactionChart from '@/components/TransactionChart'
+import { format } from 'date-fns'
 
 export default async function DashboardPage({
     searchParams,
@@ -17,7 +20,6 @@ export default async function DashboardPage({
         return redirect('/login')
     }
 
-    // Fetch all projects for the user
     const { data: clients } = await supabase
         .from('clients')
         .select('id, name')
@@ -29,28 +31,33 @@ export default async function DashboardPage({
     let totalVolume = 0
     let successCount = 0
     let totalIntents = 0
-    let recentTxns: { id: string; verified_at: string; amount: number; bank_source: string; utr: string; payment_intents: { order_id: string; status: string } | null }[] = []
+    let recentTxns: any[] = []
+    let groupedChartData: any[] = []
 
     if (selectedProjectId) {
-        // Total volume
         const { data: txns } = await supabase
             .from('verified_transactions')
-            .select('amount, payment_intents!inner(client_id)')
+            .select('amount, verified_at, payment_intents!inner(client_id)')
             .eq('payment_intents.client_id', selectedProjectId)
 
         if (txns) {
-            totalVolume = txns.reduce((sum: number, t: { amount: number }) => sum + Number(t.amount), 0)
+            totalVolume = txns.reduce((sum: number, t: any) => sum + Number(t.amount), 0)
             successCount = txns.length
+            
+            const volumeByDate: Record<string, number> = {};
+            txns.forEach((t: any) => {
+              const d = format(new Date(t.verified_at), 'MMM dd')
+              volumeByDate[d] = (volumeByDate[d] || 0) + Number(t.amount)
+            });
+            groupedChartData = Object.keys(volumeByDate).map(date => ({ date, volume: volumeByDate[date] }))
         }
 
-        // Total intents for success rate
         const { count } = await supabase
             .from('payment_intents')
             .select('*', { count: 'exact', head: true })
             .eq('client_id', selectedProjectId)
         totalIntents = count || 0
 
-        // Recent 5 transactions
         const { data: recent } = await supabase
             .from('verified_transactions')
             .select('id, verified_at, amount, bank_source, utr, payment_intents!inner(order_id, status, client_id)')
@@ -58,7 +65,7 @@ export default async function DashboardPage({
             .order('verified_at', { ascending: false })
             .limit(5)
 
-        if (recent) recentTxns = recent as unknown as typeof recentTxns
+        if (recent) recentTxns = recent
     }
 
     const successRate = totalIntents > 0 ? ((successCount / totalIntents) * 100).toFixed(1) : '0.0'
@@ -95,22 +102,67 @@ export default async function DashboardPage({
             {selectedProjectId ? (
                 <>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="glass-card metric-card p-6 border-t-2 border-t-violet-500/50">
+                        <div className="glass-card metric-card p-6 border-t-2 border-t-violet-500/50 shadow-[0_0_15px_rgba(124,58,237,0.05)] hover:shadow-[0_0_20px_rgba(124,58,237,0.1)] transition-all">
                             <h3 className="text-sm font-medium text-slate-400">Total Volume</h3>
                             <p className="text-3xl font-bold text-white mt-2 tracking-tight">
                                 ₹{totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </p>
                             <p className="text-xs text-slate-500 mt-2">Lifetime verified transactions</p>
                         </div>
-                        <div className="glass-card metric-card p-6 border-t-2 border-t-emerald-500/50">
+                        <div className="glass-card metric-card p-6 border-t-2 border-t-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] transition-all">
                             <h3 className="text-sm font-medium text-slate-400">Successful Txns</h3>
                             <p className="text-3xl font-bold text-emerald-400 mt-2 tracking-tight">{successCount}</p>
                             <p className="text-xs text-slate-500 mt-2">Payments matched & verified</p>
                         </div>
-                        <div className="glass-card metric-card p-6 border-t-2 border-t-sky-500/50">
+                        <div className="glass-card metric-card p-6 border-t-2 border-t-sky-500/50 shadow-[0_0_15px_rgba(14,165,233,0.05)] hover:shadow-[0_0_20px_rgba(14,165,233,0.1)] transition-all">
                             <h3 className="text-sm font-medium text-slate-400">Success Rate</h3>
                             <p className="text-3xl font-bold text-sky-400 mt-2 tracking-tight">{successRate}%</p>
                             <p className="text-xs text-slate-500 mt-2">Of {totalIntents} total intents</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
+                        <div className="lg:col-span-2 glass-card p-6 border border-slate-800">
+                            <div className="flex items-center justify-between mb-2">
+                                <div>
+                                  <h2 className="text-lg font-semibold text-white">Transaction Volume</h2>
+                                  <p className="text-xs text-slate-500">7-day trailing velocity</p>
+                                </div>
+                            </div>
+                            <TransactionChart data={groupedChartData} />
+                        </div>
+                        <div className="lg:col-span-1 glass-card p-6 border border-slate-800 flex flex-col">
+                            <div className="flex flex-col justify-between mb-4 flex-1">
+                                <div>
+                                  <h2 className="text-lg font-semibold text-white">System Status</h2>
+                                  <p className="text-xs text-slate-500 mb-4">Core infrastructure pulses</p>
+                                  
+                                  <div className="space-y-4">
+                                    <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800/80">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                        <span className="text-sm font-medium text-slate-300">Auth DB</span>
+                                      </div>
+                                      <span className="text-xs text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">Operational</span>
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800/80">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                        <span className="text-sm font-medium text-slate-300">FastAPI</span>
+                                      </div>
+                                      <span className="text-xs text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">Operational</span>
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800/80">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse delay-75"></div>
+                                        <span className="text-sm font-medium text-slate-300">IMAP Worker</span>
+                                      </div>
+                                      <span className="text-xs text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">Polling Active</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
 
@@ -165,17 +217,17 @@ export default async function DashboardPage({
                     </div>
                 </>
             ) : (
-                <div className="glass-card p-12 flex flex-col items-center justify-center text-center mt-12 bg-slate-900/30">
+                <div className="glass-card p-12 flex flex-col items-center justify-center text-center mt-12 bg-slate-900/30 border-dashed border-2 border-slate-700">
                     <div className="w-20 h-20 bg-violet-600/10 rounded-full flex items-center justify-center mb-6">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
                     </div>
-                    <h2 className="text-xl font-bold text-white mb-2">Create a New Project</h2>
-                    <p className="text-sm text-slate-400 max-w-md mx-auto mb-8">
-                        You don&apos;t have any projects yet. Create your first project to start receiving payments.
+                    <h2 className="text-2xl font-bold text-white mb-2">Create a New Project</h2>
+                    <p className="text-sm text-slate-400 max-w-md mx-auto mb-4">
+                        You don't have any projects yet. Create your first project to immediately generate API credentials and track payments.
                     </p>
-                    {/* Add a button here if there was an explicit project creation page. Left for future. */}
+                    <CreateProjectModal />
                 </div>
             )}
         </div>
