@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { ExternalLink, ShieldCheck, CheckCircle2, XCircle } from 'lucide-react'
 import RealtimeListener from '../checkout/RealtimeListener'
 import CopyButton from '@/components/ui/CopyButton'
+import WidgetCurrencyBar from './WidgetCurrencyBar'
 import ExpiryTimer from '../checkout/ExpiryTimer'
 
 // Render a minimalist, embeddable checkout widget

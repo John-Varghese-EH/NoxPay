@@ -8,6 +8,8 @@ import ExpiryTimer from './ExpiryTimer'
 import LanguageToggle from './LanguageToggle'
 import { translations, Language } from './CheckoutTranslations'
 import Image from 'next/image'
+import { useCurrency } from '@/components/CurrencyContext'
+import CurrencySelector from '@/components/CurrencySelector'
 
 interface Intent {
     id: string
@@ -36,6 +38,7 @@ interface CheckoutClientProps {
 
 export default function CheckoutClient({ intent, clientBrand }: CheckoutClientProps) {
     const [lang, setLang] = useState<Language>('en')
+    const { convert, currency: displayCurrency } = useCurrency()
     const [showOffline, setShowOffline] = useState(false)
     const t = translations[lang]
 
@@ -61,7 +64,10 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
             )}
 
             <div className="w-full max-w-md flex flex-col">
-                <LanguageToggle currentLang={lang} onChange={setLang} />
+                <div className="flex items-center justify-between mb-2">
+                    <LanguageToggle currentLang={lang} onChange={setLang} />
+                    <CurrencySelector />
+                </div>
 
                 <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
                     {/* Header Branding */}
