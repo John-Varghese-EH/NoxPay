@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createProjectAction } from '@/app/actions/project'
 
-export default function CreateProjectModal() {
+export default function CreateProjectModal({ variant = 'default' }: { variant?: 'default' | 'compact' }) {
   const [isOpen, setIsOpen] = useState(false)
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -41,9 +41,24 @@ export default function CreateProjectModal() {
     setIsOpen(false)
     setName('')
     setSecrets(null)
+    setErrorMsg('')
   }
 
   if (!isOpen) {
+    if (variant === 'compact') {
+      return (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 shadow-sm"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+          New Project
+        </button>
+      )
+    }
+
     return (
       <button 
         onClick={() => setIsOpen(true)}
@@ -53,7 +68,7 @@ export default function CreateProjectModal() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
-            Create First Project
+            Create Project
         </div>
       </button>
     )
@@ -78,19 +93,19 @@ export default function CreateProjectModal() {
               <div className="space-y-4 mb-8">
                   <div>
                       <p className="text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Client ID</p>
-                      <code className="block p-3 bg-black rounded-lg text-slate-300 font-mono text-xs overflow-x-auto border border-slate-800">
+                      <code className="block p-3 bg-black rounded-lg text-slate-300 font-mono text-xs overflow-x-auto border border-slate-800 select-all">
                           {secrets.clientId}
                       </code>
                   </div>
                   <div>
                       <p className="text-xs font-semibold text-violet-400 mb-1 uppercase tracking-wider">Secret Key</p>
-                      <code className="block p-3 bg-violet-950/30 rounded-lg text-violet-300 font-mono text-xs overflow-x-auto border border-violet-900/50">
+                      <code className="block p-3 bg-violet-950/30 rounded-lg text-violet-300 font-mono text-xs overflow-x-auto border border-violet-900/50 select-all">
                           {secrets.rawSecret}
                       </code>
                   </div>
                   <div>
                       <p className="text-xs font-semibold text-emerald-400 mb-1 uppercase tracking-wider">Webhook Secret</p>
-                      <code className="block p-3 bg-emerald-950/30 rounded-lg text-emerald-300 font-mono text-xs overflow-x-auto border border-emerald-900/50">
+                      <code className="block p-3 bg-emerald-950/30 rounded-lg text-emerald-300 font-mono text-xs overflow-x-auto border border-emerald-900/50 select-all">
                           {secrets.rawWebhookSecret}
                       </code>
                   </div>

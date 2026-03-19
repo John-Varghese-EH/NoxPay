@@ -79,22 +79,25 @@ export default async function DashboardPage({
                 </div>
 
                 {clients && clients.length > 0 && (
-                    <div className="flex items-center gap-3 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800">
-                        <span className="text-xs font-medium text-slate-400 pl-3">Project:</span>
-                        <div className="flex gap-1 overflow-x-auto max-w-[200px] sm:max-w-[400px] custom-scrollbar hide-scrollbar">
-                            {clients.map((c) => (
-                                <Link
-                                    key={c.id}
-                                    href={`/dashboard?project=${c.id}`}
-                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${selectedProjectId === c.id
-                                        ? 'bg-violet-600 shadow-md text-white'
-                                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-                                        }`}
-                                >
-                                    {c.name}
-                                </Link>
-                            ))}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800">
+                            <span className="text-xs font-medium text-slate-400 pl-3">Project:</span>
+                            <div className="flex gap-1 overflow-x-auto max-w-[200px] sm:max-w-[400px] custom-scrollbar hide-scrollbar">
+                                {clients.map((c) => (
+                                    <Link
+                                        key={c.id}
+                                        href={`/dashboard?project=${c.id}`}
+                                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${selectedProjectId === c.id
+                                            ? 'bg-violet-600 shadow-md text-white'
+                                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                                            }`}
+                                    >
+                                        {c.name}
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
+                        <CreateProjectModal variant="compact" />
                     </div>
                 )}
             </div>

@@ -54,9 +54,11 @@ window.location.href = data.checkout_url;
 // Header: X-NoxPay-Signature (HMAC-SHA256)
 // Body: { event_type: "payment.success", intent_id, amount, order_id }`,
 
-        iframe: `<!-- Step 1: Create intent via your backend API first -->
-<!-- Step 2: Replace INTENT_ID with the actual intent ID -->
+        iframe: `<!-- Step 1: Create a payment intent from YOUR server -->
+<!-- Your backend calls: POST ${origin}/api/v1/intents/create-payment -->
+<!-- The response includes { id: "INTENT_ID", checkout_url: "..." } -->
 
+<!-- Step 2: Use the intent \`id\` from Step 1 below -->
 <iframe
     src="${origin}/widget?intent=INTENT_ID"
     width="420"
@@ -116,7 +118,12 @@ async function startNoxPayment() {
     btn.textContent = 'Processing...';
     btn.disabled = true;
 
-    // Call YOUR backend to create a payment intent
+    // YOUR BACKEND creates the intent and returns the checkout URL.
+    // Your backend should call: POST ${origin}/api/v1/intents/create-payment
+    //   Headers: x-client-id, x-client-secret
+    //   Body: { amount: 500, currency: "${currency}", order_id: "..." }
+    //   Response: { id: "INTENT_ID", checkout_url: "...", payment_uri: "..." }
+
     const res = await fetch('/api/create-noxpay-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -124,11 +131,15 @@ async function startNoxPayment() {
     });
     const data = await res.json();
 
-    // Option A: Redirect to hosted checkout
+    // Option A: Redirect to hosted checkout page
     window.location.href = data.checkout_url;
 
-    // Option B: Open in modal/popup
+    // Option B: Open in popup window
     // window.open(data.checkout_url, '_blank', 'width=440,height=700');
+
+    // Option C: Embed widget inline using the intent ID
+    // document.getElementById('noxpay-widget').src =
+    //     '${origin}/widget?intent=' + data.id;
 }
 </script>`
     }
