@@ -26,7 +26,7 @@ export default function CheckoutPreview({ initialColor, initialLogo, initialName
 
             // Allow only http and https schemes for image sources.
             if (url.protocol === 'http:' || url.protocol === 'https:') {
-                return trimmed
+                return url.href
             }
         } catch {
             // If URL construction fails, treat it as invalid.
