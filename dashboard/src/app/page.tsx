@@ -69,6 +69,7 @@ const steps = [
 const comparisons = [
   { feature: "Transaction Fee", noxpay: "0%", razorpay: "2%", stripe: "2.9% + 30¢", paypal: "2.9% + 30¢" },
   { feature: "International Fee", noxpay: "0% (crypto)", razorpay: "3%+", stripe: "4.4%+", paypal: "4.4%+" },
+  { feature: "Cards/Net Banking", noxpay: "❌ No", razorpay: "✅ Yes", stripe: "✅ Yes", paypal: "✅ Yes" },
   { feature: "Self-Hosted", noxpay: "✅ Yes", razorpay: "❌ No", stripe: "❌ No", paypal: "❌ No" },
   { feature: "Open Source", noxpay: "✅ MIT", razorpay: "❌ No", stripe: "❌ No", paypal: "❌ No" },
   { feature: "UPI Support", noxpay: "✅ Direct", razorpay: "✅ Via API", stripe: "❌ No", paypal: "❌ No" },
