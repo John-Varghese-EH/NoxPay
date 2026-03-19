@@ -64,10 +64,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
             )}
 
             <div className="w-full max-w-md flex flex-col">
-                <div className="flex items-center justify-between mb-2">
-                    <LanguageToggle currentLang={lang} onChange={setLang} />
-                    <CurrencySelector />
-                </div>
+                <LanguageToggle currentLang={lang} onChange={setLang} />
 
                 <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
                     {/* Header Branding */}
@@ -96,10 +93,21 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                         <div className="flex justify-between items-end">
                             <div className="flex flex-col">
                                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{t.amountDue}</span>
-                                <span className="text-4xl font-bold tracking-tight text-white mb-0 leading-none">
-                                    {intent.currency === 'UPI' || intent.currency === 'BANK' ? '₹' : '₮'}
-                                    {Number(intent.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                                </span>
+                                {displayCurrency !== 'INR' && (intent.currency === 'UPI' || intent.currency === 'BANK') ? (
+                                    <>
+                                        <span className="text-4xl font-bold tracking-tight text-white mb-0 leading-none">
+                                            {convert(Number(intent.amount))}
+                                        </span>
+                                        <span className="text-sm text-slate-500 mt-1">
+                                            {'₹'}{Number(intent.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })} INR
+                                        </span>
+                                    </>
+                                ) : (
+                                    <span className="text-4xl font-bold tracking-tight text-white mb-0 leading-none">
+                                        {intent.currency === 'UPI' || intent.currency === 'BANK' ? '₹' : '₮'}
+                                        {Number(intent.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                    </span>
+                                )}
                             </div>
                             <div className="text-right flex flex-col items-end">
                                 <span className="text-xs text-slate-500 mb-1">{t.orderId}</span>
@@ -231,6 +239,16 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                                 <p className="text-sm text-red-500/80">{t.sessionTimedOut}</p>
                             </div>
                         )}
+                    </div>
+
+                    {/* Currency Conversion Bar */}
+                    <div className="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800/50 flex items-center justify-between">
+                        {displayCurrency !== 'INR' && (intent.currency === 'UPI' || intent.currency === 'BANK') ? (
+                            <span className="text-xs text-slate-500">Showing in <span className="text-slate-300 font-medium">{displayCurrency}</span></span>
+                        ) : (
+                            <span className="text-xs text-slate-500">Change currency</span>
+                        )}
+                        <CurrencySelector />
                     </div>
 
                     {/* Footer Security Badge */}
