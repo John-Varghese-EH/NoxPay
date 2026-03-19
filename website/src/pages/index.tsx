@@ -89,11 +89,11 @@ export default function Home() {
       title={`${siteConfig.title} - Sovereign Payment Gateway`}
       description="Accept UPI and Crypto payments with zero fees and full sovereignty. Self-hosted, secure, and robust.">
       
-      <main className="flex flex-col items-center bg-slate-950 text-slate-200" style={{fontFamily: 'system-ui, -apple-system, sans-serif'}}>
+      <main className="flex flex-col items-center bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300" style={{fontFamily: 'system-ui, -apple-system, sans-serif'}}>
         {/* Hero Section */}
         <section className="w-full max-w-6xl mx-auto px-6 pt-20 pb-24 text-center">
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full text-sm text-violet-400 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-violet-100 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20 rounded-full text-sm text-violet-700 dark:text-violet-400 mb-8">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
@@ -101,28 +101,22 @@ export default function Home() {
               Open Source Payment Gateway
             </div>
 
-            <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-white mb-6 leading-tight" style={{lineHeight: 1.1, margin: '1.5rem 0'}}>
+            <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight" style={{lineHeight: 1.1, margin: '1.5rem 0'}}>
               Sovereign Payments,{" "}
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-blue-500 to-emerald-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-blue-600 to-emerald-600 dark:from-violet-500 dark:via-blue-500 dark:to-emerald-500">
                 Zero Fees.
               </span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
               NoxPay is an open-source, self-hosted payment gateway for modern businesses. Process UPI and Crypto payments directly to your accounts — keep 100% of your revenue.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a
-                href="https://noxpay.vercel.app/login"
-                className="px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white hover:text-white hover:no-underline font-medium rounded-lg transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(124,58,237,0.3)] w-full sm:w-auto text-lg"
-              >
-                Get Started Free
-              </a>
+            <div className="flex justify-center items-center mt-10">
               <Link
                 to="/docs/introduction"
-                className="px-8 py-4 bg-slate-800/80 hover:bg-slate-800 hover:text-slate-200 hover:no-underline border border-slate-700 text-slate-200 font-medium rounded-lg transition-all w-full sm:w-auto text-lg"
+                className="px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white hover:text-white hover:no-underline font-medium rounded-lg transition-all transform hover:scale-105 shadow-[0_4px_14px_0_rgba(124,58,237,0.39)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.23)] w-full sm:w-auto text-lg"
               >
                 Read the Docs
               </Link>
@@ -131,15 +125,15 @@ export default function Home() {
             {/* Stats */}
             <div className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto">
               <div>
-                <div className="text-3xl font-bold text-white mb-0" style={{marginBottom: 0}}>0%</div>
+                <div className="text-3xl font-bold text-slate-900 dark:text-white mb-0" style={{marginBottom: 0}}>0%</div>
                 <div className="text-xs text-slate-500 mt-1">Transaction Fees</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-white mb-0" style={{marginBottom: 0}}>&lt;30s</div>
+                <div className="text-3xl font-bold text-slate-900 dark:text-white mb-0" style={{marginBottom: 0}}>&lt;30s</div>
                 <div className="text-xs text-slate-500 mt-1">Verification Time</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-white mb-0" style={{marginBottom: 0}}>100%</div>
+                <div className="text-3xl font-bold text-slate-900 dark:text-white mb-0" style={{marginBottom: 0}}>100%</div>
                 <div className="text-xs text-slate-500 mt-1">Self-Hosted</div>
               </div>
             </div>
@@ -149,10 +143,10 @@ export default function Home() {
         {/* Features Grid */}
         <section className="w-full max-w-6xl mx-auto px-6 py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 mt-0" style={{marginTop: 0}}>
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 mt-0" style={{marginTop: 0}}>
               Everything You Need
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Enterprise-grade payment infrastructure, without the enterprise price tag.
             </p>
           </div>
@@ -161,13 +155,13 @@ export default function Home() {
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="group bg-slate-900/50 border border-slate-800 rounded-xl p-6 hover:border-violet-500/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(124,58,237,0.1)] text-left"
+                className="group bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-6 hover:border-violet-300 dark:hover:border-violet-500/30 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_0_30px_rgba(124,58,237,0.1)] text-left"
               >
                 <div className="text-4xl mb-4" style={{fontSize: '2.25rem', marginBottom: '1rem'}}>{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-slate-200 mb-2 group-hover:text-violet-400 transition-colors mt-0">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200 mb-2 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors mt-0">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-slate-500 leading-relaxed mb-0">
+                <p className="text-sm text-slate-600 dark:text-slate-500 leading-relaxed mb-0">
                   {feature.description}
                 </p>
               </div>
@@ -176,12 +170,12 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-800/60">
+        <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-200 dark:border-slate-800/60">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 mt-0" style={{marginTop: 0}}>
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 mt-0" style={{marginTop: 0}}>
               How It Works
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Four simple steps from payment creation to confirmation.
             </p>
           </div>
@@ -190,15 +184,15 @@ export default function Home() {
             {steps.map((step, i) => (
               <div key={step.title} className="relative text-left">
                 {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-[calc(100%_-_12px)] w-[calc(100%_-_40px)] h-px bg-gradient-to-r from-violet-500/50 to-transparent z-0"></div>
+                  <div className="hidden lg:block absolute top-8 left-[calc(100%_-_12px)] w-[calc(100%_-_40px)] h-px bg-gradient-to-r from-violet-200 dark:from-violet-500/50 to-transparent z-0"></div>
                 )}
-                <div className="relative z-10 bg-slate-900/50 border border-slate-800 rounded-xl p-6">
-                  <div className="h-10 w-10 bg-violet-500/10 rounded-lg flex items-center justify-center mb-4 border border-violet-500/20">
-                    <span className="text-violet-400 font-bold">{step.step}</span>
+                <div className="relative z-10 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm dark:shadow-none">
+                  <div className="h-10 w-10 bg-violet-100 dark:bg-violet-500/10 rounded-lg flex items-center justify-center mb-4 border border-violet-200 dark:border-violet-500/20">
+                    <span className="text-violet-600 dark:text-violet-400 font-bold">{step.step}</span>
                   </div>
-                  <h3 className="text-md font-semibold text-slate-200 mb-2 mt-0">{step.title}</h3>
-                  <p className="text-sm text-slate-500 mb-3">{step.description}</p>
-                  <code className="text-xs text-violet-400 bg-violet-500/10 px-2 py-1 rounded font-mono border-none whitespace-nowrap overflow-hidden text-ellipsis inline-block max-w-full">
+                  <h3 className="text-md font-semibold text-slate-900 dark:text-slate-200 mb-2 mt-0">{step.title}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-500 mb-3">{step.description}</p>
+                  <code className="text-xs text-violet-700 dark:text-violet-400 bg-violet-50 dark:bg-violet-500/10 px-2 py-1 rounded font-mono border-none whitespace-nowrap overflow-hidden text-ellipsis inline-block max-w-full">
                     {step.code}
                   </code>
                 </div>
@@ -208,35 +202,35 @@ export default function Home() {
         </section>
 
         {/* Comparison Table */}
-        <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-800/60 overflow-hidden">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 mt-0" style={{marginTop: 0}}>
+        <section className="w-full mx-auto px-6 py-20 border-t border-slate-200 dark:border-slate-800/60 overflow-hidden flex flex-col items-center">
+          <div className="text-center mb-16 max-w-6xl w-full">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 mt-0" style={{marginTop: 0}}>
               NoxPay vs The Rest
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               See why developers are choosing self-hosted over traditional gateways.
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm m-0 border-collapse table-auto" style={{borderSpacing: 0, margin: 0, border: 'none'}}>
+          <div className="w-full max-w-4xl mx-auto overflow-x-auto">
+            <table className="w-full text-sm m-0 border-collapse table-auto text-left" style={{borderSpacing: 0, margin: '0 auto', border: 'none'}}>
               <thead>
-                <tr className="border-[0px] border-b border-solid border-slate-800 bg-transparent">
-                  <th className="text-left py-4 px-4 text-slate-400 font-medium bg-transparent border-none">Feature</th>
-                  <th className="text-center py-4 px-4 text-violet-400 font-semibold bg-violet-500/5 border-none">NoxPay</th>
-                  <th className="text-center py-4 px-4 text-slate-400 font-medium bg-transparent border-none">Razorpay</th>
-                  <th className="text-center py-4 px-4 text-slate-400 font-medium bg-transparent border-none">Stripe</th>
-                  <th className="text-center py-4 px-4 text-slate-400 font-medium bg-transparent border-none">PayPal</th>
+                <tr className="border-[0px] border-b border-solid border-slate-200 dark:border-slate-800 bg-transparent">
+                  <th className="text-left py-4 px-4 text-slate-600 dark:text-slate-400 font-medium bg-transparent border-none">Feature</th>
+                  <th className="text-center py-4 px-4 text-violet-600 dark:text-violet-400 font-semibold bg-violet-50 dark:bg-violet-500/5 border-none">NoxPay</th>
+                  <th className="text-center py-4 px-4 text-slate-600 dark:text-slate-400 font-medium bg-transparent border-none">Razorpay</th>
+                  <th className="text-center py-4 px-4 text-slate-600 dark:text-slate-400 font-medium bg-transparent border-none">Stripe</th>
+                  <th className="text-center py-4 px-4 text-slate-600 dark:text-slate-400 font-medium bg-transparent border-none">PayPal</th>
                 </tr>
               </thead>
               <tbody>
                 {comparisons.map((row) => (
-                  <tr key={row.feature} className="border-[0px] border-b border-solid border-slate-800/50 hover:bg-slate-900/30 bg-transparent">
-                    <td className="py-3 px-4 text-slate-300 border-none">{row.feature}</td>
-                    <td className="py-3 px-4 text-center text-emerald-400 font-medium bg-violet-500/5 border-none">{row.noxpay}</td>
-                    <td className="py-3 px-4 text-center text-slate-400 border-none">{row.razorpay}</td>
-                    <td className="py-3 px-4 text-center text-slate-400 border-none">{row.stripe}</td>
-                    <td className="py-3 px-4 text-center text-slate-400 border-none">{row.paypal}</td>
+                  <tr key={row.feature} className="border-[0px] border-b border-solid border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-900/30 bg-transparent transition-colors">
+                    <td className="py-3 px-4 text-slate-700 dark:text-slate-300 border-none font-medium">{row.feature}</td>
+                    <td className="py-3 px-4 text-center text-emerald-600 dark:text-emerald-400 font-medium bg-violet-50 dark:bg-violet-500/5 border-none">{row.noxpay}</td>
+                    <td className="py-3 px-4 text-center text-slate-500 dark:text-slate-400 border-none">{row.razorpay}</td>
+                    <td className="py-3 px-4 text-center text-slate-500 dark:text-slate-400 border-none">{row.stripe}</td>
+                    <td className="py-3 px-4 text-center text-slate-500 dark:text-slate-400 border-none">{row.paypal}</td>
                   </tr>
                 ))}
               </tbody>
@@ -245,24 +239,24 @@ export default function Home() {
         </section>
 
         {/* Code Preview */}
-        <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-800/60">
+        <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-200 dark:border-slate-800/60">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 mt-0" style={{marginTop: 0}}>
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 mt-0" style={{marginTop: 0}}>
               Integration in Minutes
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               A single API call to create a payment. Works with any language.
             </p>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden max-w-2xl mx-auto text-left">
-            <div className="flex items-center gap-2 px-4 py-3 bg-slate-800/50 border-b border-slate-800">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden max-w-2xl mx-auto text-left shadow-2xl">
+            <div className="flex items-center gap-2 px-4 py-3 bg-slate-800 border-b border-slate-700">
               <div className="flex gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-red-500/70"></div>
                 <div className="w-3 h-3 rounded-full bg-yellow-500/70"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500/70"></div>
               </div>
-              <span className="text-xs text-slate-500 ml-2 font-mono">create-payment.sh</span>
+              <span className="text-xs text-slate-400 ml-2 font-mono">create-payment.sh</span>
             </div>
             <pre className="p-6 text-sm font-mono overflow-x-auto bg-transparent border-none m-0 rounded-none shadow-none" style={{backgroundColor: 'transparent'}}>
               <code className="text-slate-300 font-mono shadow-none border-none p-0 bg-transparent">
@@ -281,30 +275,21 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-800/60 mb-10">
-          <div className="text-center bg-gradient-to-b from-violet-500/10 to-transparent border border-violet-500/20 rounded-2xl p-12 sm:p-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 mt-0" style={{marginTop: 0}}>
+        <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-200 dark:border-slate-800/60 mb-10">
+          <div className="text-center bg-gradient-to-b from-violet-50 dark:from-violet-500/10 to-transparent border border-violet-100 dark:border-violet-500/20 rounded-2xl p-12 sm:p-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 mt-0" style={{marginTop: 0}}>
               Ready to Own Your Payments?
             </h2>
-            <p className="text-lg text-slate-400 max-w-xl mx-auto mb-8">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto mb-8">
               Deploy NoxPay in minutes. Keep 100% of your revenue. No credit card required.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="https://noxpay.vercel.app/login"
-                className="px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white hover:text-white hover:no-underline font-medium rounded-lg transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(124,58,237,0.3)]"
+            <div className="flex justify-center mt-6">
+              <Link
+                to="/docs/introduction"
+                className="px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white hover:text-white hover:no-underline font-medium rounded-lg transition-all transform hover:scale-105 shadow-[0_4px_14px_0_rgba(124,58,237,0.39)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.23)] w-full sm:w-auto text-lg"
               >
-                Start Building
-              </a>
-              <a
-                href="https://github.com/John-Varghese-EH/NoxPay"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-8 py-4 bg-slate-800/80 hover:bg-slate-800 hover:text-slate-200 hover:no-underline border border-slate-700 text-slate-200 font-medium rounded-lg transition-all flex items-center justify-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                Star on GitHub
-              </a>
+                Read the Docs
+              </Link>
             </div>
           </div>
         </section>
