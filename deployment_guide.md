@@ -19,8 +19,8 @@ Render is the most popular Heroku replacement with a generous free tier that sup
 ### 2. Koyeb (Free Nano Tier) — ⭐ **Best for Always-On**
 Koyeb is a modern PaaS that supports Docker and persistent services. Their "Nano" instance is free and **doesn't sleep** if it's a "Service" type.
 
-*   **Pros**: No credit card required (usually), auto-deploy from GitHub, no sleep/cold starts on Service type, supports Docker.
-*   **Cons**: Limited resources (512MB RAM), only one free app allowed.
+*   **Pros**: Auto-deploy from GitHub, no sleep/cold starts on Service type, supports Docker.
+*   **Cons**: Requires credit card for verification, limited resources (512MB RAM), only one free app allowed.
 *   **Setup**:
     1.  Create a [Koyeb](https://koyeb.com) account and connect your GitHub repo.
     2.  Select **Web Service** (even for the worker).
@@ -83,7 +83,7 @@ The easiest platform to get a Python web app running. Great for beginners.
 | :--- | :--- | :--- |
 | **Dashboard** | **Vercel** (Free) | Optimized for Next.js, best CDN, zero config. |
 | **API** | **Render** or **Koyeb** (Free) | Supports Python/FastAPI, easy GitHub deploy. |
-| **Worker** | **Render**, **Koyeb**, or **Oracle Cloud** | Supports always-on background processes. |
+| **Worker** | **Render** or **Oracle Cloud** | Supports always-on background processes. |
 | **Database** | **Supabase** (Free) | Built-in Realtime support for checkout updates. |
 
 ### Quick Comparison
@@ -91,7 +91,7 @@ The easiest platform to get a Python web app running. Great for beginners.
 | Platform | Credit Card? | Sleep/Cold Start? | RAM (Free) | Best For |
 | :--- | :--- | :--- | :--- | :--- |
 | **Render** | ❌ No | ⚠️ Yes (15 min) | 512MB | API + Worker |
-| **Koyeb** | ❌ No | ✅ No sleep | 512MB | Always-on services |
+| **Koyeb** | ⚠️ Yes (verify) | ✅ No sleep | 512MB | Always-on services |
 | **Oracle Cloud** | ⚠️ Yes (verify) | ✅ No sleep | 1GB | Full VPS control |
 | **Fly.io** | ⚠️ Yes (verify) | ✅ No sleep | 256MB x3 | Docker containers |
 | **Leapcell** | ❌ No | ⚠️ Serverless | Varies | Serverless API |

@@ -65,6 +65,13 @@ app.include_router(webhooks.router)
 app.include_router(clients.router)
 app.include_router(analytics.router)
 
+@app.get("/api/wake", tags=["Health"])
+async def wake_service():
+    """Wake-up endpoint to prevent Render free-tier cold starts.
+    Configure a free cron service (e.g., cron-job.org, UptimeRobot)
+    to ping this endpoint every 14 minutes."""
+    return {"status": "awake", "service": "NoxPay API"}
+
 @app.get("/health", tags=["Health"])
 async def health_check():
     """Simple health check endpoint."""

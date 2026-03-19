@@ -115,7 +115,7 @@ This guide walks you through deploying NoxPay from scratch — **database → da
 - A **GitHub** account
 - A **Supabase** account ([supabase.com](https://supabase.com) — Free tier)
 - A **Vercel** account ([vercel.com](https://vercel.com) — Free tier)
-- A **Koyeb** account ([koyeb.com](https://koyeb.com) — Free tier, no credit card)
+- A **Render** account ([render.com](https://render.com) — Free tier)
 
 ---
 
@@ -179,27 +179,29 @@ your-project.vercel.app/widget     → Embeddable iframe widget
 
 ---
 
-### Step 3: Deploy Worker on Koyeb (Free, No Credit Card)
+### Step 3: Deploy Worker on Render (Free)
 
-The **worker** is a long-running Python process that monitors bank emails (IMAP) and blockchain transactions to auto-verify payments. It needs an always-on host — Koyeb's free Nano tier is perfect.
+The **worker** is a long-running Python process that monitors bank emails (IMAP) and blockchain transactions to auto-verify payments. It needs an always-on host — Render's free tier is an excellent host for this.
 
-#### 3a. Create a Koyeb Account
+#### 3a. Create a Render Account
 
-1. Go to [koyeb.com](https://app.koyeb.com/signup) and sign up (no credit card required).
+1. Go to [render.com](https://render.com) and sign up.
 2. Connect your **GitHub** account when prompted.
 
-#### 3b. Create a New Service
+#### 3b. Create a New Background Worker
 
-1. Click **Create Service** → Select **GitHub**.
+1. Click **New +** → Select **Background Worker**.
 2. Choose your `NoxPay` repository.
 3. Configure the service:
 
    | Setting | Value |
    | :--- | :--- |
-   | **Service type** | Worker |
-   | **Builder** | Dockerfile |
-   | **Dockerfile path** | `Dockerfile` (auto-detected) |
-   | **Instance type** | `Nano` (free) |
+   | **Name** | `noxpay-worker` |
+   | **Branch** | `main` |
+   | **Runtime** | `Python 3` |
+   | **Build Command** | `pip install -r worker/requirements.txt` |
+   | **Start Command** | `python worker/main.py` |
+   | **Instance Type** | `Free` |
    | **Region** | Choose nearest to your bank |
 
 4. **Override the Run Command** to:
@@ -209,7 +211,7 @@ The **worker** is a long-running Python process that monitors bank emails (IMAP)
 
 #### 3c. Set Environment Variables
 
-In Koyeb → Service Settings → **Environment Variables**, add:
+In the **Environment** section, add the following variables:
 
 | Variable | Value | Notes |
 | :--- | :--- | :--- |
@@ -234,7 +236,7 @@ If using Gmail for bank alert forwarding:
 
 #### 3e. Deploy
 
-Click **Deploy** → Koyeb builds the Docker image and starts the worker. Check the **Logs** tab to verify:
+Click **Create Background Worker** → Render installs dependencies and starts the worker. Check the **Logs** tab to verify:
 
 ```
 Starting NoxPay Worker 🚀
@@ -329,7 +331,7 @@ Your local instance runs at `http://localhost:3000`.
 | Component | Platform | Cost | Always-On? |
 | :--- | :--- | :--- | :--- |
 | **Dashboard + API** | [Vercel](https://vercel.com) | Free | ✅ Serverless |
-| **Worker** | [Koyeb](https://koyeb.com) | Free (Nano) | ✅ No sleep |
+| **Worker** | [Render](https://render.com) | Free | ✅ No sleep |
 | **Database** | [Supabase](https://supabase.com) | Free | ✅ Always-on |
 
 > For more deployment options (Render, Oracle Cloud, Fly.io, etc.), see [`deployment_guide.md`](deployment_guide.md).

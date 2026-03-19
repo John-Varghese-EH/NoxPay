@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import sys
 from imap_tools import MailBox, AioMailBox, AND
 from worker.config import get_settings
@@ -88,6 +89,32 @@ async def imap_idle_loop():
             await asyncio.sleep(backoff)
             backoff = min(backoff * 2, max_backoff)
 
+
+async def keep_alive_ping():
+    """
+    Periodically pings the API health endpoint to prevent Render free-tier
+    services from sleeping (they spin down after 15 min of inactivity).
+    Runs every 14 minutes.
+    """
+    import urllib.request
+    api_url = os.getenv("API_HEALTH_URL", "")
+    if not api_url:
+        logger.warning("API_HEALTH_URL not set. Keep-alive ping disabled. Set it to your Vercel/Render API URL + /health")
+        return
+    
+    PING_INTERVAL = 14 * 60  # 14 minutes
+    logger.info(f"Keep-alive ping enabled. Pinging {api_url} every {PING_INTERVAL // 60} minutes.")
+    
+    while True:
+        try:
+            await asyncio.sleep(PING_INTERVAL)
+            # Use urllib to avoid adding aiohttp dependency
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, lambda: urllib.request.urlopen(api_url, timeout=10).read())
+            logger.info(f"Keep-alive ping sent to {api_url}")
+        except Exception as e:
+            logger.warning(f"Keep-alive ping failed: {e}")
+
 async def main():
     logger.info("Starting VoidPay Worker 🚀")
     
@@ -95,10 +122,11 @@ async def main():
     from worker.crypto_observer import CryptoObserver
     poller = CryptoObserver()
     
-    # Run IMAP watcher and Blockchain poller concurrently
+    # Run IMAP watcher, Blockchain poller, and keep-alive ping concurrently
     await asyncio.gather(
         imap_idle_loop(),
-        poller.run()
+        poller.run(),
+        keep_alive_ping()
     )
 
 if __name__ == "__main__":
