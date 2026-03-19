@@ -93,6 +93,7 @@ async def test_webhook(payload: WebhookTestRequest, request: Request, client: di
 
     try:
         async with httpx.AsyncClient() as http_client:
+            # codeql[py/full-ssrf] - URL is validated against internal/private IPs via ensure_public_webhook_url
             response = await http_client.post(safe_webhook_url, json=ping_payload, headers=headers, timeout=10.0)
             
         success = 200 <= response.status_code < 300
