@@ -4,11 +4,8 @@ import Link from 'next/link'
 import CopyButton from '@/components/ui/CopyButton'
 import { regenerateSecretKey, regenerateWebhookSecret } from '@/app/settings/actions'
 
-export default async function ApiKeysPage({
-    searchParams
-}: {
-    searchParams: { project?: string, new_secret?: string, message?: string, error?: string }
-}) {
+export default async function ApiKeysPage(props: { searchParams: Promise<any> }) {
+    const searchParams = await props.searchParams;
     const supabase = await createClient()
 
     const {

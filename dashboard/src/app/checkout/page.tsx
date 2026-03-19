@@ -2,7 +2,8 @@ import { createClient } from '@/utils/supabase/server'
 import CheckoutClient from './CheckoutClient'
 
 // Render a dynamic, branded checkout page
-export default async function CheckoutPage({ searchParams }: { searchParams: { intent?: string } }) {
+export default async function CheckoutPage(props: { searchParams: Promise<any> }) {
+    const searchParams = await props.searchParams;
     const intentId = searchParams.intent
 
     if (!intentId) {

@@ -14,11 +14,8 @@ import {
 } from './actions'
 import DeleteProjectButton from './DeleteProjectButton'
 
-export default async function SettingsPage({
-    searchParams
-}: {
-    searchParams: { project?: string, message?: string, error?: string }
-}) {
+export default async function SettingsPage(props: { searchParams: Promise<any> }) {
+    const searchParams = await props.searchParams;
     const supabase = await createClient()
 
     const {

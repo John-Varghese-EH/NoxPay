@@ -4,11 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { Link as LinkIcon, Plus, CheckCircle2, ArrowRight, Clock, Copy, ExternalLink } from 'lucide-react'
 import CopyButton from '@/components/ui/CopyButton'
 
-export default async function PaymentLinksPage({
-    searchParams
-}: {
-    searchParams: { success_id?: string; project?: string; error?: string }
-}) {
+export default async function PaymentLinksPage(props: { searchParams: Promise<any> }) {
+    const searchParams = await props.searchParams;
     const supabase = await createClient()
 
     const {

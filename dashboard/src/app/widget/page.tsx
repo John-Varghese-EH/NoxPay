@@ -5,7 +5,8 @@ import CopyButton from '@/components/ui/CopyButton'
 import ExpiryTimer from '../checkout/ExpiryTimer'
 
 // Render a minimalist, embeddable checkout widget
-export default async function WidgetPage({ searchParams }: { searchParams: { intent?: string } }) {
+export default async function WidgetPage(props: { searchParams: Promise<any> }) {
+    const searchParams = await props.searchParams;
     const intentId = searchParams.intent
 
     if (!intentId) {

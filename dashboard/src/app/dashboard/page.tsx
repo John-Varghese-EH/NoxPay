@@ -5,11 +5,8 @@ import CreateProjectModal from '@/components/CreateProjectModal'
 import TransactionChart from '@/components/TransactionChart'
 import { format } from 'date-fns'
 
-export default async function DashboardPage({
-    searchParams,
-}: {
-    searchParams: { project?: string }
-}) {
+export default async function DashboardPage(props: { searchParams: Promise<any> }) {
+    const searchParams = await props.searchParams;
     const supabase = await createClient()
 
     const {

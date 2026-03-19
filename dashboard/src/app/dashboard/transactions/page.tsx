@@ -3,11 +3,8 @@ import { redirect } from 'next/navigation'
 import { AlertCircle, CheckCircle2, XCircle, Search, Filter, Flag } from 'lucide-react'
 import FlaggedActions from '@/components/FlaggedActions'
 
-export default async function TransactionsPage({
-    searchParams,
-}: {
-    searchParams: { project?: string; tab?: string }
-}) {
+export default async function TransactionsPage(props: { searchParams: Promise<any> }) {
+    const searchParams = await props.searchParams;
     const supabase = await createClient()
     const currentTab = searchParams.tab || 'all'
 
