@@ -202,84 +202,104 @@ export default async function PaymentLinksPage({
 
                     {/* Success Display or Recent Links */}
                     <div className="flex flex-col gap-6">
-                        {successId ? (
-                            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-8 animate-in zoom-in-95 duration-300">
-                                <div className="flex items-center gap-3 text-emerald-400 font-bold text-lg mb-4">
-                                    <CheckCircle2 className="w-6 h-6" />
-                                    Payment Link Ready!
-                                </div>
-                                <p className="text-sm text-emerald-500/70 mb-6">
-                                    Copy and share with your customer. Link expires in 15 minutes.
-                                </p>
+                        {successId && (
+                            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-8 animate-in zoom-in-95 duration-300 shadow-[0_0_30px_rgba(16,185,129,0.1)] relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 blur-[50px] -mr-16 -mt-16 rounded-full"></div>
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-3 text-emerald-400 font-bold text-lg mb-4">
+                                        <CheckCircle2 className="w-6 h-6" />
+                                        Payment Link Ready!
+                                    </div>
+                                    <p className="text-sm text-emerald-500/70 mb-6 font-medium">
+                                        Copy and share with your customer. Link expires in 15 minutes.
+                                    </p>
 
-                                <div className="space-y-3">
-                                    <div>
-                                        <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Checkout Link</p>
-                                        <div className="bg-slate-950 border border-emerald-500/50 rounded-xl p-3 flex items-center justify-between gap-3">
-                                            <span className="text-xs font-mono text-emerald-200 truncate">{checkoutUrl}</span>
-                                            <CopyButton textToCopy={checkoutUrl} className="text-emerald-400 hover:text-white shrink-0" />
+                                    <div className="space-y-4">
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500/80 mb-1.5 flex items-center gap-1.5"><ExternalLink className="w-3 h-3" /> Checkout Link</p>
+                                            <div className="bg-slate-950/80 backdrop-blur-sm border border-emerald-500/40 rounded-xl p-3 flex items-center justify-between gap-3 shadow-inner">
+                                                <span className="text-xs font-mono text-emerald-200 truncate select-all">{checkoutUrl}</span>
+                                                <CopyButton textToCopy={checkoutUrl} className="text-emerald-400 hover:text-emerald-300 shrink-0 bg-emerald-500/10 p-1.5 rounded-md transition-colors" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5"><Copy className="w-3 h-3" /> Widget (Iframe) Link</p>
+                                            <div className="bg-slate-950/80 backdrop-blur-sm border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-3 shadow-inner">
+                                                <span className="text-xs font-mono text-slate-300 truncate select-all">{widgetUrl}</span>
+                                                <CopyButton textToCopy={widgetUrl} className="text-slate-400 hover:text-white shrink-0 bg-slate-800/50 p-1.5 rounded-md transition-colors" />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Widget (Iframe) Link</p>
-                                        <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">
-                                            <span className="text-xs font-mono text-slate-300 truncate">{widgetUrl}</span>
-                                            <CopyButton textToCopy={widgetUrl} className="text-slate-400 hover:text-white shrink-0" />
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div className="mt-6 flex gap-3">
-                                    <a href={checkoutUrl} target="_blank" rel="noreferrer" className="flex-1 text-center py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2">
-                                        <ExternalLink className="w-4 h-4" /> Open Checkout
-                                    </a>
-                                    <a href={`/dashboard/payment-links?project=${selectedProjectId}`} className="flex-1 text-center py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition-all">
-                                        Create Another
-                                    </a>
+                                    <div className="mt-8 flex gap-3">
+                                        <a href={checkoutUrl} target="_blank" rel="noreferrer" className="flex-1 text-center py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                                            Open Checkout
+                                        </a>
+                                        <a href={`/dashboard/payment-links?project=${selectedProjectId}`} className="flex-1 text-center py-2.5 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-xl transition-all shadow-sm">
+                                            Create Another
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="border border-slate-800 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                                <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mb-4 text-slate-700">
-                                    <LinkIcon className="w-8 h-8" />
+                        )}
+
+                        {/* Recent Links always visible unless successfully generated a new one just now, or no links exist and no success */}
+                        {!successId && recentLinks.length === 0 && (
+                            <div className="h-full border border-slate-800 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center text-center bg-slate-900/20">
+                                <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mb-5 text-slate-600 shadow-inner">
+                                    <LinkIcon className="w-7 h-7" />
                                 </div>
-                                <h3 className="text-slate-300 font-medium mb-1">Generate a link</h3>
-                                <p className="text-slate-500 text-sm max-w-[250px]">
-                                    Fill out the form to create a shareable payment link.
+                                <h3 className="text-slate-300 font-medium mb-1">No payment links yet</h3>
+                                <p className="text-slate-500 text-xs max-w-[250px] leading-relaxed">
+                                    Fill out the form on the left to instantly create a shareable checkout link for your customers.
                                 </p>
                             </div>
                         )}
 
-                        {/* Recent Links */}
-                        {recentLinks.length > 0 && (
-                            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
-                                <div className="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-800">
-                                    Recent Links
+                        {(!successId || recentLinks.length > 1) && recentLinks.length > 0 && (
+                            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                                <div className="px-6 py-4 flex items-center justify-between border-b border-slate-800 bg-slate-900/50">
+                                    <div className="text-sm font-semibold text-white flex items-center gap-2">
+                                        <Clock className="w-4 h-4 text-violet-400" />
+                                        Recent Links
+                                    </div>
+                                    <span className="text-xs font-medium text-slate-500 bg-slate-800 px-2.5 py-1 rounded-full">{recentLinks.length > 5 ? '5+' : recentLinks.length}</span>
                                 </div>
                                 <div className="divide-y divide-slate-800/50">
-                                    {recentLinks.slice(0, 5).map((link: any) => (
-                                        <div key={link.id} className="px-5 py-3 flex items-center justify-between gap-4 hover:bg-slate-800/20 transition-colors">
+                                    {recentLinks.slice(0, 6).map((link: any) => {
+                                        const selfCheckoutUrl = `${siteUrl}/checkout?intent=${link.id}`;
+                                        return (
+                                        <div key={link.id} className="p-4 sm:px-6 flex items-center justify-between gap-4 hover:bg-slate-800/30 transition-all group">
                                             <div className="flex flex-col min-w-0">
-                                                <span className="font-mono text-xs text-slate-300 truncate">{link.order_id}</span>
-                                                <span className="text-[10px] text-slate-500">{new Date(link.created_at).toLocaleString()}</span>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className="font-mono text-sm font-medium text-slate-200 truncate group-hover:text-violet-300 transition-colors">{link.order_id}</span>
+                                                    <CopyButton textToCopy={selfCheckoutUrl} className="text-slate-500 hover:text-white shrink-0 bg-slate-800/50 hover:bg-violet-600 p-1 rounded transition-colors" />
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[10px] font-medium text-slate-500">{new Date(link.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <span className={`w-fit text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${
+                                                        link.status === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                        : link.status === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                        : link.status === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                        : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                                    }`}>
+                                                        {link.status}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-3 shrink-0">
-                                                <span className="text-sm font-medium text-white">{link.currency === 'UPI' ? '\u20B9' : '$'}{Number(link.amount).toLocaleString()}</span>
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                                                    link.status === 'success' ? 'bg-emerald-500/20 text-emerald-400'
-                                                    : link.status === 'pending' ? 'bg-blue-500/20 text-blue-400'
-                                                    : link.status === 'flagged' ? 'bg-amber-500/20 text-amber-400'
-                                                    : 'bg-slate-700 text-slate-400'
-                                                }`}>
-                                                    {link.status}
-                                                </span>
+                                            <div className="flex flex-col items-end gap-1.5 shrink-0">
+                                                <span className="text-sm font-bold text-white tracking-tight">{link.currency === 'UPI' ? '₹' : '₮'}{Number(link.amount).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
+                                                <a href={selfCheckoutUrl} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-violet-400 hover:text-violet-300 flex items-center gap-1">
+                                                    Open <ExternalLink className="w-3 h-3" />
+                                                </a>
                                             </div>
                                         </div>
-                                    ))}
+                                    )})}
                                 </div>
                             </div>
                         )}
                     </div>
+
                 </div>
             )}
         </div>
