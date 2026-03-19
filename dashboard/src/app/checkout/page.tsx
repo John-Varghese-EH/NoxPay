@@ -29,7 +29,9 @@ export default async function CheckoutPage(props: { searchParams: Promise<any> }
                 theme_color,
                 logo_url,
                 return_url,
-                crypto_wallet
+                crypto_wallet,
+                bank_account,
+                upi_vpa
             )
         `)
         .eq('id', intentId)

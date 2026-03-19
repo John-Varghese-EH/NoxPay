@@ -17,11 +17,12 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
     // Fetch user's projects
     const { data: clients } = await supabase
         .from('clients')
-        .select('id, name, upi_vpa, crypto_wallet')
+        .select('id, name, upi_vpa, crypto_wallet, payment_methods, bank_account')
         .order('created_at', { ascending: true })
 
     const selectedProjectId = searchParams?.project || (clients && clients.length > 0 ? clients[0].id : null)
     const selectedClient = clients?.find((c: any) => c.id === selectedProjectId)
+    const enabledMethods = selectedClient?.payment_methods || { upi: true, usdt: false, bank_transfer: false }
 
     // Fetch recent payment links for this project
     let recentLinks: any[] = []
@@ -52,7 +53,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
         // Fetch the specific project (RLS ensures user only sees their own)
         const { data: client } = await supabase
             .from('clients')
-            .select('id, upi_vpa, crypto_wallet')
+            .select('id, upi_vpa, crypto_wallet, bank_account')
             .eq('id', projectId)
             .single()
 
@@ -152,7 +153,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                             <div>
                                 <label className="text-sm font-medium text-slate-400 block mb-2">Amount</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">\u20B9</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">$</span>
                                     <input
                                         type="number"
                                         name="amount"
@@ -171,8 +172,9 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                                     name="currency"
                                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all appearance-none"
                                 >
-                                    <option value="UPI">UPI (INR)</option>
-                                    <option value="USDT">USDT (Crypto)</option>
+                                    {(!enabledMethods || enabledMethods.upi !== false) && <option value="UPI">UPI (INR)</option>}
+                                    {enabledMethods?.usdt && <option value="USDT">USDT (Crypto)</option>}
+                                    {enabledMethods?.bank_transfer && <option value="BANK">Bank Transfer (INR)</option>}
                                 </select>
                             </div>
 

@@ -25,6 +25,8 @@ interface ClientBrand {
     logo_url?: string
     crypto_wallet?: string
     return_url?: string
+    bank_account?: { account_name?: string; account_number?: string; ifsc?: string }
+    upi_vpa?: string
 }
 
 interface CheckoutClientProps {
@@ -46,6 +48,8 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
         paymentUri = `upi://pay?pa=${intent.upi_vpa}&pn=${encodeURIComponent(clientBrand?.name || 'Merchant')}&am=${Math.max(Number(intent.amount), 1)}&tr=${intent.order_id}`
     } else if (intent.currency === 'USDT') {
         paymentUri = clientBrand?.crypto_wallet || ''
+    } else if (intent.currency === 'BANK') {
+        paymentUri = '' // No QR for bank transfer
     }
 
     return (
@@ -87,7 +91,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                             <div className="flex flex-col">
                                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{t.amountDue}</span>
                                 <span className="text-4xl font-bold tracking-tight text-white mb-0 leading-none">
-                                    {intent.currency === 'UPI' ? '₹' : '₮'}
+                                    {intent.currency === 'UPI' || intent.currency === 'BANK' ? '₹' : '₮'}
                                     {Number(intent.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                 </span>
                             </div>
@@ -113,12 +117,39 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                                 )}
 
                                 <p className="text-sm text-slate-300 mb-4 w-full">
-                                    {intent.currency === 'UPI' ? t.payTo : t.sendUsdt}
+                                    {intent.currency === 'UPI' ? t.payTo : intent.currency === 'BANK' ? 'Transfer to:' : t.sendUsdt}
                                     <span className="font-mono font-medium text-white break-all mt-1 flex items-center justify-between gap-2 bg-slate-950 py-2 px-3 rounded-lg border border-slate-800 text-left">
-                                        <span className="truncate">{intent.currency === 'UPI' ? intent.upi_vpa : paymentUri}</span>
+                                        <span className="truncate">{intent.currency === 'UPI' ? (intent.upi_vpa || clientBrand?.upi_vpa) : paymentUri}</span>
                                         <CopyButton textToCopy={(intent.currency === 'UPI' ? intent.upi_vpa : paymentUri) || ''} className="shrink-0 text-slate-400 hover:text-white" />
                                     </span>
                                 </p>
+
+                                {intent.currency === 'BANK' && clientBrand?.bank_account && (
+                                    <div className="w-full text-left space-y-3">
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Bank Transfer Details</p>
+                                        <div className="bg-slate-950 rounded-lg p-3 border border-slate-800 space-y-2">
+                                            <div className="flex justify-between">
+                                                <span className="text-xs text-slate-500">Account Name</span>
+                                                <span className="text-sm font-medium text-white">{clientBrand.bank_account.account_name || 'N/A'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs text-slate-500">Account No.</span>
+                                                <span className="text-sm font-mono font-medium text-white flex items-center gap-2">
+                                                    {clientBrand.bank_account.account_number || 'N/A'}
+                                                    <CopyButton textToCopy={clientBrand.bank_account.account_number || ''} className="text-slate-400 hover:text-white shrink-0" />
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs text-slate-500">IFSC Code</span>
+                                                <span className="text-sm font-mono font-medium text-white flex items-center gap-2">
+                                                    {clientBrand.bank_account.ifsc || 'N/A'}
+                                                    <CopyButton textToCopy={clientBrand.bank_account.ifsc || ''} className="text-slate-400 hover:text-white shrink-0" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p className="text-[11px] text-slate-500 text-center">Transfer the exact amount shown above and use the Order ID as the transaction reference.</p>
+                                    </div>
+                                )}
 
                                 {intent.currency === 'UPI' && (
                                     <>
