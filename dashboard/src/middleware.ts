@@ -18,6 +18,11 @@ const PUBLIC_PREFIXES = [
   '/api/',
   '/_next/',
   '/health',
+  '/login',
+  '/forgot-password',
+  '/reset-password',
+  '/auth/',
+  '/docs'
 ]
 
 const PUBLIC_EXACT = [
