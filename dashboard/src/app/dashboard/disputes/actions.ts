@@ -22,7 +22,7 @@ export async function resolveDispute(formData: FormData) {
     const { error: disputeError } = await supabase
         .from('payment_disputes')
         .update({ 
-            status: action,
+            status: action === 'verify' ? 'verified' : 'rejected',
             resolved_at: new Date().toISOString(),
             admin_notes: `Manually ${action}ed by merchant`
         })

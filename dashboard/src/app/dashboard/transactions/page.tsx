@@ -73,11 +73,10 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
         if (data) allIntents = data
     }
 
-    const tabs = [
+    const tabs: { key: string, label: string, color: string, count?: number }[] = [
         { key: 'all', label: 'All', color: 'violet' },
-        { key: 'pending', label: 'Pending', color: 'blue' },
         { key: 'success', label: 'Successful', color: 'emerald' },
-        { key: 'flagged', label: 'Flagged for Review', color: 'amber', count: flaggedCount },
+        { key: 'pending', label: 'Pending', color: 'blue' },
     ]
 
     return (
