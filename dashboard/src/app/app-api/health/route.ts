@@ -32,11 +32,11 @@ export async function GET() {
 
         const services: ServiceStatus[] = []
 
-        // 1. Supabase Auth / DB — needs apikey header
+        // 1. Supabase Auth / DB
         if (supabaseUrl && supabaseAnonKey) {
             const { ok, latency } = await checkService(
-                `${supabaseUrl}/rest/v1/`,
-                { apikey: supabaseAnonKey, Authorization: `Bearer ${supabaseAnonKey}` },
+                `${supabaseUrl}/auth/v1/health`,
+                undefined,
                 5000
             )
             services.push({
