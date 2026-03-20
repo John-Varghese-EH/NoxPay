@@ -23,6 +23,7 @@ function SidebarIcon({ name }: { name: string }) {
 const navItems = [
   { name: 'Overview', icon: 'overview', href: '/dashboard' },
   { name: 'Transactions', icon: 'transactions', href: '/dashboard/transactions' },
+  { name: 'Disputes', icon: 'flagged', href: '/dashboard/disputes' },
   { name: 'Payment Links', icon: 'paymentlinks', href: '/dashboard/payment-links' },
   { name: 'Crypto', icon: 'crypto', href: '/dashboard/crypto' },
   { name: 'Analytics', icon: 'analytics', href: '/dashboard/analytics' },
