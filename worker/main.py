@@ -23,29 +23,83 @@ logger = logging.getLogger("NoxPay-Worker")
 settings = get_settings()
 
 async def process_email(msg):
-    """Processes a single incoming bank email."""
+    """Processes a single incoming bank email and logs each step."""
     logger.info(f"Processing new email from {msg.from_}: {msg.subject}")
     
+    # Initialize Supabase client for logging
+    from supabase import create_client
+    try:
+        db = create_client(settings.supabase_url, settings.supabase_key)
+    except Exception:
+        db = None
+
+    body = msg.text or msg.html or ""
+    body_preview = body[:500] if body else ""
+
+    def log_email(status, parsed_amount=None, parsed_utr=None, parsed_order_id=None, parsed_bank=None, matched_intent_id=None, error_message=None):
+        if not db:
+            return
+        try:
+            db.table("worker_email_logs").insert({
+                "sender": str(msg.from_)[:200],
+                "subject": str(msg.subject)[:300],
+                "status": status,
+                "parsed_amount": float(parsed_amount) if parsed_amount else None,
+                "parsed_utr": parsed_utr,
+                "parsed_order_id": parsed_order_id,
+                "parsed_bank": parsed_bank,
+                "matched_intent_id": str(matched_intent_id) if matched_intent_id else None,
+                "error_message": error_message,
+                "body_preview": body_preview
+            }).execute()
+        except Exception as e:
+            logger.warning(f"Failed to write email log: {e}")
+
+    # Security check
     if not is_secure_email(msg):
         logger.warning(f"Email from {msg.from_} failed security checks. Discarding.")
+        log_email("security_rejected", error_message=f"Sender {msg.from_} failed security checks (domain/DKIM/SPF)")
         return
-
-    # Extract plain text or HTML body
-    body = msg.text or msg.html
+    
     if not body:
         logger.warning("Empty email body. Skipping.")
+        log_email("parse_failed", error_message="Empty email body")
         return
+
+    # Log that we received a valid email
+    log_email("received")
         
     parsed_tx = ParserRegistry.process(body)
     
     if parsed_tx:
+        log_email("parsed",
+            parsed_amount=parsed_tx.amount,
+            parsed_utr=parsed_tx.utr,
+            parsed_order_id=parsed_tx.order_id,
+            parsed_bank=parsed_tx.bank_source)
+
         success = match_and_settle(parsed_tx)
         if success:
             logger.info(f"Successfully processed transaction for UTR {parsed_tx.utr}")
+            # Update the log with matched info (best effort)
+            if db:
+                try:
+                    db.table("worker_email_logs").update({
+                        "status": "matched"
+                    }).eq("parsed_utr", parsed_tx.utr).eq("status", "parsed").execute()
+                except Exception:
+                    pass
         else:
             logger.error(f"Failed to settle transaction for UTR {parsed_tx.utr}")
+            log_email("settle_failed",
+                parsed_amount=parsed_tx.amount,
+                parsed_utr=parsed_tx.utr,
+                parsed_order_id=parsed_tx.order_id,
+                parsed_bank=parsed_tx.bank_source,
+                error_message=f"match_and_settle returned False for UTR {parsed_tx.utr}")
     else:
         logger.warning("Failed to parse transaction details from email.")
+        log_email("parse_failed", error_message="No parser could extract transaction data")
 
 async def imap_idle_loop():
     """
