@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Insert dispute record
-        await supabase.from('payment_disputes').insert({
+        const { error: insertError } = await supabase.from('payment_disputes').insert({
             intent_id,
             client_id: intent.client_id,
             order_id: order_id || null,
@@ -36,9 +36,15 @@ export async function POST(req: NextRequest) {
             amount: intent.amount,
             currency: intent.currency,
         })
+        
+        if (insertError) {
+            console.error('Supabase Error:', insertError)
+            return NextResponse.json({ error: insertError.message || 'Database error' }, { status: 400 })
+        }
 
         return NextResponse.json({ ok: true, message: 'Dispute report submitted successfully' })
-    } catch {
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    } catch (e: any) {
+        console.error('Route error:', e)
+        return NextResponse.json({ error: e.message || 'Internal server error' }, { status: 500 })
     }
 }
