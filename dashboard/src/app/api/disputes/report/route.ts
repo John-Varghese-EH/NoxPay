@@ -15,14 +15,14 @@ export async function POST(req: NextRequest) {
         const supabase = createAdminClient()
 
         // Verify the intent exists
-        const { data: intent } = await supabase
+        const { data: intent, error: intentError } = await supabase
             .from('payment_intents')
             .select('id, client_id, status, amount, currency')
             .eq('id', intent_id)
             .single()
 
-        if (!intent) {
-            return NextResponse.json({ error: 'Payment intent not found' }, { status: 404 })
+        if (intentError || !intent) {
+            return NextResponse.json({ error: 'Payment intent not found or DB error: ' + (intentError?.message || '') }, { status: 404 })
         }
 
         // Insert dispute record
@@ -38,13 +38,16 @@ export async function POST(req: NextRequest) {
         })
         
         if (insertError) {
-            console.error('Supabase Error:', insertError)
-            return NextResponse.json({ error: insertError.message || 'Database error' }, { status: 400 })
+            return NextResponse.json({ error: 'Supabase Insert Error: ' + insertError.message }, { status: 400 })
         }
 
         return NextResponse.json({ ok: true, message: 'Dispute report submitted successfully' })
     } catch (e: any) {
-        console.error('Route error:', e)
-        return NextResponse.json({ error: e.message || 'Internal server error' }, { status: 500 })
+        // Return 400 so the UI error handler triggers, but not 500 so it doesn't mask anything
+        return NextResponse.json({ 
+            error: 'Exception hit: ' + (e.message || String(e)),
+            envUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'set' : 'missing',
+            envKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'set' : 'missing' 
+        }, { status: 400 })
     }
 }
