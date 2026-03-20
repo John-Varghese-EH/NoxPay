@@ -290,12 +290,14 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                         )}
 
                         {isExpired && !isSuccess && (
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 flex flex-col items-center text-center">
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 flex flex-col items-center text-center w-full">
                                 <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mb-3">
                                     <XCircle className="w-6 h-6 text-red-400" />
                                 </div>
                                 <h3 className="text-lg font-bold text-red-400 mb-1">{t.paymentExpired}</h3>
-                                <p className="text-sm text-red-500/80">{t.sessionTimedOut}</p>
+                                <p className="text-sm text-red-500/80 mb-4">{t.sessionTimedOut}</p>
+                                
+                                <PaymentReport intentId={intent.id} orderId={intent.order_id} />
                             </div>
                         )}
                     </div>

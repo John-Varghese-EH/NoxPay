@@ -229,7 +229,9 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
                                 <XCircle className="w-6 h-6 text-red-400" />
                             </div>
                             <h3 className="text-base font-bold text-red-400 mb-1">Payment Expired</h3>
-                            <p className="text-xs text-red-500/80">This session has timed out. Please try again.</p>
+                            <p className="text-xs text-red-500/80 mb-4">This session has timed out. Please try again.</p>
+                            
+                            <PaymentReport intentId={intent.id} orderId={intent.order_id} />
                         </div>
                     )}
 
