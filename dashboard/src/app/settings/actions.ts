@@ -3,7 +3,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import bcrypt from 'bcryptjs'
 
 // Helper to get authenticated client ownership
@@ -34,7 +33,7 @@ export async function saveProjectName(projectId: string, formData: FormData) {
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=Project name updated successfully`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -47,7 +46,7 @@ export async function deleteProject(projectId: string) {
         revalidatePath('/settings')
         return redirect('/dashboard')
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -70,7 +69,7 @@ export async function regenerateSecretKey(projectId: string) {
         // Redirect back with the new secret so it can be displayed ONCE
         return redirect(`/settings?project=${projectId}&new_secret=${skFormat}&message=Secret key regenerated successfully`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -90,7 +89,7 @@ export async function regenerateWebhookSecret(projectId: string) {
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=Webhook secret regenerated successfully`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -105,7 +104,7 @@ export async function saveVpa(projectId: string, formData: FormData) {
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=VPA saved successfully`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -120,7 +119,7 @@ export async function saveCryptoWallet(projectId: string, formData: FormData) {
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=Crypto wallet saved successfully`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -138,7 +137,7 @@ export async function saveBankDetails(projectId: string, formData: FormData) {
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=Bank details updated`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -153,7 +152,7 @@ export async function saveEmails(projectId: string, formData: FormData) {
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=Notification emails updated`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -171,7 +170,7 @@ export async function savePaymentMethods(projectId: string, formData: FormData) 
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=Payment methods updated`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
@@ -191,7 +190,7 @@ export async function saveCheckoutBranding(projectId: string, formData: FormData
         revalidatePath('/settings')
         return redirect(`/settings?project=${projectId}&message=Checkout branding updated`)
     } catch (e: any) {
-        if (isRedirectError(e)) throw e
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }

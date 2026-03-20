@@ -112,7 +112,10 @@ export default async function AnalyticsPage() {
         browserCounts[a.browser || 'Unknown'] = (browserCounts[a.browser || 'Unknown'] || 0) + 1
         deviceCounts[a.device_type || 'unknown'] = (deviceCounts[a.device_type || 'unknown'] || 0) + 1
         osCounts[a.os || 'Unknown'] = (osCounts[a.os || 'Unknown'] || 0) + 1
-        const ref = a.referrer && a.referrer !== 'direct' ? new URL(a.referrer).hostname : 'Direct'
+        let ref = 'Direct'
+        if (a.referrer && a.referrer !== 'direct') {
+            try { ref = new URL(a.referrer).hostname } catch { ref = a.referrer.substring(0, 30) }
+        }
         referrerCounts[ref] = (referrerCounts[ref] || 0) + 1
         if (a.ip_address && a.ip_address !== 'unknown') uniqueIPs.add(a.ip_address)
     }
