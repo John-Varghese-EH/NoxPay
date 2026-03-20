@@ -19,7 +19,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
-logger = logging.getLogger("VoidPay-Worker")
+logger = logging.getLogger("NoxPay-Worker")
 settings = get_settings()
 
 async def process_email(msg):
@@ -119,15 +119,41 @@ async def keep_alive_ping():
         except Exception as e:
             logger.warning(f"Keep-alive ping failed: {e}")
 
+async def health_server():
+    """
+    Minimal HTTP server so Render Web Service detects an open port.
+    Responds 200 OK to any request on the PORT env var (default 10000).
+    """
+    from aiohttp import web
+
+    async def health_handler(request):
+        return web.Response(text="OK", status=200)
+
+    app = web.Application()
+    app.router.add_get("/", health_handler)
+    app.router.add_get("/health", health_handler)
+
+    port = int(os.getenv("PORT", "10000"))
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    logger.info(f"Health server listening on port {port}")
+
+    # Keep running forever
+    while True:
+        await asyncio.sleep(3600)
+
 async def main():
-    logger.info("Starting VoidPay Worker 🚀")
+    logger.info("Starting NoxPay Worker \U0001f680")
     
     # Initialize blockchain poller
     from worker.crypto_observer import CryptoObserver
     poller = CryptoObserver()
     
-    # Run IMAP watcher, Blockchain poller, and keep-alive ping concurrently
+    # Run health server, IMAP watcher, Blockchain poller, and keep-alive ping concurrently
     await asyncio.gather(
+        health_server(),
         imap_idle_loop(),
         poller.run(),
         keep_alive_ping()

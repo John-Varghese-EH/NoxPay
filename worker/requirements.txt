@@ -6,3 +6,4 @@ dnspython
 authres
 pydantic
 pydantic-settings
+aiohttp
