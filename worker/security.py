@@ -1,10 +1,19 @@
 import logging
+import os
 import socket
 import ipaddress
 from urllib.parse import urlparse
 from authres import AuthenticationResultsHeader
 
 logger = logging.getLogger(__name__)
+
+# --- Dev / Test Mode ---
+# Set DEV_MODE=true in env to bypass email security checks during testing
+DEV_MODE = os.getenv("DEV_MODE", "false").lower() in ("true", "1", "yes")
+
+# Comma-separated list of email addresses that are always allowed (for testing)
+# Example: AUTHORIZED_SENDERS=john@gmail.com,test@outlook.com
+AUTHORIZED_SENDERS = [s.strip().lower() for s in os.getenv("AUTHORIZED_SENDERS", "").split(",") if s.strip()]
 
 def validate_webhook_url(url: str) -> str:
     """
@@ -34,6 +43,7 @@ def validate_webhook_url(url: str) -> str:
         raise ValueError(f"Invalid webhook URL: {str(e)}")
         
     return url
+
 # List of allowed bank domains. Emails from other domains will be rejected.
 ALLOWED_BANK_DOMAINS = [
     "sbi.co.in",
@@ -46,15 +56,6 @@ ALLOWED_BANK_DOMAINS = [
 def verify_dkim(email_headers: dict) -> bool:
     """
     Verifies the DKIM signature by checking the Authentication-Results header.
-    In Gmail, the IMAP server often adds an 'Authentication-Results' header
-    such as:
-    Authentication-Results: mx.google.com;
-       dkim=pass header.i=@sbi.co.in header.s=s1 header.b=...;
-       spf=pass (google.com: domain of alerts@sbi.co.in designates...)
-       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=sbi.co.in
-    
-    This function parses that header using the 'authres' library to ensure
-    DKIM passed and the signing domain is permitted.
     """
     auth_results_raw = email_headers.get('authentication-results', '')
     
@@ -63,15 +64,11 @@ def verify_dkim(email_headers: dict) -> bool:
         return False
         
     try:
-        # Pydantic/imap_tools gives us a tuple or list if multiple headers exist, or a string
         if isinstance(auth_results_raw, (list, tuple)):
             auth_results_str = auth_results_raw[0]
         else:
             auth_results_str = str(auth_results_raw)
 
-        # Parse the header using authres
-        # Example format required by authres: Authentication-Results: hostname; dkim=pass ...
-        # If it doesn't start with Authentication-Results:, we prepend it for the parser
         if not auth_results_str.lower().startswith('authentication-results:'):
             auth_results_str = f"Authentication-Results: {auth_results_str}"
 
@@ -84,10 +81,8 @@ def verify_dkim(email_headers: dict) -> bool:
             if result.method == 'dkim':
                 if result.result.lower() == 'pass':
                     dkim_pass = True
-                    # Check if the domain (header.i/header.d) is in our allowed list
                     signing_domain = getattr(result, 'properties', {}).get('header.i', '').lstrip('@').lower()
                     
-                    # Sometimes properties are objects, let's do a safe extraction
                     if not signing_domain and hasattr(result, 'header_i'):
                         signing_domain = result.header_i.lstrip('@').lower()
                     if not signing_domain and hasattr(result, 'header_d'):
@@ -142,13 +137,22 @@ def is_secure_email(email_msg) -> bool:
     """
     Main security gateway. Uses headers parsed by imap_tools.
     Expects email_msg to be an imap_tools.MailMessage object.
+    
+    In DEV_MODE or when sender is in AUTHORIZED_SENDERS, security checks are bypassed.
     """
-    # email_msg.headers is a dict of lowercased header names
-    # Example: {'authentication-results': ('mx.google.com; dkim=pass...',)}
-    
     sender = str(email_msg.from_).lower()
+
+    # --- Dev Mode: skip all security checks ---
+    if DEV_MODE:
+        logger.warning(f"[DEV_MODE] Bypassing security checks for email from {sender}")
+        return True
+
+    # --- Authorized Senders: allow specific test emails ---
+    if sender in AUTHORIZED_SENDERS:
+        logger.info(f"[AUTHORIZED] Email from {sender} is in authorized senders list. Skipping bank domain/DKIM/SPF checks.")
+        return True
     
-    # Basic envelope sender check
+    # --- Production: full security checks ---
     sender_domain = sender.split('@')[-1] if '@' in sender else ''
     if sender_domain not in ALLOWED_BANK_DOMAINS:
         logger.error(f"Sender domain '{sender_domain}' not in allowed list.")
@@ -163,3 +167,4 @@ def is_secure_email(email_msg) -> bool:
         return False
         
     return True
+
