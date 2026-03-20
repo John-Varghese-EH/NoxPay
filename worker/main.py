@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 import sys
-from imap_tools import MailBox, AioMailBox, AND
+from imap_tools import MailBox, AND
 from worker.config import get_settings
 from worker.security import is_secure_email
 from worker.parser import ParserRegistry
@@ -77,7 +77,7 @@ async def imap_idle_loop():
                 # So we simulate it or run idle() with a timeout.
                 while True:
                     # Wait for new message from the server using IDLE
-                    responses = mailbox.idle.wait(timeout=60)
+                    responses = await asyncio.to_thread(mailbox.idle.wait, timeout=60)
                     if responses:
                         # New messages arrived
                         for msg in mailbox.fetch(AND(seen=False), mark_seen=True):
