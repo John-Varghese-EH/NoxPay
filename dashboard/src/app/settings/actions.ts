@@ -194,3 +194,42 @@ export async function saveCheckoutBranding(projectId: string, formData: FormData
         return redirect(`/settings?project=${projectId}&error=${encodeURIComponent(e.message)}`)
     }
 }
+
+export async function saveBankParserRules(projectId: string, formData: FormData) {
+    const rulesJson = formData.get('rules') as string
+
+    try {
+        const rules = JSON.parse(rulesJson || '[]')
+
+        // Validate each rule has required fields
+        for (const rule of rules) {
+            if (!rule.bank_name || !rule.detect_keyword || !rule.amount_regex || !rule.utr_regex) {
+                return { error: 'Each rule must have bank name, detect keyword, amount regex, and UTR regex.' }
+            }
+            // Validate regexes are syntactically correct
+            try {
+                new RegExp(rule.amount_regex, 'i')
+                new RegExp(rule.utr_regex, 'i')
+                if (rule.sender_regex) new RegExp(rule.sender_regex, 'i')
+                if (rule.remark_regex) new RegExp(rule.remark_regex, 'i')
+            } catch {
+                return { error: `Invalid regex in rule "${rule.bank_name}".` }
+            }
+        }
+
+        const { supabase } = await verifyOwnership(projectId)
+        const { error } = await supabase.from('clients').update({
+            bank_parser_rules: rules
+        }).eq('id', projectId)
+
+        if (error) {
+            return { error: error.message }
+        }
+
+        revalidatePath('/settings')
+        return { success: true }
+    } catch (e: any) {
+        if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) throw e
+        return { error: e.message || 'Failed to save parser rules' }
+    }
+}

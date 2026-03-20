@@ -13,6 +13,7 @@ import {
     saveCheckoutBranding
 } from './actions'
 import DeleteProjectButton from './DeleteProjectButton'
+import BankParserRules from './BankParserRules'
 
 export default async function SettingsPage(props: { searchParams: Promise<any> }) {
     const searchParams = await props.searchParams;
@@ -247,6 +248,9 @@ export default async function SettingsPage(props: { searchParams: Promise<any> }
                     <DeleteProjectButton projectId={client.id} />
                 </div>
             </div>
+
+            {/* Bank Email Parser Rules - Full width */}
+            <BankParserRules projectId={client.id} initialRules={client.bank_parser_rules || []} />
         </div>
     )
 }
