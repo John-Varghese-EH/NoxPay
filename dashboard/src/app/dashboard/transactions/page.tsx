@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { AlertCircle, CheckCircle2, XCircle, Search, Filter, Flag, Download } from 'lucide-react'
 import ExportCSV from '@/components/ExportCSV'
 import FlaggedActions from '@/components/FlaggedActions'
+import CurrencySelector from '@/components/CurrencySelector'
+import ConvertedAmount from '@/components/ConvertedAmount'
 
 export default async function TransactionsPage(props: { searchParams: Promise<any> }) {
     const searchParams = await props.searchParams;
@@ -106,6 +108,7 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
                         </div>
                     </div>
                 )}
+                <CurrencySelector />
             </div>
 
             {/* Tabs */}
@@ -186,7 +189,7 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
                                         <tr key={intent.id} className="hover:bg-slate-800/30 transition-colors">
                                             <td className="px-6 py-4 font-mono text-xs font-semibold text-slate-200">{intent.order_id}</td>
                                             <td className="px-6 py-4 font-medium text-white whitespace-nowrap">
-                                                {intent.currency === 'UPI' ? '\u20B9' : '$'}{Number(intent.amount).toLocaleString()}
+                                                <ConvertedAmount amountINR={Number(intent.amount)} />
                                             </td>
                                             <td className="px-6 py-4 text-xs">
                                                 <div className="flex flex-col gap-1">

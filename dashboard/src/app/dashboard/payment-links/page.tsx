@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { Link as LinkIcon, Plus, CheckCircle2, ArrowRight, Clock, Copy, ExternalLink } from 'lucide-react'
 import CopyButton from '@/components/ui/CopyButton'
+import CurrencySelector from '@/components/CurrencySelector'
+import ConvertedAmount from '@/components/ConvertedAmount'
 
 export default async function PaymentLinksPage(props: { searchParams: Promise<any> }) {
     const searchParams = await props.searchParams;
@@ -124,6 +126,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                         </div>
                     </div>
                 )}
+                <CurrencySelector />
             </div>
 
             {!selectedProjectId ? (
@@ -294,7 +297,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col items-end gap-1.5 shrink-0">
-                                                    <span className="text-sm font-bold text-white tracking-tight">{link.currency === 'UPI' ? '₹' : '₮'}{Number(link.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                                                    <span className="text-sm font-bold text-white tracking-tight"><ConvertedAmount amountINR={Number(link.amount)} /></span>
                                                     <a href={selfCheckoutUrl} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-violet-400 hover:text-violet-300 flex items-center gap-1">
                                                         Open <ExternalLink className="w-3 h-3" />
                                                     </a>

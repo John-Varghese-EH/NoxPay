@@ -92,7 +92,7 @@ async function loadNoxPayWidget() {
     const res = await fetch('/api/create-noxpay-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 500, currency: '${currency}' })
+        body: JSON.stringify({ amount: 500, currency: '${currency}' /* , display_currency: 'USD' */ })
     });
     const data = await res.json();
 
@@ -159,7 +159,7 @@ async function startNoxPayment() {
     const res = await fetch('/api/create-noxpay-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 500, currency: '${currency}' })
+        body: JSON.stringify({ amount: 500, currency: '${currency}' /* , display_currency: 'USD' */ })
     });
     const data = await res.json();
 

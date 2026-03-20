@@ -6,6 +6,7 @@ import TransactionChart from '@/components/TransactionChart'
 import { format } from 'date-fns'
 import CurrencySelector from '@/components/CurrencySelector'
 import ConvertedAmount from '@/components/ConvertedAmount'
+import SystemStatus from '@/components/SystemStatus'
 
 export default async function DashboardPage(props: { searchParams: Promise<any> }) {
     const searchParams = await props.searchParams;
@@ -150,29 +151,7 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                                   <h2 className="text-lg font-semibold text-white">System Status</h2>
                                   <p className="text-xs text-slate-500 mb-4">Core infrastructure pulses</p>
                                   
-                                  <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800/80">
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                        <span className="text-sm font-medium text-slate-300">Auth DB</span>
-                                      </div>
-                                      <span className="text-xs text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">Operational</span>
-                                    </div>
-                                    <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800/80">
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                        <span className="text-sm font-medium text-slate-300">FastAPI</span>
-                                      </div>
-                                      <span className="text-xs text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">Operational</span>
-                                    </div>
-                                    <div className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg border border-slate-800/80">
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse delay-75"></div>
-                                        <span className="text-sm font-medium text-slate-300">IMAP Worker</span>
-                                      </div>
-                                      <span className="text-xs text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded">Polling Active</span>
-                                    </div>
-                                  </div>
+                                  <SystemStatus />
                                 </div>
                                 
                             </div>
