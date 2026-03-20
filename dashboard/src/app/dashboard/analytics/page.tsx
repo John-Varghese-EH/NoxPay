@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import { Activity, TrendingUp, CheckCircle, Target } from 'lucide-react'
+import { Activity, TrendingUp, CheckCircle, Target, Monitor, Smartphone, Tablet, Globe, MousePointer, Eye } from 'lucide-react'
 import ConvertedAmount from '@/components/ConvertedAmount'
 import CurrencySelector from '@/components/CurrencySelector'
 
@@ -61,7 +61,6 @@ export default async function AnalyticsPage() {
                 if (currency === 'UPI') upiVol += amt
                 if (currency === 'USDT') usdtVol += amt
 
-                // Aggregate for projects
                 const projName = (tx as any).payment_intents?.clients?.name || 'Unknown Project'
                 projectTotals[projName] = (projectTotals[projName] || 0) + amt
             }
@@ -73,8 +72,7 @@ export default async function AnalyticsPage() {
         dailyVolume.push({ label: dayLabel, upi: upiVol, usdt: usdtVol, total: upiVol + usdtVol })
     }
 
-    // Since we filtered projects in the loop only for the last 7 days, 
-    // let's do a global project aggregation over all fetched txns
+    // Global project aggregation
     for (const tx of (txns || [])) {
         const amt = Number(tx.amount)
         const projName = (tx as any).payment_intents?.clients?.name || 'Unknown Project'
@@ -94,31 +92,76 @@ export default async function AnalyticsPage() {
     const totalIntents = (successCount || 0) + (pendingCount || 0) + (failedCount || 0) + (expiredCount || 0) + (flaggedCount || 0)
     const successRate = totalIntents > 0 ? ((successCount || 0) / totalIntents) * 100 : 0
 
+    // ======= Checkout Analytics (device, browser, OS, referrer) =======
+    const { data: analyticsData } = await supabase
+        .from('checkout_analytics')
+        .select('browser, device_type, os, referrer, language, ip_address, created_at')
+        .order('created_at', { ascending: false })
+        .limit(500)
+
+    const analytics = analyticsData || []
+
+    // Aggregate breakdowns
+    const browserCounts: Record<string, number> = {}
+    const deviceCounts: Record<string, number> = {}
+    const osCounts: Record<string, number> = {}
+    const referrerCounts: Record<string, number> = {}
+    const uniqueIPs = new Set<string>()
+
+    for (const a of analytics) {
+        browserCounts[a.browser || 'Unknown'] = (browserCounts[a.browser || 'Unknown'] || 0) + 1
+        deviceCounts[a.device_type || 'unknown'] = (deviceCounts[a.device_type || 'unknown'] || 0) + 1
+        osCounts[a.os || 'Unknown'] = (osCounts[a.os || 'Unknown'] || 0) + 1
+        const ref = a.referrer && a.referrer !== 'direct' ? new URL(a.referrer).hostname : 'Direct'
+        referrerCounts[ref] = (referrerCounts[ref] || 0) + 1
+        if (a.ip_address && a.ip_address !== 'unknown') uniqueIPs.add(a.ip_address)
+    }
+
+    const sortedBrowsers = Object.entries(browserCounts).sort((a, b) => b[1] - a[1])
+    const sortedDevices = Object.entries(deviceCounts).sort((a, b) => b[1] - a[1])
+    const sortedOS = Object.entries(osCounts).sort((a, b) => b[1] - a[1])
+    const sortedReferrers = Object.entries(referrerCounts).sort((a, b) => b[1] - a[1]).slice(0, 5)
+    const totalAnalytics = analytics.length
+
+    const deviceIcons: Record<string, string> = {
+        mobile: '📱',
+        tablet: '📟',
+        desktop: '🖥️',
+    }
+
+    const browserColors: Record<string, string> = {
+        Chrome: 'bg-emerald-500',
+        Safari: 'bg-sky-500',
+        Firefox: 'bg-orange-500',
+        Edge: 'bg-blue-500',
+        Opera: 'bg-red-500',
+    }
+
     return (
         <div className="flex-1 w-full flex flex-col gap-6 p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-white tracking-tight">Advanced Analytics</h1>
-                    <p className="text-slate-400 mt-2 text-sm">Comprehensive breakdown of your transaction volumes, platform success rates, and project performance.</p>
+                    <p className="text-slate-400 mt-2 text-sm">Transaction volumes, conversion rates, visitor insights, and project performance.</p>
                 </div>
                 <CurrencySelector />
             </div>
 
             {/* Top Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="glass-card p-5">
                     <div className="flex items-center gap-3 text-slate-400 mb-2">
                         <Activity className="w-4 h-4 text-violet-400" />
-                        <span className="text-xs font-medium uppercase tracking-wider">Total UPI Vol</span>
+                        <span className="text-xs font-medium uppercase tracking-wider">UPI Volume</span>
                     </div>
-                    <div className="text-2xl font-bold text-white font-mono">₹{totalUpiVolume.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
+                    <div className="text-2xl font-bold text-white"><ConvertedAmount amountINR={totalUpiVolume} /></div>
                 </div>
                 <div className="glass-card p-5">
                     <div className="flex items-center gap-3 text-slate-400 mb-2">
                         <TrendingUp className="w-4 h-4 text-amber-400" />
-                        <span className="text-xs font-medium uppercase tracking-wider">Total Crypto Vol</span>
+                        <span className="text-xs font-medium uppercase tracking-wider">Crypto Vol</span>
                     </div>
-                    <div className="text-2xl font-bold text-white font-mono">₮{totalUsdtVolume.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
+                    <div className="text-2xl font-bold text-white font-mono">{'\u20ae'}{totalUsdtVolume.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
                 </div>
                 <div className="glass-card p-5">
                     <div className="flex items-center gap-3 text-slate-400 mb-2">
@@ -126,7 +169,15 @@ export default async function AnalyticsPage() {
                         <span className="text-xs font-medium uppercase tracking-wider">Success Rate</span>
                     </div>
                     <div className="text-2xl font-bold text-white font-mono">{successRate.toFixed(1)}%</div>
-                    <div className="text-xs text-slate-500 mt-1">{successCount} successful intents</div>
+                    <div className="text-xs text-slate-500 mt-1">{successCount} of {totalIntents}</div>
+                </div>
+                <div className="glass-card p-5">
+                    <div className="flex items-center gap-3 text-slate-400 mb-2">
+                        <Eye className="w-4 h-4 text-cyan-400" />
+                        <span className="text-xs font-medium uppercase tracking-wider">Checkouts</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white font-mono">{totalAnalytics}</div>
+                    <div className="text-xs text-slate-500 mt-1">{uniqueIPs.size} unique visitors</div>
                 </div>
                 <div className="glass-card p-5">
                     <div className="flex items-center gap-3 text-slate-400 mb-2">
@@ -134,7 +185,6 @@ export default async function AnalyticsPage() {
                         <span className="text-xs font-medium uppercase tracking-wider">Total Intents</span>
                     </div>
                     <div className="text-2xl font-bold text-white font-mono">{totalIntents}</div>
-                    <div className="text-xs text-slate-500 mt-1">across all projects</div>
                 </div>
             </div>
 
@@ -150,8 +200,8 @@ export default async function AnalyticsPage() {
                             return (
                                 <div key={i} className="flex flex-col items-center flex-1 h-full justify-end group">
                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity mb-2 text-center">
-                                        <div className="text-[10px] font-mono text-violet-400">{day.upi > 0 ? `₹${(day.upi / 1000).toFixed(1)}k` : ''}</div>
-                                        <div className="text-[10px] font-mono text-amber-400">{day.usdt > 0 ? `₮${(day.usdt / 1000).toFixed(1)}k` : ''}</div>
+                                        <div className="text-[10px] font-mono text-violet-400">{day.upi > 0 ? `${'\u20b9'}${(day.upi / 1000).toFixed(1)}k` : ''}</div>
+                                        <div className="text-[10px] font-mono text-amber-400">{day.usdt > 0 ? `${'\u20ae'}${(day.usdt / 1000).toFixed(1)}k` : ''}</div>
                                     </div>
                                     <div className="w-full max-w-[40px] flex flex-col justify-end bg-slate-900/50 rounded-t-md overflow-hidden h-[60%]">
                                         <div className="w-full bg-amber-500/80 transition-all duration-500 hover:bg-amber-400" style={{ height: `${usdtPct}%` }} />
@@ -200,6 +250,108 @@ export default async function AnalyticsPage() {
                 </div>
             </div>
 
+            {/* ========= Visitor Analytics Section ========= */}
+            <div className="mt-2">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <MousePointer className="w-5 h-5 text-violet-400" />
+                    Visitor Analytics
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Device Breakdown */}
+                    <div className="glass-card p-5 flex flex-col">
+                        <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <Smartphone className="w-3.5 h-3.5" /> Device Type
+                        </h3>
+                        <div className="space-y-3 flex-1">
+                            {sortedDevices.map(([device, count]) => {
+                                const pct = totalAnalytics > 0 ? (count / totalAnalytics) * 100 : 0
+                                return (
+                                    <div key={device} className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm">{deviceIcons[device] || '❓'}</span>
+                                            <span className="text-sm text-slate-300 capitalize">{device}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                                <div className="h-full bg-violet-500 rounded-full" style={{ width: `${pct}%` }} />
+                                            </div>
+                                            <span className="text-xs font-mono text-slate-400 w-8 text-right">{pct.toFixed(0)}%</span>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            {sortedDevices.length === 0 && <p className="text-xs text-slate-600 text-center py-4">No data yet</p>}
+                        </div>
+                    </div>
+
+                    {/* Browser Breakdown */}
+                    <div className="glass-card p-5 flex flex-col">
+                        <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <Globe className="w-3.5 h-3.5" /> Browser
+                        </h3>
+                        <div className="space-y-3 flex-1">
+                            {sortedBrowsers.map(([browser, count]) => {
+                                const pct = totalAnalytics > 0 ? (count / totalAnalytics) * 100 : 0
+                                const barColor = browserColors[browser] || 'bg-slate-500'
+                                return (
+                                    <div key={browser} className="flex items-center justify-between">
+                                        <span className="text-sm text-slate-300">{browser}</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                                <div className={`h-full ${barColor} rounded-full`} style={{ width: `${pct}%` }} />
+                                            </div>
+                                            <span className="text-xs font-mono text-slate-400 w-8 text-right">{pct.toFixed(0)}%</span>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            {sortedBrowsers.length === 0 && <p className="text-xs text-slate-600 text-center py-4">No data yet</p>}
+                        </div>
+                    </div>
+
+                    {/* OS Breakdown */}
+                    <div className="glass-card p-5 flex flex-col">
+                        <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <Monitor className="w-3.5 h-3.5" /> Operating System
+                        </h3>
+                        <div className="space-y-3 flex-1">
+                            {sortedOS.map(([osName, count]) => {
+                                const pct = totalAnalytics > 0 ? (count / totalAnalytics) * 100 : 0
+                                return (
+                                    <div key={osName} className="flex items-center justify-between">
+                                        <span className="text-sm text-slate-300">{osName}</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                                <div className="h-full bg-cyan-500 rounded-full" style={{ width: `${pct}%` }} />
+                                            </div>
+                                            <span className="text-xs font-mono text-slate-400 w-8 text-right">{pct.toFixed(0)}%</span>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            {sortedOS.length === 0 && <p className="text-xs text-slate-600 text-center py-4">No data yet</p>}
+                        </div>
+                    </div>
+
+                    {/* Top Referrers */}
+                    <div className="glass-card p-5 flex flex-col">
+                        <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <TrendingUp className="w-3.5 h-3.5" /> Top Referrers
+                        </h3>
+                        <div className="space-y-3 flex-1">
+                            {sortedReferrers.map(([ref, count]) => (
+                                <div key={ref} className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-300 truncate max-w-[120px]">{ref}</span>
+                                    <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">{count}</span>
+                                </div>
+                            ))}
+                            {sortedReferrers.length === 0 && <p className="text-xs text-slate-600 text-center py-4">No data yet</p>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Volume by Project */}
             <div className="glass-card p-0 overflow-hidden">
                 <div className="p-6 border-b border-slate-800">
                     <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Volume by Project</h2>
@@ -214,7 +366,7 @@ export default async function AnalyticsPage() {
                                         {proj}
                                     </span>
                                     <span className="font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded shadow-inner">
-                                        ~ {(total).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                        <ConvertedAmount amountINR={total} />
                                     </span>
                                 </div>
                             ))}

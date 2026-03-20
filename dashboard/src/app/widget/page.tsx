@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createAdminClient } from '@/utils/supabase/admin'
 import { ExternalLink, ShieldCheck, CheckCircle2, XCircle } from 'lucide-react'
 import RealtimeListener from '../checkout/RealtimeListener'
 import CopyButton from '@/components/ui/CopyButton'
@@ -89,7 +89,7 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
         )
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Fetch intent details
     const { data: intent } = await supabase

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ExternalLink, ShieldCheck, CheckCircle2, XCircle } from 'lucide-react'
 import RealtimeListener from './RealtimeListener'
 import CopyButton from '@/components/ui/CopyButton'
@@ -13,6 +13,7 @@ import CurrencySelector from '@/components/CurrencySelector'
 
 interface Intent {
     id: string
+    client_id: string
     status: string
     currency: string
     amount: number | string
@@ -39,6 +40,61 @@ interface CheckoutClientProps {
 export default function CheckoutClient({ intent, clientBrand }: CheckoutClientProps) {
     const [lang, setLang] = useState<Language>('en')
     const { convert, currency: displayCurrency, mounted } = useCurrency()
+
+    // --- Payment Analytics: track visitor device, browser, IP ---
+    useEffect(() => {
+        const trackVisit = async () => {
+            try {
+                const ua = navigator.userAgent
+                const lang = navigator.language
+                const screen = `${window.screen.width}x${window.screen.height}`
+                const platform = navigator.platform || 'unknown'
+                const referrer = document.referrer || 'direct'
+
+                // Detect browser
+                let browser = 'Unknown'
+                if (ua.includes('Firefox')) browser = 'Firefox'
+                else if (ua.includes('Edg')) browser = 'Edge'
+                else if (ua.includes('Chrome')) browser = 'Chrome'
+                else if (ua.includes('Safari')) browser = 'Safari'
+                else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera'
+
+                // Detect device type
+                let deviceType = 'desktop'
+                if (/Android|iPhone|iPod/i.test(ua)) deviceType = 'mobile'
+                else if (/iPad|Tablet/i.test(ua)) deviceType = 'tablet'
+
+                // Detect OS
+                let os = 'Unknown'
+                if (ua.includes('Windows')) os = 'Windows'
+                else if (ua.includes('Mac OS')) os = 'macOS'
+                else if (ua.includes('Linux')) os = 'Linux'
+                else if (ua.includes('Android')) os = 'Android'
+                else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS'
+
+                await fetch('/api/analytics/track', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        intent_id: intent.id,
+                        client_id: intent.client_id,
+                        browser,
+                        device_type: deviceType,
+                        os,
+                        screen_resolution: screen,
+                        language: lang,
+                        platform,
+                        referrer,
+                        user_agent: ua.substring(0, 500),
+                    }),
+                })
+            } catch {
+                // silently fail — analytics should never block payment
+            }
+        }
+        trackVisit()
+    }, [intent.id, intent.client_id])
+
     const [showOffline, setShowOffline] = useState(false)
     const t = translations[lang]
 

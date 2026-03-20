@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createAdminClient } from '@/utils/supabase/admin'
 import CheckoutClient from './CheckoutClient'
 
 // Render a dynamic, branded checkout page
@@ -17,7 +17,7 @@ export default async function CheckoutPage(props: { searchParams: Promise<any> }
         )
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Fetch intent details
     const { data: intent } = await supabase
