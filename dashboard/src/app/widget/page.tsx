@@ -4,6 +4,7 @@ import RealtimeListener from '../checkout/RealtimeListener'
 import CopyButton from '@/components/ui/CopyButton'
 import WidgetCurrencyBar from './WidgetCurrencyBar'
 import ExpiryTimer from '../checkout/ExpiryTimer'
+import PaymentReport from '../checkout/PaymentReport'
 
 // Render a minimalist, embeddable checkout widget
 export default async function WidgetPage(props: { searchParams: Promise<any> }) {
@@ -127,7 +128,7 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
 
     let paymentUri = ''
     if (intent.currency === 'UPI') {
-        paymentUri = `upi://pay?pa=${intent.upi_vpa}&pn=${encodeURIComponent(clientBrand?.name || 'Merchant')}&am=${Math.max(intent.amount, 1)}&tr=${intent.order_id}`
+        paymentUri = `upi://pay?pa=${intent.upi_vpa}&pn=${encodeURIComponent(clientBrand?.name || 'Merchant')}&am=${Math.max(intent.amount, 1)}&tr=${intent.order_id}&tn=${encodeURIComponent('Order ' + intent.order_id)}`
     } else if (intent.currency === 'USDT') {
         paymentUri = clientBrand?.crypto_wallet || ''
     }
@@ -208,6 +209,7 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
                             )}
 
                             <ExpiryTimer expiresAt={intent.expires_at} />
+                            <PaymentReport intentId={intent.id} orderId={intent.order_id} />
                         </div>
                     )}
 

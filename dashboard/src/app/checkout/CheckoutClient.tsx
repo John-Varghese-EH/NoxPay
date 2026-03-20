@@ -8,6 +8,7 @@ import ExpiryTimer from './ExpiryTimer'
 import LanguageToggle from './LanguageToggle'
 import { translations, Language } from './CheckoutTranslations'
 import Image from 'next/image'
+import PaymentReport from './PaymentReport'
 import { useCurrency } from '@/components/CurrencyContext'
 import CurrencySelector from '@/components/CurrencySelector'
 
@@ -104,7 +105,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
 
     let paymentUri = ''
     if (intent.currency === 'UPI') {
-        paymentUri = `upi://pay?pa=${intent.upi_vpa}&pn=${encodeURIComponent(clientBrand?.name || 'Merchant')}&am=${Math.max(Number(intent.amount), 1)}&tr=${intent.order_id}`
+        paymentUri = `upi://pay?pa=${intent.upi_vpa}&pn=${encodeURIComponent(clientBrand?.name || 'Merchant')}&am=${Math.max(Number(intent.amount), 1)}&tr=${intent.order_id}&tn=${encodeURIComponent('Order ' + intent.order_id)}`
     } else if (intent.currency === 'USDT') {
         paymentUri = clientBrand?.crypto_wallet || ''
     } else if (intent.currency === 'BANK') {
@@ -267,6 +268,8 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                                     expiresInLabel={t.expiresIn}
                                     expiredLabel={t.expired}
                                 />
+
+                                <PaymentReport intentId={intent.id} orderId={intent.order_id} />
                             </div>
                         )}
 
