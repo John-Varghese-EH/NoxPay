@@ -24,7 +24,7 @@ export default function PaymentReport({ intentId, orderId }: PaymentReportProps)
         setError('')
         setSubmitting(true)
         try {
-            const res = await fetch('/api/disputes/report', {
+            const res = await fetch('/app-api/disputes/report', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

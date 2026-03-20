@@ -16,6 +16,7 @@ const PUBLIC_PREFIXES = [
   '/checkout',
   '/widget',
   '/api/',
+  '/app-api/',
   '/_next/',
   '/health',
   '/login',

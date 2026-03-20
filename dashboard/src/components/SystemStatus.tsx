@@ -41,7 +41,7 @@ export default function SystemStatus() {
 
     const fetchStatus = async () => {
         try {
-            const res = await fetch('/api/health', { cache: 'no-store' })
+            const res = await fetch('/app-api/health', { cache: 'no-store' })
             if (res.ok) {
                 const data = await res.json()
                 setServices(data.services)

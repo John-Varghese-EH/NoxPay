@@ -73,7 +73,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                 else if (ua.includes('Android')) os = 'Android'
                 else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS'
 
-                await fetch('/api/analytics/track', {
+                await fetch('/app-api/analytics/track', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
