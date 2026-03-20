@@ -27,7 +27,6 @@ const navItems = [
   { name: 'Payment Links', icon: 'paymentlinks', href: '/dashboard/payment-links' },
   { name: 'Crypto', icon: 'crypto', href: '/dashboard/crypto' },
   { name: 'Analytics', icon: 'analytics', href: '/dashboard/analytics' },
-  { name: 'Flagged Review', icon: 'flagged', href: '/dashboard/transactions?tab=flagged' },
   { name: 'Integration', icon: 'integration', href: '/dashboard/integration' },
   { name: 'API Keys', icon: 'apikeys', href: '/api-keys' },
   { name: 'Webhooks', icon: 'webhooks', href: '/dashboard/webhooks' },

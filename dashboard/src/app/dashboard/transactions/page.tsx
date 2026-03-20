@@ -26,16 +26,9 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
     const selectedProjectId = searchParams?.project || (clients && clients.length > 0 ? clients[0].id : null)
 
     let allIntents: any[] = []
-    let flaggedCount = 0
 
     if (selectedProjectId) {
-        // Always get flagged count for badge
-        const { count } = await supabase
-            .from('payment_intents')
-            .select('*', { count: 'exact', head: true })
-            .eq('client_id', selectedProjectId)
-            .eq('is_flagged', true)
-        flaggedCount = count || 0
+
 
         const query = supabase
             .from('payment_intents')
@@ -56,9 +49,7 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
             .order('created_at', { ascending: false })
             .limit(50)
 
-        if (currentTab === 'flagged') {
-            query.eq('is_flagged', true)
-        } else if (currentTab === 'success') {
+        if (currentTab === 'success') {
             query.eq('status', 'success')
         } else if (currentTab === 'pending') {
             query.eq('status', 'pending')
@@ -132,16 +123,7 @@ export default async function TransactionsPage(props: { searchParams: Promise<an
                 ))}
             </div>
 
-            {/* Flagged Banner */}
-            {currentTab === 'flagged' && flaggedCount > 0 && (
-                <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex items-start gap-3">
-                    <Flag className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                    <div>
-                        <p className="text-sm font-medium text-amber-400">{flaggedCount} payment(s) need your review</p>
-                        <p className="text-xs text-amber-500/70 mt-1">These payments expired or could not be auto-verified. If the customer&apos;s money was deducted, approve the payment to mark it as successful.</p>
-                    </div>
-                </div>
-            )}
+            
 
             {/* Table */}
             <div className="glass-card overflow-hidden">
