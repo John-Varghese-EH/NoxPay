@@ -1,7 +1,11 @@
-import asyncio
-import logging
 import os
 import sys
+
+# Add the parent directory to Python path to allow running directly via `python worker/main.py`
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import asyncio
+import logging
 from imap_tools import MailBox, AND
 from worker.config import get_settings
 from worker.security import is_secure_email
