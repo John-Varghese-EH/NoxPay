@@ -47,6 +47,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
         const rawOrderId = (formData.get('order_id') as string || '').trim()
         const expiryMinutes = parseInt(formData.get('expiry') as string || '15', 10)
         const description = (formData.get('description') as string || '').trim()
+        const redirectUrl = (formData.get('redirect_url') as string || '').trim()
         const orderId = rawOrderId || ('link_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now())
 
         if (isNaN(amount) || amount <= 0) return
@@ -65,7 +66,7 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
             return redirect(`/dashboard/payment-links?project=${projectId}&error=Project+not+found`)
         }
 
-        const { data: intent, error } = await supabase.from('payment_intents').insert({
+        const intentData: any = {
             client_id: client.id,
             amount,
             currency,
@@ -73,7 +74,10 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
             upi_vpa: client.upi_vpa || 'noxpay@sbi',
             status: 'pending',
             expires_at: new Date(Date.now() + expiryMinutes * 60 * 1000).toISOString()
-        }).select().single()
+        }
+        if (redirectUrl) intentData.redirect_url = redirectUrl
+
+        const { data: intent, error } = await supabase.from('payment_intents').insert(intentData).select().single()
 
         if (error) {
             const msg = error.message.includes('duplicate')
@@ -188,8 +192,18 @@ export default async function PaymentLinksPage(props: { searchParams: Promise<an
                                     type="text"
                                     name="order_id"
                                     placeholder="customer_order_123"
-                                    pattern="[-a-zA-Z0-9_]*"
+                                    pattern="[a-zA-Z0-9_-]*"
                                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all font-mono text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="text-sm font-medium text-slate-400 block mb-2">Redirect URL <span className="text-slate-600">(overrides project default)</span></label>
+                                <input
+                                    type="url"
+                                    name="redirect_url"
+                                    placeholder="https://yourbrand.com/thank-you"
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all text-sm"
                                 />
                             </div>
 

@@ -50,6 +50,12 @@ export default async function CheckoutPage(props: { searchParams: Promise<any> }
 
     const clientBrand = intent.clients
 
-    return <CheckoutClient intent={intent} clientBrand={clientBrand} />
+    // Intent-level redirect_url overrides the project-level return_url
+    const finalBrand = {
+        ...clientBrand,
+        return_url: intent.redirect_url || clientBrand?.return_url || ''
+    }
+
+    return <CheckoutClient intent={intent} clientBrand={finalBrand} />
 }
 // We need to import lucide icons properly above.

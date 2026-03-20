@@ -60,7 +60,8 @@ const response = await fetch('${apiUrl}/intents/create-payment', {
     body: JSON.stringify({
         amount: 500,
         currency: '${currency}',
-        order_id: 'ORDER_' + Date.now()
+        order_id: 'ORDER_' + Date.now(),
+        redirect_url: 'https://yourbrand.com/thank-you' // optional, overrides project default
     })
 });
 

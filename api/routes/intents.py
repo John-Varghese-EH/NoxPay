@@ -21,6 +21,7 @@ class CreateIntentRequest(BaseModel):
     currency: str = "UPI"
     order_id: str
     upi_vpa: Optional[str] = None  # Falls back to client's configured VPA
+    redirect_url: Optional[str] = None  # Per-intent redirect URL, overrides project default
     metadata: Optional[dict] = {}  # Custom metadata for the transaction
 
     @field_validator("amount")
@@ -96,6 +97,8 @@ async def create_intent(intent_req: CreateIntentRequest, request: Request, clien
         "metadata": intent_req.metadata or {},
         "expires_at": expires_at.isoformat()
     }
+    if intent_req.redirect_url:
+        intent_data["redirect_url"] = intent_req.redirect_url
     
     # Insert intent
     res = supabase.table("payment_intents").insert(intent_data).execute()
