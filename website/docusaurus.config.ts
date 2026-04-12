@@ -154,7 +154,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} NoxPay. All Rights Reserved.`,
+      copyright: `Copyright © ${new Date().getFullYear()} NoxPay.<br/>Built by J0X | <a href="https://github.com/John-Varghese-EH" target="_blank">Github: John-Varghese-EH</a> | <a href="https://instagram.com/cyber__trinity" target="_blank">Instagram: @cyber__trinity</a>`,
     },
     prism: {
       theme: prismThemes.github,

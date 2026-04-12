@@ -10,11 +10,12 @@ function isValidVpa(vpa: string): boolean {
   return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/.test(vpa)
 }
 
-function buildPayUrl(base: string, vpa: string, amount: string, note: string): string {
+function buildPayUrl(base: string, vpa: string, amount: string, note: string, logo: string): string {
   const params = new URLSearchParams()
   params.set('pa', vpa)
   if (amount && parseFloat(amount) > 0) params.set('am', amount)
   if (note.trim()) params.set('tn', note.trim())
+  if (logo.trim()) params.set('lg', logo.trim())
   return `${base}/upi/pay?${params.toString()}`
 }
 
@@ -61,6 +62,7 @@ function UPICreatorInner() {
   const [vpa, setVpa] = useState('')
   const [amount, setAmount] = useState('')
   const [note, setNote] = useState('')
+  const [logo, setLogo] = useState('')
   const [error, setError] = useState('')
   const [generatedUrl, setGeneratedUrl] = useState('')
   const [copied, setCopied] = useState(false)
@@ -72,9 +74,11 @@ function UPICreatorInner() {
     const pVpa = searchParams.get('vpa') || searchParams.get('pa') || ''
     const pAmount = searchParams.get('amount') || searchParams.get('am') || ''
     const pNote = searchParams.get('note') || searchParams.get('tn') || ''
+    const pLogo = searchParams.get('logo') || searchParams.get('lg') || ''
     if (pVpa) setVpa(pVpa)
     if (pAmount) setAmount(pAmount)
     if (pNote) setNote(pNote)
+    if (pLogo) setLogo(decodeURIComponent(pLogo))
   }, [searchParams])
 
   const generate = useCallback(() => {
@@ -94,10 +98,14 @@ function UPICreatorInner() {
       setError('Please enter a valid amount')
       return
     }
+    if (logo && !logo.startsWith('http')) {
+      setError('Logo URL must start with http:// or https://')
+      return
+    }
 
-    const url = buildPayUrl(origin, vpa.trim(), amount, note)
+    const url = buildPayUrl(origin, vpa.trim(), amount, note, logo)
     setGeneratedUrl(url)
-  }, [vpa, amount, note, origin])
+  }, [vpa, amount, note, logo, origin])
 
   const handleCopy = useCallback(async () => {
     try {
@@ -228,6 +236,31 @@ function UPICreatorInner() {
                         className="w-full px-3 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 transition-all text-sm"
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Logo URL */}
+                  <div>
+                    <label htmlFor="upi-logo-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                       Brand Logo URL <span className="font-normal">(Opt)</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded overflow-hidden">
+                        {logo && logo.startsWith('http') ? (
+                          <img src={logo} alt="Logo" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                        ) : (
+                          <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        )}
+                      </div>
+                      <input
+                        id="upi-logo-input"
+                        type="url"
+                        placeholder="https://example.com/logo.png"
+                        className="w-full pl-10 pr-3 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 transition-all text-sm"
+                        value={logo}
+                        onChange={(e) => setLogo(e.target.value)}
                         onKeyDown={handleKeyDown}
                       />
                     </div>

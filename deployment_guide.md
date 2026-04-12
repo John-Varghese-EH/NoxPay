@@ -2,7 +2,7 @@
 
 ## ✅ Top Free Alternatives (Ranked)
 
-### 1. Render (Free Tier) — ⭐ **Best Overall**
+### 1. Render (Free Tier) - ⭐ **Best Overall**
 Render is the most popular Heroku replacement with a generous free tier that supports Python, Node.js, and Docker natively.
 
 *   **Pros**: No credit card required, auto-deploy from GitHub, built-in SSL, supports background workers and web services, easy environment variable management.
@@ -16,7 +16,7 @@ Render is the most popular Heroku replacement with a generous free tier that sup
 
 ---
 
-### 2. Koyeb (Free Nano Tier) — ⭐ **Best for Always-On**
+### 2. Koyeb (Free Nano Tier) - ⭐ **Best for Always-On**
 Koyeb is a modern PaaS that supports Docker and persistent services. Their "Nano" instance is free and **doesn't sleep** if it's a "Service" type.
 
 *   **Pros**: Auto-deploy from GitHub, no sleep/cold starts on Service type, supports Docker.
@@ -32,7 +32,7 @@ Koyeb is a modern PaaS that supports Docker and persistent services. Their "Nano
 
 ---
 
-### 3. Oracle Cloud (Always Free) — ⭐ **Most Powerful**
+### 3. Oracle Cloud (Always Free) - ⭐ **Most Powerful**
 Oracle offers the most powerful "Always Free" tier in the industry. You get a full Virtual Private Server (VPS) where you can run NoxPay with full control.
 
 *   **Pros**: Full VPS control, generous RAM/CPU (1GB RAM, 2 OCPUs), 24/7 persistence, no sleep/cold starts.
@@ -41,7 +41,7 @@ Oracle offers the most powerful "Always Free" tier in the industry. You get a fu
 
 ---
 
-### 4. Fly.io (Free Tier) — Great for Docker
+### 4. Fly.io (Free Tier) - Great for Docker
 Fly.io runs Docker containers on edge servers worldwide with a generous free allowance.
 
 *   **Pros**: 3 shared-CPU VMs free, 160GB outbound bandwidth, persistent volumes, global edge deployment.
@@ -55,7 +55,7 @@ Fly.io runs Docker containers on edge servers worldwide with a generous free all
 
 ---
 
-### 5. Leapcell — **Best Serverless Free**
+### 5. Leapcell - **Best Serverless Free**
 Leapcell is designed for small Python projects with a generous serverless free tier.
 
 *   **Pros**: Up to 20 free services, no credit card required, serverless (scale to zero), supports FastAPI natively.
@@ -68,7 +68,7 @@ Leapcell is designed for small Python projects with a generous serverless free t
 
 ---
 
-### 6. PythonAnywhere — **Simplest for Python**
+### 6. PythonAnywhere - **Simplest for Python**
 The easiest platform to get a Python web app running. Great for beginners.
 
 *   **Pros**: No credit card, browser-based terminal, one-click Python hosting.

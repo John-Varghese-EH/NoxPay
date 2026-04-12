@@ -24,6 +24,7 @@ function PayPageInner() {
   const pa = searchParams.get('pa') || ''
   const am = searchParams.get('am') || ''
   const tn = searchParams.get('tn') || ''
+  const lg = searchParams.get('lg') || ''
 
   const [deepLink, setDeepLink] = useState('')
   const [copied, setCopied] = useState(false)
@@ -91,8 +92,17 @@ function PayPageInner() {
           
           {/* Header Branding */}
           <div className="p-6 text-center border-b border-slate-800 bg-emerald-500/10">
-            <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 shadow-xl flex items-center justify-center overflow-hidden">
-                <span className="text-2xl font-bold text-emerald-400">{pa.charAt(0).toUpperCase()}</span>
+            <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-slate-900 border border-slate-700 shadow-xl flex items-center justify-center overflow-hidden">
+                {lg && lg.startsWith('http') ? (
+                   <img src={decodeURIComponent(lg)} alt="Brand Logo" className="w-full h-full object-cover" onError={(e) => { 
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.parentElement) {
+                         e.currentTarget.parentElement.innerHTML = `<span class="text-2xl font-bold text-emerald-400">${pa.charAt(0).toUpperCase()}</span>`;
+                      }
+                   }} />
+                ) : (
+                   <span className="text-2xl font-bold text-emerald-400">{pa.charAt(0).toUpperCase()}</span>
+                )}
             </div>
             <h2 className="text-lg font-medium text-slate-200">{pa.split('@')[0]}</h2>
             <p className="text-sm text-slate-400 mt-1">Complete your payment</p>

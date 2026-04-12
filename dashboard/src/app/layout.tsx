@@ -18,6 +18,8 @@ export const metadata: Metadata = {
 
 
 
+import Script from 'next/script'
+
 export default async function RootLayout({
   children,
 }: {
@@ -45,7 +47,9 @@ export default async function RootLayout({
               </main>
               <footer className="w-full border-t border-slate-800/60 py-6 mt-auto">
                 <div className="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center gap-2">
-                  <div className="text-xs font-mono text-slate-500">NoxPay - By J0X</div>
+                  <div className="text-xs font-mono text-slate-500">
+                    NoxPay - By J0X | <a href="https://github.com/John-Varghese-EH" target="_blank" className="hover:text-slate-300 transition-colors">Github: John-Varghese-EH</a> | <a href="https://instagram.com/cyber__trinity" target="_blank" className="hover:text-slate-300 transition-colors">Instagram: @cyber__trinity</a>
+                  </div>
                   <div className="text-[10px] text-slate-600 max-w-md">
                     Disclaimer: J0X (John Varghese) is not responsible for any issues, payment failures, transaction errors, or financial losses incurred while using this software.
                   </div>
@@ -67,7 +71,9 @@ export default async function RootLayout({
             </main>
             <footer className="w-full border-t border-slate-800/60 py-8 mt-12 bg-[#0a0a0f]">
               <div className="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center gap-3">
-                <div className="text-sm font-mono text-slate-400">NoxPay — By J0X</div>
+                <div className="text-sm font-mono text-slate-400">
+                  NoxPay — By J0X | <a href="https://github.com/John-Varghese-EH" target="_blank" className="hover:text-slate-300 transition-colors">Github: John-Varghese-EH</a> | <a href="https://instagram.com/cyber__trinity" target="_blank" className="hover:text-slate-300 transition-colors">Instagram: @cyber__trinity</a>
+                </div>
                 <div className="text-xs text-slate-600 max-w-lg leading-relaxed">
                   Disclaimer: J0X (John Varghese) is not responsible for any issues, payment failures, transaction errors, or financial losses incurred while using this software. Use at your own risk.
                 </div>
@@ -76,7 +82,7 @@ export default async function RootLayout({
           </div>
         )}
         </CurrencyProvider>
-
+        <Script src="/watermark.js" strategy="afterInteractive" />
       </body>
     </html>
   )

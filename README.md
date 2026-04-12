@@ -107,15 +107,15 @@ Yes. Traditional gateways (Stripe/PayPal) charge 4-7% for international transact
 
 ## 🛠️ Complete Setup Guide
 
-This guide walks you through deploying NoxPay from scratch — **database → dashboard → API → worker** — entirely on free tiers.
+This guide walks you through deploying NoxPay from scratch - **database → dashboard → API → worker** - entirely on free tiers.
 
 ### 📋 Prerequisites
 - **Node.js** (v18+) & **npm**
 - **Python** (v3.9+) & **pip**
 - A **GitHub** account
-- A **Supabase** account ([supabase.com](https://supabase.com) — Free tier)
-- A **Vercel** account ([vercel.com](https://vercel.com) — Free tier)
-- A **Render** account ([render.com](https://render.com) — Free tier)
+- A **Supabase** account ([supabase.com](https://supabase.com) - Free tier)
+- A **Vercel** account ([vercel.com](https://vercel.com) - Free tier)
+- A **Render** account ([render.com](https://render.com) - Free tier)
 
 ---
 
@@ -130,9 +130,9 @@ This guide walks you through deploying NoxPay from scratch — **database → da
    | `SUPABASE_KEY` (Service Role) | Settings → API → `service_role` key (⚠️ keep secret!) |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Settings → API → `anon` public key |
 
-3. **Create the database schema** — Go to **SQL Editor** → **New Query** and paste the contents of [`supabase/schema.sql`](supabase/schema.sql), then click **Run**.
+3. **Create the database schema** - Go to **SQL Editor** → **New Query** and paste the contents of [`supabase/schema.sql`](supabase/schema.sql), then click **Run**.
 
-4. **Enable Realtime** — Go to **Database → Replication** and enable Realtime for the `payment_intents` table (this powers live checkout status updates).
+4. **Enable Realtime** - Go to **Database → Replication** and enable Realtime for the `payment_intents` table (this powers live checkout status updates).
 
 ---
 
@@ -149,7 +149,7 @@ NoxPay's `vercel.json` is preconfigured to deploy the Next.js dashboard and Fast
 1. **Fork** this repo to your GitHub account.
 2. Go to [vercel.com/new](https://vercel.com/new) → Import your forked `NoxPay` repo.
 3. Vercel auto-detects the monorepo structure via `vercel.json`.
-4. Click **Deploy** (initial deploy will fail — that's OK, we need env vars first).
+4. Click **Deploy** (initial deploy will fail - that's OK, we need env vars first).
 
 #### Configure Environment Variables
 
@@ -181,7 +181,7 @@ your-project.vercel.app/widget     → Embeddable iframe widget
 
 ### Step 3: Deploy Worker on Render (Free)
 
-The **worker** is a long-running Python process that monitors bank emails (IMAP) and blockchain transactions to auto-verify payments. It needs an always-on host — Render's free tier is an excellent host for this.
+The **worker** is a long-running Python process that monitors bank emails (IMAP) and blockchain transactions to auto-verify payments. It needs an always-on host - Render's free tier is an excellent host for this.
 
 #### 3a. Create a Render Account
 
@@ -269,13 +269,13 @@ chmod +x setup.sh
 This generates `.env` files for all three components. Then start each in a separate terminal:
 
 ```bash
-# Terminal 1 — Dashboard
+# Terminal 1 - Dashboard
 cd dashboard && npm install && npm run dev
 
-# Terminal 2 — API
+# Terminal 2 - API
 cd api && pip install -r requirements.txt && uvicorn main:app --reload --port 8000
 
-# Terminal 3 — Worker
+# Terminal 3 - Worker
 cd worker && pip install -r requirements.txt && python main.py
 ```
 
@@ -611,7 +611,7 @@ When a payment is verified, NoxPay sends a `POST` request to your configured `we
 }
 ```
 
-The `X-NoxPay-Signature` header contains an HMAC-SHA256 signature. **Always verify this signature** before processing the webhook — see the code examples above.
+The `X-NoxPay-Signature` header contains an HMAC-SHA256 signature. **Always verify this signature** before processing the webhook - see the code examples above.
 
 ---
 
