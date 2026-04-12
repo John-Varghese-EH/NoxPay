@@ -169,6 +169,46 @@ export default function Home() {
           </div>
         </section>
 
+        {/* UPI Link Generator Promo */}
+        <section className="w-full max-w-6xl mx-auto px-6 py-12">
+          <div className="relative overflow-hidden rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-gradient-to-br from-white dark:from-slate-900 via-emerald-50/30 dark:via-slate-900 to-emerald-100/50 dark:to-emerald-950/30" style={{textDecoration: 'none'}}>
+            <div className="flex flex-col lg:flex-row items-center gap-8 p-8 sm:p-12 text-left">
+              <div className="flex-1 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-full text-xs text-emerald-700 dark:text-emerald-400 mb-4 font-medium">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                  </span>
+                  FREE TOOL — No Account Required
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3 mt-0" style={{marginTop: 0}}>
+                  🔗 UPI Payment Link Generator
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
+                  Create shareable UPI payment links & QR codes instantly. Works with Google Pay, PhonePe, Paytm, BHIM & all UPI apps. No signup, no fees.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                  <a
+                    href="https://noxpay.vercel.app/upi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white hover:text-white hover:no-underline font-semibold rounded-lg transition-all transform hover:scale-105 shadow-[0_4px_14px_0_rgba(16,185,129,0.3)] text-center inline-block"
+                  >
+                    Create Free Link →
+                  </a>
+                </div>
+              </div>
+              <div className="flex-shrink-0 grid grid-cols-2 gap-2 text-xs">
+                {['✅ 100% Free', '🔒 Zero Data Stored', '📱 All UPI Apps', '📋 QR Code Output'].map((pill) => (
+                  <div key={pill} className="px-3 py-2 bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 rounded-lg text-slate-700 dark:text-slate-300 text-center whitespace-nowrap">
+                    {pill}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* How It Works */}
         <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-200 dark:border-slate-800/60">
           <div className="text-center mb-16">

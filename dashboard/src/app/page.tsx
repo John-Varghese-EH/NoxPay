@@ -166,6 +166,58 @@ export default function Home() {
         </div>
       </section>
 
+      {/* UPI Link Generator Promo */}
+      <section className="w-full max-w-6xl mx-auto px-6 py-12">
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/30">
+          {/* Decorative glow */}
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 p-8 sm:p-12">
+            {/* Left content */}
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-xs text-emerald-400 mb-4 font-medium">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                </span>
+                FREE TOOL — No Account Required
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                🔗 UPI Payment Link Generator
+              </h2>
+              <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
+                Create shareable UPI payment links & QR codes for free. Works with Google Pay, PhonePe, Paytm, BHIM & all UPI apps. No signup, no fees, no data stored.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <Link
+                  href="/upi"
+                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(16,185,129,0.25)] text-center"
+                >
+                  Create Free Link →
+                </Link>
+              </div>
+            </div>
+
+            {/* Right feature pills */}
+            <div className="flex-shrink-0 grid grid-cols-2 gap-2 text-xs">
+              {[
+                '✅ 100% Free',
+                '🔒 Zero Data Stored',
+                '📱 All UPI Apps',
+                '📋 Copy & Share',
+                '🔗 URL Params API',
+                '📐 QR Code Output',
+              ].map((pill) => (
+                <div key={pill} className="px-3 py-2 bg-slate-800/60 border border-slate-700/50 rounded-lg text-slate-300 text-center whitespace-nowrap">
+                  {pill}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="w-full max-w-6xl mx-auto px-6 py-20 border-t border-slate-800/60">
         <div className="text-center mb-16">

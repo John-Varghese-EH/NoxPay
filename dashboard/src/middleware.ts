@@ -23,7 +23,8 @@ const PUBLIC_PREFIXES = [
   '/forgot-password',
   '/reset-password',
   '/auth/',
-  '/docs'
+  '/docs',
+  '/upi'
 ]
 
 const PUBLIC_EXACT = [
