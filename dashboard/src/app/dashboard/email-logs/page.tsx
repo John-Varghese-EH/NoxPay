@@ -69,10 +69,10 @@ export default async function EmailLogsPage(props: { searchParams: Promise<any> 
                         <DetailField label="Subject" value={selectedLog.subject} />
                         <DetailField label="Status" value={STATUS_CONFIG[selectedLog.status]?.label || selectedLog.status} />
                         <DetailField label="Time" value={new Date(selectedLog.created_at).toLocaleString()} />
-                        <DetailField label="Parsed Amount" value={selectedLog.parsed_amount ? `₹${selectedLog.parsed_amount}` : '—'} />
-                        <DetailField label="Parsed UTR" value={selectedLog.parsed_utr || '—'} mono />
-                        <DetailField label="Parsed Order ID" value={selectedLog.parsed_order_id || '—'} mono />
-                        <DetailField label="Parsed Bank" value={selectedLog.parsed_bank || '—'} />
+                        <DetailField label="Parsed Amount" value={selectedLog.parsed_amount ? `₹${selectedLog.parsed_amount}` : '-'} />
+                        <DetailField label="Parsed UTR" value={selectedLog.parsed_utr || '-'} mono />
+                        <DetailField label="Parsed Order ID" value={selectedLog.parsed_order_id || '-'} mono />
+                        <DetailField label="Parsed Bank" value={selectedLog.parsed_bank || '-'} />
                         {selectedLog.error_message && (
                             <div className="sm:col-span-2">
                                 <DetailField label="Error" value={selectedLog.error_message} error />

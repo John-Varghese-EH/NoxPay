@@ -77,13 +77,13 @@ export default function AccountPage() {
       if (clientIds.length > 0) {
         const { data: pi } = await supabase.from('payment_intents').select('*').in('client_id', clientIds)
         intents = pi || []
-        
+
         const intentIds = intents.map(i => i.id)
         if (intentIds.length > 0) {
           const { data: vt } = await supabase.from('verified_transactions').select('*').in('payment_intent_id', intentIds)
           transactions = vt || []
         }
-        
+
         const { data: wl } = await supabase.from('webhook_logs').select('*').in('client_id', clientIds)
         webhookLogs = wl || []
       }
@@ -221,7 +221,7 @@ export default function AccountPage() {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
           Data Export
         </h2>
-        <p className="text-sm text-slate-500">Download all your data as JSON — clients, transactions, webhooks, and more.</p>
+        <p className="text-sm text-slate-500">Download all your data as JSON - clients, transactions, webhooks, and more.</p>
         <button
           onClick={exportData}
           disabled={exporting}
@@ -238,7 +238,7 @@ export default function AccountPage() {
           Danger Zone
         </h2>
         <p className="text-sm text-slate-500">Permanently delete your account and all associated data. This action cannot be undone.</p>
-        
+
         {!deleteConfirm ? (
           <button
             onClick={() => setDeleteConfirm(true)}

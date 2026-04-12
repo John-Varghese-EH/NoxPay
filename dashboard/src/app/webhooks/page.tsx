@@ -109,7 +109,7 @@ export default async function WebhooksPage() {
                                                 {log.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 font-mono text-xs">{log.response_code || '—'}</td>
+                                        <td className="px-6 py-4 font-mono text-xs">{log.response_code || '-'}</td>
                                         <td className="px-6 py-4 text-right">{log.attempts}</td>
                                     </tr>
                                 ))

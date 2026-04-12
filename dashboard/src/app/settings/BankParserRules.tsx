@@ -142,8 +142,8 @@ export default function BankParserRules({ projectId, initialRules }: { projectId
                                 <div className="px-4 pb-4 border-t border-slate-800/50 pt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <RuleField label="Amount Regex" value={rule.amount_regex} />
                                     <RuleField label="UTR Regex" value={rule.utr_regex} />
-                                    <RuleField label="Sender VPA Regex" value={rule.sender_regex || '—'} />
-                                    <RuleField label="Remark Regex" value={rule.remark_regex || '—'} />
+                                    <RuleField label="Sender VPA Regex" value={rule.sender_regex || '-'} />
+                                    <RuleField label="Remark Regex" value={rule.remark_regex || '-'} />
                                 </div>
                             )}
                         </div>
@@ -160,8 +160,8 @@ export default function BankParserRules({ projectId, initialRules }: { projectId
                         <InputField label="Detection Keyword *" placeholder='e.g. "icici bank"' value={newRule.detect_keyword} onChange={(v) => setNewRule({ ...newRule, detect_keyword: v })} hint="Phrase found in emails from this bank" />
                         <InputField label="Amount Regex *" placeholder='e.g. Rs\.? ?([\d,]+\.\d{2})' value={newRule.amount_regex} onChange={(v) => setNewRule({ ...newRule, amount_regex: v })} hint="Use capture group () for the amount" mono />
                         <InputField label="UTR / Ref Regex *" placeholder='e.g. Ref No[:\.]? ?(\d{12})' value={newRule.utr_regex} onChange={(v) => setNewRule({ ...newRule, utr_regex: v })} hint="Use capture group () for the UTR" mono />
-                        <InputField label="Sender VPA Regex" placeholder='e.g. from ([\w\.\-]+@\w+)' value={newRule.sender_regex} onChange={(v) => setNewRule({ ...newRule, sender_regex: v })} hint="Optional — extract sender UPI ID" mono />
-                        <InputField label="Remark / Order ID Regex" placeholder='e.g. Remark[:\.]? ?([\w\-]+)' value={newRule.remark_regex} onChange={(v) => setNewRule({ ...newRule, remark_regex: v })} hint="Optional — extract order ID from remarks" mono />
+                        <InputField label="Sender VPA Regex" placeholder='e.g. from ([\w\.\-]+@\w+)' value={newRule.sender_regex} onChange={(v) => setNewRule({ ...newRule, sender_regex: v })} hint="Optional - extract sender UPI ID" mono />
+                        <InputField label="Remark / Order ID Regex" placeholder='e.g. Remark[:\.]? ?([\w\-]+)' value={newRule.remark_regex} onChange={(v) => setNewRule({ ...newRule, remark_regex: v })} hint="Optional - extract order ID from remarks" mono />
                     </div>
                     <div className="flex gap-3 mt-5">
                         <button onClick={addRule} className="bg-orange-600 hover:bg-orange-700 text-white rounded-md px-5 py-2 font-medium transition-colors text-sm">

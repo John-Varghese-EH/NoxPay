@@ -6,8 +6,8 @@ code = """(function(){
     if(document.getElementById('j0x-wm'))return;
     var a=document.createElement('div');
     a.id='j0x-wm';
-    a.innerHTML='Made with ❤️ by <a href="https://github.com/John-Varghese-EH" target="_blank" style="color:#a78bfa;text-decoration:none;">J0X</a> | <a href="https://github.com/John-Varghese-EH" target="_blank" style="color:inherit;text-decoration:none;">Github: John-Varghese-EH</a> | <a href="https://instagram.com/cyber__trinity" target="_blank" style="color:inherit;text-decoration:none;">Instagram: @cyber__trinity</a>';
-    a.setAttribute('style','position:fixed!important;bottom:15px!important;right:15px!important;z-index:2147483647!important;color:rgba(255,255,255,0.7)!important;font-family:monospace!important;font-size:11px!important;text-decoration:none!important;background:rgba(0,0,0,0.8)!important;padding:6px 12px!important;border-radius:6px!important;pointer-events:auto!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none!important;border:1px solid rgba(139,92,246,0.2)!important;box-shadow:0 0 10px rgba(139,92,246,0.1)!important;backdrop-filter:blur(4px)!important;');
+    a.innerHTML='<a href="https://github.com/John-Varghese-EH" target="_blank" style="color:rgba(255,255,255,0.3);text-decoration:none;" title="Made by J0X">⚡ J0X</a>';
+    a.setAttribute('style','position:fixed!important;bottom:5px!important;right:5px!important;z-index:2147483647!important;font-family:monospace!important;font-size:10px!important;text-decoration:none!important;pointer-events:auto!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none!important;');
     document.body.appendChild(a)
   }
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',i):i();

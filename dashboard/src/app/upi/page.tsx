@@ -130,7 +130,7 @@ function UPICreatorInner() {
       try {
         await navigator.share({
           title: 'UPI Payment Link',
-          text: `Pay via UPI${amount ? ` ₹${amount}` : ''}${note ? ` — ${note}` : ''}`,
+          text: `Pay via UPI${amount ? ` ₹${amount}` : ''}${note ? ` - ${note}` : ''}`,
           url: generatedUrl,
         })
       } catch {
@@ -151,7 +151,7 @@ function UPICreatorInner() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-500" style={{ backgroundColor: '#7c3aed0a', fontFamily: 'var(--font-sans), system-ui, -apple-system, sans-serif' }}>
-      
+
       {/* Nav */}
       <nav className="absolute top-0 w-full border-b border-slate-800/80 bg-slate-950/50 backdrop-blur-md z-50">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -168,11 +168,11 @@ function UPICreatorInner() {
 
       <div className="w-full max-w-md flex flex-col mt-20 mb-8">
         <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
-          
+
           {/* Header Branding */}
           <div className="p-6 text-center border-b border-slate-800 bg-violet-500/10">
             <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center border border-violet-500 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
-                <div className="text-white"><LinkIcon /></div>
+              <div className="text-white"><LinkIcon /></div>
             </div>
             <h2 className="text-lg font-medium text-slate-200">UPI Link Generator</h2>
             <p className="text-sm text-slate-400 mt-1">Create free shareable payment links</p>
@@ -186,7 +186,7 @@ function UPICreatorInner() {
                   {/* VPA */}
                   <div>
                     <label htmlFor="upi-vpa-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                       VPA / UPI ID <span className="text-red-400">*</span>
+                      VPA / UPI ID <span className="text-red-400">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -207,7 +207,7 @@ function UPICreatorInner() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="upi-amount-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                         Amount <span className="font-normal">(Opt)</span>
+                        Amount <span className="font-normal">(Opt)</span>
                       </label>
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium text-sm">₹</span>
@@ -226,7 +226,7 @@ function UPICreatorInner() {
                     </div>
                     <div>
                       <label htmlFor="upi-note-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                         Note <span className="font-normal">(Opt)</span>
+                        Note <span className="font-normal">(Opt)</span>
                       </label>
                       <input
                         id="upi-note-input"
@@ -244,7 +244,7 @@ function UPICreatorInner() {
                   {/* Logo URL */}
                   <div>
                     <label htmlFor="upi-logo-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                       Brand Logo URL <span className="font-normal">(Opt)</span>
+                      Brand Logo URL <span className="font-normal">(Opt)</span>
                     </label>
                     <div className="relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded overflow-hidden">
@@ -306,18 +306,17 @@ function UPICreatorInner() {
 
                 {/* URL display */}
                 <div className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 mb-4 flex items-center justify-between gap-2 overflow-hidden">
-                   <p className="text-xs text-slate-300 font-mono truncate">{generatedUrl}</p>
+                  <p className="text-xs text-slate-300 font-mono truncate">{generatedUrl}</p>
                 </div>
 
                 {/* Action buttons */}
                 <div className="w-full grid grid-cols-2 gap-2 mb-4">
                   <button
                     onClick={handleCopy}
-                    className={`py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all ${
-                      copied
+                    className={`py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all ${copied
                         ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
                         : 'bg-violet-600 hover:bg-violet-700 text-white shadow-lg hover:shadow-violet-500/20'
-                    }`}
+                      }`}
                   >
                     <CopyIcon copied={copied} />
                     {copied ? 'Copied' : 'Copy'}
@@ -343,16 +342,16 @@ function UPICreatorInner() {
 
           {/* Footer Security Badge inside card */}
           <div className="p-4 bg-slate-900 border-t border-slate-800 flex flex-col items-center justify-center gap-1 text-xs text-slate-500 font-medium">
-             <div className="flex items-center gap-2">
-                 <svg className="w-4 h-4 text-emerald-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg> Secured by URL Encoding
-             </div>
-             <p className="font-normal text-[10px] mt-1 text-slate-600">Zero data stored. Client-side only.</p>
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-emerald-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg> Secured by URL Encoding
+            </div>
+            <p className="font-normal text-[10px] mt-1 text-slate-600">Zero data stored. Client-side only.</p>
           </div>
         </div>
 
         {/* FAQ - outside card but styled similarly */}
         <div className="mt-6 space-y-3">
-            <h3 className="text-xs font-bold text-slate-500 px-2 uppercase tracking-widest mb-3">Frequently Asked Questions</h3>
+          <h3 className="text-xs font-bold text-slate-500 px-2 uppercase tracking-widest mb-3">Frequently Asked Questions</h3>
           {[
             {
               q: 'What is a UPI payment link?',

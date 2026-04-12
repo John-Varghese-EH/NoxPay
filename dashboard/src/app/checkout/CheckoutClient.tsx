@@ -90,7 +90,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                     }),
                 })
             } catch {
-                // silently fail — analytics should never block payment
+                // silently fail - analytics should never block payment
             }
         }
         trackVisit()
@@ -296,7 +296,7 @@ export default function CheckoutClient({ intent, clientBrand }: CheckoutClientPr
                                 </div>
                                 <h3 className="text-lg font-bold text-red-400 mb-1">{t.paymentExpired}</h3>
                                 <p className="text-sm text-red-500/80 mb-4">{t.sessionTimedOut}</p>
-                                
+
                                 <PaymentReport intentId={intent.id} orderId={intent.order_id} />
                             </div>
                         )}

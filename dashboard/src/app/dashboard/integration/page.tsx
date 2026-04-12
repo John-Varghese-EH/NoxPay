@@ -97,7 +97,7 @@ async function loadNoxPayWidget() {
     });
     const data = await res.json();
 
-    // data.id is the INTENT_ID — use it in the iframe src
+    // data.id is the INTENT_ID - use it in the iframe src
     const iframe = document.createElement('iframe');
     iframe.src = '${origin}/widget?intent=' + data.id;
     iframe.width = '420';
@@ -245,7 +245,7 @@ async function startNoxPayment() {
                             className={`flex items-center gap-3 p-4 rounded-xl text-left transition-all ${activeTab === t.key
                                 ? 'bg-violet-600/10 border border-violet-500/30 text-violet-400'
                                 : 'hover:bg-slate-900 border border-transparent text-slate-400'
-                            }`}
+                                }`}
                         >
                             <t.icon className="w-5 h-5" />
                             <div>
@@ -348,7 +348,7 @@ async function startNoxPayment() {
                                     }}
                                 >
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M12 2v20M2 12h20"/>
+                                        <path d="M12 2v20M2 12h20" />
                                     </svg>
                                     Pay with NoxPay
                                 </button>

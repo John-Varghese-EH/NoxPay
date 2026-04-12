@@ -106,12 +106,12 @@ const categories = [
     accentType: "emerald",
     items: [
       {
-        title: "Worker — UPI (Email)",
+        title: "Worker - UPI (Email)",
         desc: "IMAP bank email detection.",
         href: "/docs/worker-upi",
       },
       {
-        title: "Worker — Crypto",
+        title: "Worker - Crypto",
         desc: "Blockchain RPC polling.",
         href: "/docs/worker-crypto",
       },

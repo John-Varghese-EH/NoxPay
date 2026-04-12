@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Free UPI Payment Link Generator | Create UPI QR Code | NoxPay',
   description:
-    'Create free UPI payment links and QR codes instantly. Share with anyone to receive payments via Google Pay, PhonePe, Paytm, BHIM — no app or account needed. Enter your VPA/UPI ID, set amount & note, and generate a shareable link in seconds.',
+    'Create free UPI payment links and QR codes instantly. Share with anyone to receive payments via Google Pay, PhonePe, Paytm, BHIM - no app or account needed. Enter your VPA/UPI ID, set amount & note, and generate a shareable link in seconds.',
   keywords: [
     'UPI payment link',
     'UPI link generator',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 
   // Open Graph
   openGraph: {
-    title: 'Free UPI Payment Link Generator — NoxPay',
+    title: 'Free UPI Payment Link Generator - NoxPay',
     description:
       'Create shareable UPI payment links instantly. No signup needed. Works with Google Pay, PhonePe, Paytm, BHIM & all UPI apps.',
     url: 'https://nox-pay.vercel.app/upi',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
         url: 'https://nox-pay.vercel.app/og-upi.png',
         width: 1200,
         height: 630,
-        alt: 'NoxPay — Free UPI Payment Link Generator',
+        alt: 'NoxPay - Free UPI Payment Link Generator',
       },
     ],
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: 'summary_large_image',
-    title: 'Free UPI Payment Link Generator — NoxPay',
+    title: 'Free UPI Payment Link Generator - NoxPay',
     description:
       'Generate shareable UPI payment links & QR codes for free. Works with all UPI apps. No account required.',
     images: ['https://nox-pay.vercel.app/og-upi.png'],
@@ -95,7 +95,7 @@ export const metadata: Metadata = {
   // },
 
   other: {
-    // GEO targeting — UPI is India specific
+    // GEO targeting - UPI is India specific
     'geo.region': 'IN',
     'geo.country': 'IN',
     'geo.placename': 'India',
@@ -118,7 +118,7 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: 'NoxPay UPI Payment Link Generator',
   description:
-    'Create free UPI payment links and QR codes. Share with anyone to receive payments via any UPI app — Google Pay, PhonePe, Paytm, BHIM.',
+    'Create free UPI payment links and QR codes. Share with anyone to receive payments via any UPI app - Google Pay, PhonePe, Paytm, BHIM.',
   url: 'https://nox-pay.vercel.app/upi',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Any',

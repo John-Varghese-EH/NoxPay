@@ -44,11 +44,11 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
         if (txns) {
             totalVolume = txns.reduce((sum: number, t: any) => sum + Number(t.amount), 0)
             successCount = txns.length
-            
+
             const volumeByDate: Record<string, number> = {};
             txns.forEach((t: any) => {
-              const d = format(new Date(t.verified_at), 'MMM dd')
-              volumeByDate[d] = (volumeByDate[d] || 0) + Number(t.amount)
+                const d = format(new Date(t.verified_at), 'MMM dd')
+                volumeByDate[d] = (volumeByDate[d] || 0) + Number(t.amount)
             });
             groupedChartData = Object.keys(volumeByDate).map(date => ({ date, volume: volumeByDate[date] }))
         }
@@ -139,8 +139,8 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                         <div className="lg:col-span-2 glass-card p-6 border border-slate-800">
                             <div className="flex items-center justify-between mb-2">
                                 <div>
-                                  <h2 className="text-lg font-semibold text-white">Transaction Volume</h2>
-                                  <p className="text-xs text-slate-500">7-day trailing velocity</p>
+                                    <h2 className="text-lg font-semibold text-white">Transaction Volume</h2>
+                                    <p className="text-xs text-slate-500">7-day trailing velocity</p>
                                 </div>
                             </div>
                             <TransactionChart data={groupedChartData} />
@@ -148,12 +148,12 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                         <div className="lg:col-span-1 glass-card p-6 border border-slate-800 flex flex-col">
                             <div className="flex flex-col justify-between mb-4 flex-1">
                                 <div>
-                                  <h2 className="text-lg font-semibold text-white">System Status</h2>
-                                  <p className="text-xs text-slate-500 mb-4">Core infrastructure pulses</p>
-                                  
-                                  <SystemStatus />
+                                    <h2 className="text-lg font-semibold text-white">System Status</h2>
+                                    <p className="text-xs text-slate-500 mb-4">Core infrastructure pulses</p>
+
+                                    <SystemStatus />
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -186,7 +186,7 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                                         {recentTxns.map((tx) => (
                                             <tr key={tx.id} className="hover:bg-slate-800/30 transition-colors group">
                                                 <td className="px-6 py-4 text-xs text-slate-400 group-hover:text-slate-300 transition-colors">{new Date(tx.verified_at).toLocaleString()}</td>
-                                                <td className="px-6 py-4 font-mono text-xs">{tx.payment_intents?.order_id || '—'}</td>
+                                                <td className="px-6 py-4 font-mono text-xs">{tx.payment_intents?.order_id || '-'}</td>
                                                 <td className="px-6 py-4 font-mono text-xs text-slate-500 group-hover:text-slate-400">{tx.utr}</td>
                                                 <td className="px-6 py-4 font-medium text-white"><ConvertedAmount amountINR={Number(tx.amount)} /></td>
                                                 <td className="px-6 py-4"><span className="badge badge-success">{tx.bank_source}</span></td>
@@ -225,13 +225,12 @@ export default async function DashboardPage(props: { searchParams: Promise<any> 
                                                 </div>
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-sm font-bold text-white">{link.currency === 'UPI' || link.currency === 'BANK' ? '\u20b9' : '\u20ae'}{Number(link.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-                                                    <span className={`text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${
-                                                        displayStatus === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                        : displayStatus === 'expired' ? 'bg-red-500/10 text-red-400 border border-red-500/20'
-                                                        : displayStatus === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                                        : displayStatus === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                                        : 'bg-slate-800 text-slate-400 border border-slate-700'
-                                                    }`}>
+                                                    <span className={`text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full font-bold ${displayStatus === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                            : displayStatus === 'expired' ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                                                : displayStatus === 'pending' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                                    : displayStatus === 'flagged' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                                        : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                                        }`}>
                                                         {displayStatus}
                                                     </span>
                                                 </div>

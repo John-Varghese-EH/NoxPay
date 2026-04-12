@@ -2,11 +2,11 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/utils/supabase/middleware'
 
 /**
- * NoxPay Edge Middleware — HTTP Basic Auth Gate
+ * NoxPay Edge Middleware - HTTP Basic Auth Gate
  * 
  * Protects admin routes at the edge level BEFORE any HTML/JS/CSS is served.
  * Unauthorized users see the browser's native "Enter credentials" popup.
- * Zero information leakage — no page source, no component names, nothing.
+ * Zero information leakage - no page source, no component names, nothing.
  * 
  * Public routes (checkout, widget, API, landing) bypass this entirely.
  */
@@ -101,7 +101,7 @@ export async function proxy(request: NextRequest) {
     return unauthorizedResponse()
   }
 
-  // Auth passed — continue to Supabase session refresh and the page
+  // Auth passed - continue to Supabase session refresh and the page
   return updateSession(request)
 }
 

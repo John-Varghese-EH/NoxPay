@@ -22,7 +22,7 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
         )
     }
 
-    // Preview mode — show a demo widget with fake data
+    // Preview mode - show a demo widget with fake data
     if (intentId === 'preview') {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-transparent">
@@ -33,7 +33,7 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
                             <span className="text-lg font-bold text-white">N</span>
                         </div>
                         <h2 className="text-base font-medium text-slate-200">NoxPay Demo</h2>
-                        <p className="text-xs text-slate-400 mt-1">Widget preview — not a real payment</p>
+                        <p className="text-xs text-slate-400 mt-1">Widget preview - not a real payment</p>
                     </div>
 
                     {/* Body Details */}
@@ -76,7 +76,7 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
 
                             <div className="mt-4 text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                                Preview Mode — No Real Payment
+                                Preview Mode - No Real Payment
                             </div>
                         </div>
                     </div>
@@ -230,7 +230,7 @@ export default async function WidgetPage(props: { searchParams: Promise<any> }) 
                             </div>
                             <h3 className="text-base font-bold text-red-400 mb-1">Payment Expired</h3>
                             <p className="text-xs text-red-500/80 mb-4">This session has timed out. Please try again.</p>
-                            
+
                             <PaymentReport intentId={intent.id} orderId={intent.order_id} />
                         </div>
                     )}
