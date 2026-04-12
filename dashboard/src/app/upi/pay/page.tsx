@@ -56,13 +56,13 @@ function PayPageInner() {
   if (!pa) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0f] text-slate-50 px-6">
-        <div className="text-center max-w-md">
-          <div className="text-6xl mb-6">🔗</div>
-          <h1 className="text-2xl font-bold text-white mb-3">Invalid Payment Link</h1>
-          <p className="text-slate-400 mb-8">This UPI payment link is missing a VPA (UPI ID). Please use a valid link or create one below.</p>
+        <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+          <div className="text-4xl mb-4">🔗</div>
+          <h1 className="text-xl font-bold text-white mb-2">Invalid Payment Link</h1>
+          <p className="text-slate-400 text-sm mb-6">This UPI payment link is missing a VPA (UPI ID). Please use a valid link or create one below.</p>
           <Link
             href="/upi"
-            className="inline-flex px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl transition-all shadow-lg"
+            className="inline-flex w-full py-3 items-center justify-center bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl text-sm transition-all"
           >
             Create a UPI Link
           </Link>
@@ -72,139 +72,114 @@ function PayPageInner() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-[#0a0a0f] text-slate-50" style={{ fontFamily: 'var(--font-sans), system-ui, -apple-system, sans-serif' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-500" style={{ backgroundColor: '#10b9810a', fontFamily: 'var(--font-sans), system-ui, -apple-system, sans-serif' }}>
+      
       {/* Nav */}
-      <nav className="w-full border-b border-slate-800 bg-[#0a0a0f]/80 backdrop-blur-md sticky top-0 z-50">
+      <nav className="absolute top-0 w-full border-b border-slate-800/80 bg-slate-950/50 backdrop-blur-md z-50">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="font-bold text-xl tracking-tighter text-violet-400 hover:text-violet-300 transition-colors">
+          <Link href="/" className="font-bold text-xl tracking-tighter text-emerald-400 hover:text-emerald-300 transition-colors">
             NoxPay<span className="text-slate-500">.</span>
           </Link>
-          <Link href="/upi" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
-            Create a Link →
+          <Link href="/upi" className="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors">
+            Create Link →
           </Link>
         </div>
       </nav>
 
-      {/* Payment card */}
-      <main className="flex-1 flex items-center justify-center w-full px-6 py-12">
-        <div className="w-full max-w-md">
-          <div
-            className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl shadow-2xl"
-            style={{ boxShadow: '0 0 80px rgba(124, 58, 237, 0.08)' }}
-          >
-            {/* Top gradient */}
-            <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-blue-500 to-violet-500" />
+      <div className="w-full max-w-md flex flex-col mt-20 mb-8">
+        <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
+          
+          {/* Header Branding */}
+          <div className="p-6 text-center border-b border-slate-800 bg-emerald-500/10">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 shadow-xl flex items-center justify-center overflow-hidden">
+                <span className="text-2xl font-bold text-emerald-400">{pa.charAt(0).toUpperCase()}</span>
+            </div>
+            <h2 className="text-lg font-medium text-slate-200">{pa.split('@')[0]}</h2>
+            <p className="text-sm text-slate-400 mt-1">Complete your payment</p>
+          </div>
 
-            <div className="p-8">
-              {/* Header */}
-              <div className="text-center mb-6">
-                <h1 className="text-xl font-bold text-white mb-1">UPI Payment</h1>
-                <p className="text-sm text-slate-400">Scan QR or tap to pay</p>
-              </div>
+          <div className="p-6 flex flex-col gap-6">
+            <div className="flex justify-between items-end">
+                 <div className="flex flex-col">
+                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Amount Due</span>
+                     {am && parseFloat(am) > 0 ? (
+                         <span className="text-4xl font-bold tracking-tight text-white mb-0 leading-none">
+                             ₹{parseFloat(am).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                         </span>
+                     ) : (
+                         <span className="text-3xl font-bold tracking-tight text-slate-400 mb-0 leading-none flex items-center gap-2">
+                             ₹ <span className="text-xl font-normal">Any Amount</span>
+                         </span>
+                     )}
+                 </div>
+            </div>
 
-              {/* QR Code */}
-              <div className="flex justify-center mb-6">
-                <div className="p-5 bg-white rounded-2xl shadow-[0_0_50px_rgba(124,58,237,0.12)]">
+            <div className="bg-slate-900 rounded-xl p-5 border border-slate-800 flex flex-col items-center text-center">
+                {/* QR Code */}
+                <div className="mb-4 p-2 bg-white rounded-xl shadow-[0_0_30px_rgba(16,185,129,0.15)]">
                   <QRCodeSVG
                     value={deepLink}
                     size={200}
                     bgColor="#ffffff"
-                    fgColor="#0a0a0f"
+                    fgColor="#020617"
                     level="H"
                     includeMargin={false}
                   />
                 </div>
-              </div>
 
-              {/* Desktop notice */}
-              <p className="text-center text-xs text-slate-500 mb-6 hidden sm:block">
-                📱 Scan this QR code with any UPI app to pay
-              </p>
-
-              {/* Payment details */}
-              <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 mb-6 space-y-3">
-                {/* Payee */}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-500 uppercase tracking-wider font-medium">Paying to</span>
-                  <span className="text-sm text-white font-mono font-semibold">{pa}</span>
-                </div>
-
-                {/* Amount */}
-                {am && parseFloat(am) > 0 && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-500 uppercase tracking-wider font-medium">Amount</span>
-                    <span className="text-lg text-emerald-400 font-bold">₹ {parseFloat(am).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-                  </div>
-                )}
-
-                {/* Note */}
-                {tn && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-500 uppercase tracking-wider font-medium">Note</span>
-                    <span className="text-sm text-slate-300">{tn}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Pay button (mobile deep link) */}
-              <a
-                id="upi-pay-btn"
-                href={deepLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_30px_rgba(16,185,129,0.2)] flex items-center justify-center gap-3 text-lg block text-center"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                Open UPI App
-              </a>
-
-              {/* Copy link */}
-              <button
-                id="upi-pay-copy-btn"
-                onClick={handleCopy}
-                className="w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all"
-              >
-                {copied ? (
-                  <>
-                    <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                    </svg>
-                    Copy Payment Link
-                  </>
-                )}
-              </button>
-
-              {/* Trust */}
-              <div className="mt-6 text-center">
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  🔒 Secured by NoxPay · No data stored · <a href="https://github.com/John-Varghese-EH/NoxPay" target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-400 underline underline-offset-2">Open Source</a>
+                <p className="text-sm text-slate-300 mb-4 w-full">
+                    Pay To:
+                    <span className="font-mono font-medium text-white break-all mt-1 flex items-center justify-between gap-2 bg-slate-950 py-2 px-3 rounded-lg border border-slate-800 text-left">
+                        <span className="truncate">{pa}</span>
+                    </span>
                 </p>
-              </div>
+
+                {tn && (
+                  <div className="w-full text-left space-y-2 mb-4">
+                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Note</p>
+                     <div className="bg-slate-950 rounded-lg p-3 border border-slate-800">
+                        <span className="text-sm text-slate-300">{tn}</span>
+                     </div>
+                  </div>
+                )}
+
+                {/* Mobile Pay App Button */}
+                <a
+                  id="upi-pay-btn"
+                  href={deepLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full mt-2 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  Open UPI App
+                </a>
+            </div>
+
+            {/* Copy / Share actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleCopy}
+                className={`flex-1 py-3 rounded-xl font-medium text-xs flex items-center justify-center gap-2 transition-all ${
+                  copied
+                    ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                    : 'bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300'
+                }`}
+              >
+                {copied ? 'Link Copied!' : 'Copy Payment Link'}
+              </button>
             </div>
           </div>
 
-          {/* Create your own CTA */}
-          <div className="text-center mt-8">
-            <Link href="/upi" className="text-sm text-violet-400 hover:text-violet-300 underline underline-offset-4 transition-colors">
-              Create your own UPI payment link for free →
-            </Link>
+          {/* Footer Security Badge */}
+          <div className="p-4 bg-slate-900 border-t border-slate-800 flex items-center justify-center gap-2 text-xs text-slate-500 font-medium">
+             <svg className="w-4 h-4 text-emerald-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg> 
+             Secured by UPI Standards
           </div>
         </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-slate-800/60 py-6">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col items-center text-center gap-2">
-          <div className="text-xs font-mono text-slate-500">NoxPay — By J0X</div>
-        </div>
-      </footer>
+      </div>
     </div>
   )
 }
@@ -213,8 +188,8 @@ function PayPageInner() {
 export default function UpiPayPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
-        <div className="animate-pulse text-slate-500">Loading payment...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] text-slate-500 animate-pulse text-sm">
+        Loading payment...
       </div>
     }>
       <PayPageInner />

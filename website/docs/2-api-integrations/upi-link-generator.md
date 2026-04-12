@@ -9,7 +9,7 @@ keywords: [UPI, payment link, QR code, free, VPA, UPI ID, Google Pay, PhonePe, P
 
 NoxPay includes a **free, public UPI payment link generator** that anyone can use — no account, no API key, no signup required. Create shareable UPI payment links and QR codes instantly.
 
-🔗 **Try it now:** [noxpay.vercel.app/upi](https://noxpay.vercel.app/upi)
+🔗 **Try it now:** [nox-pay.vercel.app/upi](https://nox-pay.vercel.app/upi)
 
 ---
 
@@ -33,7 +33,7 @@ This tool is entirely stateless. No data is saved to any database or server. The
 
 ### 1. Create a Link
 
-Visit [`/upi`](https://noxpay.vercel.app/upi) and fill in:
+Visit [`/upi`](https://nox-pay.vercel.app/upi) and fill in:
 
 | Field | Required | Description |
 |-------|----------|-------------|
@@ -66,7 +66,7 @@ When someone opens the payment link (`/upi/pay?pa=...`), they see:
 You can pre-fill the form by passing URL parameters:
 
 ```
-https://noxpay.vercel.app/upi?vpa=name@okaxis&amount=100&note=Coffee
+https://nox-pay.vercel.app/upi?vpa=name@okaxis&amount=100&note=Coffee
 ```
 
 | Parameter | Alias | Description |
@@ -80,7 +80,7 @@ https://noxpay.vercel.app/upi?vpa=name@okaxis&amount=100&note=Coffee
 The generated payment page uses these parameters:
 
 ```
-https://noxpay.vercel.app/upi/pay?pa=name@okaxis&am=100&tn=Coffee
+https://nox-pay.vercel.app/upi/pay?pa=name@okaxis&am=100&tn=Coffee
 ```
 
 | Parameter | Required | Description |
@@ -106,7 +106,7 @@ This is the [NPCI-standard UPI deep link format](https://www.npci.org.in/what-we
 ### Basic — VPA only
 
 ```
-https://noxpay.vercel.app/upi/pay?pa=name@okaxis
+https://nox-pay.vercel.app/upi/pay?pa=name@okaxis
 ```
 
 Payer will choose their own amount.
@@ -114,7 +114,7 @@ Payer will choose their own amount.
 ### With Amount
 
 ```
-https://noxpay.vercel.app/upi/pay?pa=name@okaxis&am=499
+https://nox-pay.vercel.app/upi/pay?pa=name@okaxis&am=499
 ```
 
 Pre-sets ₹499 as the payment amount.
@@ -122,7 +122,7 @@ Pre-sets ₹499 as the payment amount.
 ### With Amount + Note
 
 ```
-https://noxpay.vercel.app/upi/pay?pa=name@okaxis&am=199.50&tn=Monthly+Subscription
+https://nox-pay.vercel.app/upi/pay?pa=name@okaxis&am=199.50&tn=Monthly+Subscription
 ```
 
 Pre-sets ₹199.50 and adds a note "Monthly Subscription".
@@ -130,7 +130,7 @@ Pre-sets ₹199.50 and adds a note "Monthly Subscription".
 ### Pre-filled Creator (for embedding)
 
 ```html
-<a href="https://noxpay.vercel.app/upi?vpa=your-upi@ybl&amount=100&note=Donate">
+<a href="https://nox-pay.vercel.app/upi?vpa=your-upi@ybl&amount=100&note=Donate">
   Pay ₹100 via UPI
 </a>
 ```
@@ -173,12 +173,12 @@ function createUpiLink(vpa, amount, note) {
   const params = new URLSearchParams({ pa: vpa });
   if (amount) params.set('am', amount.toString());
   if (note) params.set('tn', note);
-  return `https://noxpay.vercel.app/upi/pay?${params.toString()}`;
+  return `https://nox-pay.vercel.app/upi/pay?${params.toString()}`;
 }
 
 // Usage
 const link = createUpiLink('merchant@okaxis', 499, 'Order #123');
-// → https://noxpay.vercel.app/upi/pay?pa=merchant@okaxis&am=499&tn=Order+%23123
+// → https://nox-pay.vercel.app/upi/pay?pa=merchant@okaxis&am=499&tn=Order+%23123
 ```
 
 Or construct the raw UPI deep link directly (no NoxPay dependency):

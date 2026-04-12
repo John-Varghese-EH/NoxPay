@@ -142,116 +142,101 @@ function UPICreatorInner() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-[#0a0a0f] text-slate-50" style={{ fontFamily: 'var(--font-sans), system-ui, -apple-system, sans-serif' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-500" style={{ backgroundColor: '#7c3aed0a', fontFamily: 'var(--font-sans), system-ui, -apple-system, sans-serif' }}>
+      
       {/* Nav */}
-      <nav className="w-full border-b border-slate-800 bg-[#0a0a0f]/80 backdrop-blur-md sticky top-0 z-50">
+      <nav className="absolute top-0 w-full border-b border-slate-800/80 bg-slate-950/50 backdrop-blur-md z-50">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="font-bold text-xl tracking-tighter text-violet-400 hover:text-violet-300 transition-colors">
             NoxPay<span className="text-slate-500">.</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
-              ← Back to Home
+              ← Back
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero header */}
-      <header className="w-full max-w-3xl mx-auto px-6 pt-12 pb-4 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-sm text-emerald-400 mb-6">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          100% Free · No Sign-up · No Data Stored
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-4 leading-tight">
-          UPI Payment
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-blue-500 to-emerald-500"> Link Generator</span>
-        </h1>
-        <p className="text-md sm:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
-          Create shareable UPI payment links & QR codes instantly. Works with Google Pay, PhonePe, Paytm, BHIM & all UPI apps.
-        </p>
-      </header>
+      <div className="w-full max-w-md flex flex-col mt-20 mb-8">
+        <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
+          
+          {/* Header Branding */}
+          <div className="p-6 text-center border-b border-slate-800 bg-violet-500/10">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center border border-violet-500 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
+                <div className="text-white"><LinkIcon /></div>
+            </div>
+            <h2 className="text-lg font-medium text-slate-200">UPI Link Generator</h2>
+            <p className="text-sm text-slate-400 mt-1">Create free shareable payment links</p>
+          </div>
 
-      {/* Main card */}
-      <main className="w-full max-w-xl mx-auto px-6 py-8">
-        <div
-          className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl shadow-2xl"
-          style={{ boxShadow: '0 0 80px rgba(124, 58, 237, 0.06)' }}
-        >
-          {/* Top gradient line */}
-          <div className="h-1 w-full bg-gradient-to-r from-violet-500 via-blue-500 to-emerald-500" />
-
-          <div className="p-8">
+          <div className="p-6 flex flex-col gap-6">
             {!generatedUrl ? (
               /* ─────── Form ─────── */
               <>
-                {/* VPA */}
-                <div className="mb-6">
-                  <label htmlFor="upi-vpa-input" className="block text-sm font-semibold text-slate-200 mb-2">
-                    VPA / UPI ID <span className="text-red-400">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="upi-vpa-input"
-                      type="text"
-                      placeholder="example@okaxis"
-                      className="w-full px-4 py-3.5 bg-slate-800/70 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-base"
-                      value={vpa}
-                      onChange={(e) => { setVpa(e.target.value); setError('') }}
-                      onKeyDown={handleKeyDown}
-                      autoComplete="off"
-                      spellCheck={false}
-                      aria-required="true"
-                      aria-describedby="vpa-hint"
-                    />
-                    <span id="vpa-hint" className="sr-only">Enter your UPI Virtual Payment Address, like name@okaxis or name@ybl</span>
-                  </div>
-                </div>
-
-                {/* Amount & Note row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div className="space-y-4">
+                  {/* VPA */}
                   <div>
-                    <label htmlFor="upi-amount-input" className="block text-sm font-semibold text-slate-200 mb-2">
-                      Amount <span className="text-slate-500 font-normal">(Optional)</span>
+                    <label htmlFor="upi-vpa-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                       VPA / UPI ID <span className="text-red-400">*</span>
                     </label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">₹</span>
                       <input
-                        id="upi-amount-input"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="0.00"
-                        className="w-full pl-8 pr-4 py-3.5 bg-slate-800/70 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
+                        id="upi-vpa-input"
+                        type="text"
+                        placeholder="example@okaxis"
+                        className="w-full px-4 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 transition-all text-sm font-mono"
+                        value={vpa}
+                        onChange={(e) => { setVpa(e.target.value); setError('') }}
                         onKeyDown={handleKeyDown}
+                        autoComplete="off"
+                        spellCheck={false}
                       />
                     </div>
                   </div>
-                  <div>
-                    <label htmlFor="upi-note-input" className="block text-sm font-semibold text-slate-200 mb-2">
-                      Note <span className="text-slate-500 font-normal">(Optional)</span>
-                    </label>
-                    <input
-                      id="upi-note-input"
-                      type="text"
-                      placeholder="Payment for..."
-                      maxLength={50}
-                      className="w-full px-4 py-3.5 bg-slate-800/70 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-base"
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                    />
+
+                  {/* Amount & Note row */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="upi-amount-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                         Amount <span className="font-normal">(Opt)</span>
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium text-sm">₹</span>
+                        <input
+                          id="upi-amount-input"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          placeholder="0.00"
+                          className="w-full pl-7 pr-3 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 transition-all text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="upi-note-input" className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                         Note <span className="font-normal">(Opt)</span>
+                      </label>
+                      <input
+                        id="upi-note-input"
+                        type="text"
+                        placeholder="e.g. dinner"
+                        maxLength={50}
+                        className="w-full px-3 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 transition-all text-sm"
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* Error */}
                 {error && (
-                  <div className="mb-5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center gap-2" role="alert">
+                  <div className="px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center gap-2">
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     {error}
                   </div>
@@ -261,167 +246,109 @@ function UPICreatorInner() {
                 <button
                   id="upi-generate-btn"
                   onClick={generate}
-                  className="w-full py-4 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_30px_rgba(124,58,237,0.25)] hover:shadow-[0_0_40px_rgba(124,58,237,0.35)] flex items-center justify-center gap-3 text-lg"
+                  className="w-full py-3.5 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl transition-all shadow-[0_0_15px_rgba(124,58,237,0.3)] hover:shadow-[0_0_25px_rgba(124,58,237,0.4)] flex items-center justify-center gap-2"
                 >
                   <LinkIcon />
-                  Generate Link
+                  Generate Payment Link
                 </button>
-
-                {/* Trust note */}
-                <div className="mt-6 text-center">
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    🔒 Your data is <strong className="text-slate-400">never stored</strong>. Everything is encoded directly in the URL.
-                    <br />This is open-source at{' '}
-                    <a href="https://github.com/John-Varghese-EH/NoxPay" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:text-violet-300 underline underline-offset-2">
-                      GitHub
-                    </a>.
-                  </p>
-                </div>
               </>
             ) : (
               /* ─────── Generated Result ─────── */
-              <>
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-sm text-emerald-400 mb-4">
-                    ✅ Link Generated Successfully
-                  </div>
-                  <p className="text-sm text-slate-400">Share this link to receive payment via any UPI app</p>
-                </div>
-
-                {/* URL display */}
-                <div className="bg-slate-800/60 border border-slate-700 rounded-xl p-4 mb-5 break-all">
-                  <p className="text-sm text-violet-300 font-mono leading-relaxed select-all">{generatedUrl}</p>
+              <div className="flex flex-col items-center bg-slate-900 rounded-xl p-5 border border-slate-800 animate-in fade-in duration-300">
+                <div className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-xs text-emerald-400 mb-4 font-medium flex items-center gap-1.5">
+                  ✅ Successfully Generated
                 </div>
 
                 {/* QR Code */}
-                <div className="flex justify-center mb-6">
-                  <div className="p-4 bg-white rounded-2xl shadow-[0_0_40px_rgba(124,58,237,0.15)]">
-                    <QRCodeSVG
-                      value={generatedUrl}
-                      size={180}
-                      bgColor="#ffffff"
-                      fgColor="#0a0a0f"
-                      level="M"
-                      includeMargin={false}
-                    />
-                  </div>
+                <div className="p-3 bg-white rounded-xl mb-4 shadow-[0_0_30px_rgba(124,58,237,0.15)]">
+                  <QRCodeSVG
+                    value={generatedUrl}
+                    size={160}
+                    bgColor="#ffffff"
+                    fgColor="#020617"
+                    level="L"
+                    includeMargin={false}
+                  />
                 </div>
-                <p className="text-center text-xs text-slate-500 mb-6">Scan or share the QR code</p>
+
+                {/* URL display */}
+                <div className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 mb-4 flex items-center justify-between gap-2 overflow-hidden">
+                   <p className="text-xs text-slate-300 font-mono truncate">{generatedUrl}</p>
+                </div>
 
                 {/* Action buttons */}
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="w-full grid grid-cols-2 gap-2 mb-4">
                   <button
-                    id="upi-copy-btn"
                     onClick={handleCopy}
-                    className={`py-3 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
+                    className={`py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all ${
                       copied
                         ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
                         : 'bg-violet-600 hover:bg-violet-700 text-white shadow-lg hover:shadow-violet-500/20'
                     }`}
                   >
                     <CopyIcon copied={copied} />
-                    {copied ? 'Copied!' : 'Copy Link'}
+                    {copied ? 'Copied' : 'Copy'}
                   </button>
                   <button
-                    id="upi-share-btn"
                     onClick={handleShare}
-                    className="py-3 px-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all"
+                    className="py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all"
                   >
                     <ShareIcon />
                     Share
                   </button>
                 </div>
 
-                {/* Create another */}
                 <button
-                  id="upi-reset-btn"
                   onClick={reset}
-                  className="w-full py-3 text-sm text-slate-400 hover:text-violet-400 transition-colors underline underline-offset-4"
+                  className="text-xs text-slate-500 hover:text-white transition-colors underline underline-offset-4"
                 >
-                  ← Create another link
+                  Create another link
                 </button>
-              </>
+              </div>
             )}
           </div>
-        </div>
-      </main>
 
-      {/* SEO-rich FAQ section */}
-      <section className="w-full max-w-3xl mx-auto px-6 py-12" aria-label="Frequently Asked Questions">
-        <h2 className="text-2xl font-bold text-white mb-8 text-center">Frequently Asked Questions</h2>
-        <div className="space-y-4">
+          {/* Footer Security Badge inside card */}
+          <div className="p-4 bg-slate-900 border-t border-slate-800 flex flex-col items-center justify-center gap-1 text-xs text-slate-500 font-medium">
+             <div className="flex items-center gap-2">
+                 <svg className="w-4 h-4 text-emerald-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg> Secured by URL Encoding
+             </div>
+             <p className="font-normal text-[10px] mt-1 text-slate-600">Zero data stored. Client-side only.</p>
+          </div>
+        </div>
+
+        {/* FAQ - outside card but styled similarly */}
+        <div className="mt-6 space-y-3">
+            <h3 className="text-xs font-bold text-slate-500 px-2 uppercase tracking-widest mb-3">Frequently Asked Questions</h3>
           {[
             {
               q: 'What is a UPI payment link?',
-              a: 'A UPI payment link is a shareable URL that allows anyone to pay you directly to your UPI ID (VPA). When someone opens the link, it launches their UPI app (Google Pay, PhonePe, Paytm, BHIM, etc.) with pre-filled payment details.',
+              a: 'A shareable URL that allows anyone to pay you directly to your UPI ID (VPA). It opens their favorite UPI app automatically.',
             },
             {
               q: 'Is this tool free?',
-              a: 'Yes, 100% free. No account, no signup, no fees, no catch. Create unlimited UPI payment links & QR codes at zero cost. NoxPay is open-source.',
+              a: 'Yes, 100% free. No account, no signup, no fees.',
             },
             {
-              q: 'Which UPI apps are supported?',
-              a: 'All UPI-enabled apps are supported — Google Pay, PhonePe, Paytm, BHIM, Amazon Pay, MobiKwik, Jupiter, CRED, and any other app that supports the UPI deep link standard.',
-            },
-            {
-              q: 'Is my data stored or saved?',
-              a: 'No. NoxPay does not save any data. All information (VPA, amount, note) lives entirely within the URL. When you close the page, nothing is retained. Zero tracking, zero storage.',
-            },
-            {
-              q: 'Can I pre-fill the form via URL parameters?',
-              a: 'Yes! You can create pre-filled links using URL parameters. For example: /upi?vpa=name@upi&amount=100&note=Coffee will pre-fill the form with those values.',
-            },
+              q: 'Is my data stored?',
+              a: 'No. NoxPay does not save any data anywhere for this tool. All info lives entirely within the URL parameters.',
+            }
           ].map((item, i) => (
             <details
               key={i}
-              className="group bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden hover:border-violet-500/20 transition-colors"
+              className="group bg-slate-950 border border-slate-800/80 rounded-xl overflow-hidden hover:border-violet-500/30 transition-colors shadow-lg"
             >
-              <summary className="px-6 py-4 cursor-pointer text-slate-200 font-medium hover:text-white transition-colors flex items-center justify-between list-none">
+              <summary className="px-5 py-4 cursor-pointer text-sm text-slate-200 font-medium hover:text-white transition-colors flex items-center justify-between list-none focus:outline-none">
                 <span>{item.q}</span>
-                <svg className="w-5 h-5 text-slate-500 group-open:rotate-180 transition-transform flex-shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                <svg className="w-4 h-4 text-slate-500 group-open:rotate-180 transition-transform flex-shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
               </summary>
-              <div className="px-6 pb-4 text-sm text-slate-400 leading-relaxed">
+              <div className="px-5 pb-4 text-xs text-slate-400 leading-relaxed border-t border-slate-800/50 pt-3 mx-2">
                 {item.a}
               </div>
             </details>
           ))}
         </div>
-      </section>
-
-      {/* How it works — SEO content */}
-      <section className="w-full max-w-3xl mx-auto px-6 pb-12" aria-label="How UPI payment links work">
-        <h2 className="text-2xl font-bold text-white mb-6 text-center">How It Works</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {[
-            { step: '1', title: 'Enter UPI ID', desc: 'Type your VPA / UPI ID (e.g., name@okaxis)' },
-            { step: '2', title: 'Set Details', desc: 'Optionally add amount and payment note' },
-            { step: '3', title: 'Share Link', desc: 'Copy or share the generated link & QR code' },
-          ].map((s) => (
-            <div key={s.step} className="bg-slate-900/50 border border-slate-800 rounded-xl p-5 text-center">
-              <div className="h-10 w-10 bg-violet-500/10 rounded-lg flex items-center justify-center mb-3 border border-violet-500/20 mx-auto">
-                <span className="text-violet-400 font-bold">{s.step}</span>
-              </div>
-              <h3 className="text-sm font-semibold text-slate-200 mb-1">{s.title}</h3>
-              <p className="text-xs text-slate-500">{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-slate-800/60 py-8 mt-auto">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col items-center text-center gap-3">
-          <div className="text-sm font-mono text-slate-400">NoxPay — By J0X</div>
-          <div className="text-xs text-slate-600 max-w-lg leading-relaxed">
-            Disclaimer: J0X (John Varghese) is not responsible for any issues, payment failures, transaction errors, or financial losses incurred while using this software. Use at your own risk.
-          </div>
-          <div className="flex items-center gap-4 mt-2 text-xs text-slate-600">
-            <Link href="/" className="hover:text-slate-400 transition-colors">Home</Link>
-            <span>·</span>
-            <a href="https://github.com/John-Varghese-EH/NoxPay" target="_blank" rel="noopener noreferrer" className="hover:text-slate-400 transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   )
 }
@@ -430,8 +357,8 @@ function UPICreatorInner() {
 export default function UpiCreatorPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
-        <div className="animate-pulse text-slate-500">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] text-slate-500 animate-pulse text-sm">
+        Loading Generator...
       </div>
     }>
       <UPICreatorInner />

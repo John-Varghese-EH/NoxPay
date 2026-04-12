@@ -42,13 +42,13 @@ export const metadata: Metadata = {
     title: 'Free UPI Payment Link Generator — NoxPay',
     description:
       'Create shareable UPI payment links instantly. No signup needed. Works with Google Pay, PhonePe, Paytm, BHIM & all UPI apps.',
-    url: 'https://noxpay.vercel.app/upi',
+    url: 'https://nox-pay.vercel.app/upi',
     siteName: 'NoxPay',
     type: 'website',
     locale: 'en_IN',
     images: [
       {
-        url: 'https://noxpay.vercel.app/og-upi.png',
+        url: 'https://nox-pay.vercel.app/og-upi.png',
         width: 1200,
         height: 630,
         alt: 'NoxPay — Free UPI Payment Link Generator',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: 'Free UPI Payment Link Generator — NoxPay',
     description:
       'Generate shareable UPI payment links & QR codes for free. Works with all UPI apps. No account required.',
-    images: ['https://noxpay.vercel.app/og-upi.png'],
+    images: ['https://nox-pay.vercel.app/og-upi.png'],
     creator: '@noxpay',
   },
 
@@ -81,10 +81,10 @@ export const metadata: Metadata = {
 
   // Alternates & Canonical
   alternates: {
-    canonical: 'https://noxpay.vercel.app/upi',
+    canonical: 'https://nox-pay.vercel.app/upi',
     languages: {
-      'en-IN': 'https://noxpay.vercel.app/upi',
-      'en': 'https://noxpay.vercel.app/upi',
+      'en-IN': 'https://nox-pay.vercel.app/upi',
+      'en': 'https://nox-pay.vercel.app/upi',
     },
   },
 
@@ -119,7 +119,7 @@ const jsonLd = {
   name: 'NoxPay UPI Payment Link Generator',
   description:
     'Create free UPI payment links and QR codes. Share with anyone to receive payments via any UPI app — Google Pay, PhonePe, Paytm, BHIM.',
-  url: 'https://noxpay.vercel.app/upi',
+  url: 'https://nox-pay.vercel.app/upi',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Any',
   offers: {
@@ -141,7 +141,7 @@ const jsonLd = {
     'URL parameter driven',
     'Instant sharing',
   ],
-  screenshot: 'https://noxpay.vercel.app/og-upi.png',
+  screenshot: 'https://nox-pay.vercel.app/og-upi.png',
   softwareVersion: '1.0',
   isAccessibleForFree: true,
   inLanguage: 'en-IN',
@@ -210,13 +210,13 @@ const breadcrumbJsonLd = {
       '@type': 'ListItem',
       position: 1,
       name: 'NoxPay',
-      item: 'https://noxpay.vercel.app',
+      item: 'https://nox-pay.vercel.app',
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'UPI Link Generator',
-      item: 'https://noxpay.vercel.app/upi',
+      item: 'https://nox-pay.vercel.app/upi',
     },
   ],
 }

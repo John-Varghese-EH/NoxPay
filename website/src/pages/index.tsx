@@ -189,7 +189,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                   <a
-                    href="https://noxpay.vercel.app/upi"
+                    href="https://nox-pay.vercel.app/upi"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white hover:text-white hover:no-underline font-semibold rounded-lg transition-all transform hover:scale-105 shadow-[0_4px_14px_0_rgba(16,185,129,0.3)] text-center inline-block"

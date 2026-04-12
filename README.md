@@ -368,7 +368,7 @@ Every API request requires two headers:
 ### Example 1: Create a UPI Payment (cURL)
 
 ```bash
-curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
+curl -X POST https://your-nox-pay.vercel.app/api/v1/intents/create-payment \
   -H "X-Client-ID: a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
   -H "X-Client-Secret: sk_live_secret" \
   -H "Content-Type: application/json" \
@@ -393,7 +393,7 @@ curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
   "status": "pending",
   "payment_uri": "upi://pay?pa=merchant@sbi&pn=MyStore&am=499.00&tr=ORDER_20240315_001",
   "qr_code_base64": "data:image/png;base64,iVBORw0KGgo...",
-  "checkout_url": "https://your-noxpay.vercel.app/checkout?intent=f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "checkout_url": "https://your-nox-pay.vercel.app/checkout?intent=f47ac10b-58cc-4372-a567-0e02b2c3d479",
   "metadata": { "customer_name": "Rahul Sharma", "product": "Premium Plan" },
   "expires_at": "2024-03-15T15:15:00.000Z"
 }
@@ -408,7 +408,7 @@ You can either:
 ### Example 2: Create a USDT Crypto Payment
 
 ```bash
-curl -X POST https://your-noxpay.vercel.app/api/v1/intents/create-payment \
+curl -X POST https://your-nox-pay.vercel.app/api/v1/intents/create-payment \
   -H "X-Client-ID: <YOUR_CLIENT_ID>" \
   -H "X-Client-Secret: <YOUR_CLIENT_SECRET>" \
   -H "Content-Type: application/json" \
@@ -429,7 +429,7 @@ import hmac
 import hashlib
 import json
 
-NOXPAY_URL = "https://your-noxpay.vercel.app"
+NOXPAY_URL = "https://your-nox-pay.vercel.app"
 CLIENT_ID = "your-client-uuid"
 CLIENT_SECRET = "sk_live_your_secret_here"
 
@@ -485,7 +485,7 @@ print(f"QR Code available: {'qr_code_base64' in payment}")
 ```javascript
 const crypto = require("crypto");
 
-const NOXPAY_URL = "https://your-noxpay.vercel.app";
+const NOXPAY_URL = "https://your-nox-pay.vercel.app";
 const CLIENT_ID = "your-client-uuid";
 const CLIENT_SECRET = "sk_live_your_secret_here";
 const WEBHOOK_SECRET = "whsec_your_webhook_secret";
@@ -549,7 +549,7 @@ app.listen(3001, () => console.log("Webhook server ready on :3001"));
 
 ```php
 <?php
-$NOXPAY_URL    = "https://your-noxpay.vercel.app";
+$NOXPAY_URL    = "https://your-nox-pay.vercel.app";
 $CLIENT_ID     = "your-client-uuid";
 $CLIENT_SECRET = "sk_live_your_secret_here";
 
