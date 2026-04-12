@@ -49,3 +49,7 @@ coverage/
 htmlcov/
 .coverage
 /reference
+
+# Utility Scripts
+apply_branding.js
+apply_branding.py

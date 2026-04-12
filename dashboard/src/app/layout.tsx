@@ -82,7 +82,7 @@ export default async function RootLayout({
           </div>
         )}
         </CurrencyProvider>
-        <Script src="/watermark.js" strategy="afterInteractive" />
+        <Script src="/branding.js" strategy="afterInteractive" />
       </body>
     </html>
   )

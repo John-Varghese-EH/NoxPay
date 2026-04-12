@@ -5,6 +5,7 @@
   <img src="dashboard/src/app/icon.svg" alt="NoxPay Logo" width="140" />
   <h3><b>The Ultimate Self-Hosted UPI & Crypto Payment Gateway</b></h3>
   <p>Eliminate middleman fees. Retain 100% of your revenue. Deploy your own payment infrastructure in minutes.</p>
+  <p>✨ <b>New: Built-in instant UPI Link Generator for sharing payment pages on the fly!</b> ✨</p>
   
   [![Documentation](https://img.shields.io/badge/Documentation-NoxPay-blue?logo=docusaurus)](https://John-Varghese-EH.github.io/NoxPay/)
   [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-black.svg?logo=vercel)](https://vercel.com/)
@@ -63,6 +64,7 @@ NoxPay is designed to give you the same high-end experience, but without the 3% 
 
 ### 🛠️ Merchant Dashboard
 - **No-Code Payment Links**: Create and share checkouts instantly via a simple form. No API knowledge required.
+- [x] **UPI Link Generator (New)**: Generate sleek, customizable UPI payment links immediately upon login.
 - **Branding Live Preview**: See exactly how your checkout looks as you customize your brand color and logo on the Settings page.
 - **Webhook Observability**: Track every webhook delivery, view response codes, and manually "Retry" failed deliveries with one click.
 - **Persistent Webhook Retries**: Automatic background retry logic with exponential backoff for failed webhook deliveries.
