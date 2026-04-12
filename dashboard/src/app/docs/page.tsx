@@ -1,8 +1,6 @@
 import path from "path";
 import fs from "fs";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
+import MarkdownViewer from "@/components/MarkdownViewer";
 import Link from "next/link";
 
 const DOCS_DOMAIN = "https://john-varghese-eh.github.io/NoxPay/";
@@ -350,14 +348,7 @@ export default async function DocsPage() {
               Project README
             </h2>
           </div>
-          <div className="prose prose-invert prose-violet max-w-none hover:prose-a:text-violet-300 prose-img:rounded-xl">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw]}
-            >
-              {readmeContent}
-            </ReactMarkdown>
-          </div>
+          <MarkdownViewer content={readmeContent} />
         </div>
 
         {/* Footer info */}
