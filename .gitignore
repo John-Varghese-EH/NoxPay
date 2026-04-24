@@ -53,3 +53,9 @@ htmlcov/
 # Utility Scripts
 apply_branding.js
 apply_branding.py
+
+.agent/
+.claude/
+.cursor/
+.gemini/
+.windsurf/
